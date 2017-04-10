@@ -1,6 +1,6 @@
 # Git
 
-This section details common code-review comments.
+Contents:
 
 - [Commit messages](#commit-messages)
 - [Commit history](#commit-history)
