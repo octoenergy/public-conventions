@@ -41,22 +41,26 @@ Note especially:
 
 - The blank line between the first line and the detailed explanation.
 
-Any non-trivial commit should have a explanation - one-liner commit messages
+Any non-trivial commit should have an explanation - one-liner commit messages
 should be rare.
 
 
 ## Commit history
 
-Ensure the codebase "makes sense" after each commit. That is, the tests should
-pass. 
+Ensure the codebase "makes sense" after each commit. Primarily that means the tests should
+pass but also that the codebase isn't broken between commits. 
 
-Rebase/squash "linting", "fixes" commits.
+Avoid small "bug-fix" commits that should have been part of a previous commit.
+Rebase/squash these commits before marking a pull request as ready for review.
+
+It's fine to force-push PR branches, although coordinate with other
+collaborators if multiple people are working on the same branch.
 
 
 ## Pull requests
 
 Ensure the PR can be reviewed in chronological order, commit by commit (see
-[commit history](#commit-history)
+[commit history](#commit-history).
 
 Avoid merge commits in PRs. Rebase against `origin/master` when you want to pull
 changes from `master` into your branch.

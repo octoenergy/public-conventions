@@ -4,6 +4,8 @@ Contents:
 
 - [`CharField` choices](#charfield-choices)
 - [Model field naming conventions](#model-field-naming-conventions)
+- [Encapsulate model mutation](#encapsulate-model-mutation)
+- [Import modules, not objects](#import-modules-not-objects)
 
 
 ## `CharField` choices
@@ -37,7 +39,7 @@ There are some exceptions such as `available_from` and `available_to`.
 - `supply_date`
 
 
-## Only mutate Django models with mutator methods
+## Encapsulate model mutation
 
 Don't call a model's `save` method from anywhere but "mutator" methods on the
 model itself. 
@@ -45,3 +47,23 @@ model itself.
 See:
 
 - [Django models, encapsulation and data integrity](https://www.dabapps.com/blog/django-models-and-encapsulation/), by Tom Christie
+
+
+## Import modules, not objects
+
+Instead of:
+
+```python
+from django.http import (
+    HttpResponse, HttpResponseRedirect, HttpResponseBadRequest)
+from django.shortcuts import render, get_object_or_404
+```
+
+prefer:
+
+```python
+from django import http, shortcuts
+```
+
+This keeps the module namespace cleaner and less like to have accidental
+collisions. It also makes the module more concise and readable.
