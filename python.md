@@ -6,6 +6,7 @@ Contents:
 - [Model field naming conventions](#model-field-naming-conventions)
 - [Encapsulate model mutation](#encapsulate-model-mutation)
 - [Import modules, not objects](#import-modules-not-objects)
+- [Application logic in interface layer](#application-logic-in-interface-layer)
 
 
 ## `CharField` choices
@@ -67,3 +68,19 @@ from django import http, shortcuts
 
 This keeps the module namespace cleaner and less like to have accidental
 collisions. It also makes the module more concise and readable.
+
+## Application logic in interface layer
+
+Interface code like view modules and management command classes should contain
+no application logic. It should all be extracted into other modules so other
+"interfaces" can call it if they need to.
+
+The role of interface layers is simply to translate transport-layer
+requests (like HTTP requests) into domain requests. And similarly, translate domain
+responses into transport responses (eg convert an application exception into a
+error HTTP response).
+
+A useful thought exercise to go through when adding code to a view is to imagine
+needing to expose the same functionality via a REST API or a management command.
+Would anything need duplicating from the view code? If so, then this tells you
+that there's logic in the view layer that needs extracting.
