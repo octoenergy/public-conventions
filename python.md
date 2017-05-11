@@ -5,6 +5,7 @@ Contents:
 - [`CharField` choices](#charfield-choices)
 - [Model field naming conventions](#model-field-naming-conventions)
 - [Encapsulate model mutation](#encapsulate-model-mutation)
+- [Group methods and properties on models](#group-methods-and-properties-on-models)
 - [Import modules, not objects](#import-modules-not-objects)
 - [Application logic in interface layer](#application-logic-in-interface-layer)
 
@@ -39,15 +40,67 @@ There are some exceptions such as `available_from` and `available_to`.
 - `billing_date`
 - `supply_date`
 
+This convention also applies to variable names.
+
 
 ## Encapsulate model mutation
 
 Don't call a model's `save` method from anywhere but "mutator" methods on the
-model itself. 
+model itself. This provides a useful overview of the lifecycle of a model as you
+can see all the ways it can mutate in once place.
 
-See:
+Similarly, avoid calling `SomeModel.objects.create` or even
+`SomModel.related_objects.create` from outside of the model itself. Encapsulate
+these in "factory" methods (classmethods for the `objects.create` call).
+
+Inspiration:
 
 - [Django models, encapsulation and data integrity](https://www.dabapps.com/blog/django-models-and-encapsulation/), by Tom Christie
+
+
+## Group methods and properties on models
+
+To keep models well organised and easy to understand, group their methods and
+properties into these groups using a comment:
+
+- Factories 
+- Mutators
+- Queries 
+- Properties
+
+Contrived example:
+
+```python
+class SomeModel(models.Model):
+    name = models.CharField(max_length=255)
+
+    # Factories
+
+    @classmethod
+    def new(cls, name):
+        return cls.objects.create(name=name)
+
+    # Mutators
+
+    def anonymise(self):
+        self.name = ''
+        self.save()
+
+    def update_name(self, new_name):
+        self.name = new_name
+        self.save()
+
+    # Queries
+
+    def num_apples(self):
+        return self.fruits.filter(type="APPLE").count()
+
+
+    # Properties
+
+    @property
+    def is_call_dave(self):
+        return self.name.lower() == "dave"
 
 
 ## Import modules, not objects
