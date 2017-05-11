@@ -8,6 +8,7 @@ Contents:
 - [Group methods and properties on models](#group-methods-and-properties-on-models)
 - [Import modules, not objects](#import-modules-not-objects)
 - [Application logic in interface layer](#application-logic-in-interface-layer)
+- [Don't do nothing silently](#dont-do-nothing-silently)
 
 
 ## `CharField` choices
@@ -101,6 +102,7 @@ class SomeModel(models.Model):
     @property
     def is_call_dave(self):
         return self.name.lower() == "dave"
+```
 
 
 ## Import modules, not objects
@@ -137,3 +139,39 @@ A useful thought exercise to go through when adding code to a view is to imagine
 needing to expose the same functionality via a REST API or a management command.
 Would anything need duplicating from the view code? If so, then this tells you
 that there's logic in the view layer that needs extracting.
+
+## <a name="dont-do-nothing-silently">Don't do nothing silently</a>
+
+Avoid this pattern:
+
+```python
+
+def do_something(*args, **kwargs):
+    if thing_done_already():
+        return
+    if thing_not_ready():
+        return
+    ...
+```
+
+where the function checks some condition and returns without doing anything.
+From the caller's point of view, it can't tell whether the action was successful
+or not.
+
+It's much better to be explicit and use exceptions to indicate that an action
+couldn't be taken. Eg:
+
+```python
+
+def do_something(*args, **kwargs):
+    if thing_done_already():
+        raise ThingAlreadyDone
+    if thing_not_ready():
+        raise ThingNotReady
+    ...
+```
+
+Let the calling code decide if how to handle the situation where the action has
+already happened or it pre-conditions aren't met. 
+
+This does mean using lots of custom exception classes - but that is ok.
