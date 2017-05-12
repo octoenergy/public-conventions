@@ -9,6 +9,7 @@ Contents:
 - [Import modules, not objects](#import-modules-not-objects)
 - [Application logic in interface layer](#application-logic-in-interface-layer)
 - [Don't do nothing silently](#dont-do-nothing-silently)
+- [Docstrings vs comments](#docstrings)
 
 
 ## `CharField` choices
@@ -175,3 +176,29 @@ Let the calling code decide if how to handle the situation where the action has
 already happened or it pre-conditions aren't met. 
 
 This does mean using lots of custom exception classes - but that is ok.
+
+
+## <a name="docstrings">Docstrings vs. comments</a>
+
+There is a difference:
+
+* *Docstrings* are written between triple quotes within the function/class block. They explain
+   what the function does and are written for people who might want to _use_ that
+   function/class but are not interested in the implementation details.
+
+* In contrast, *comments* are written as `# blah blah blah` and are written for
+  people who want to _change_ or _extend_ the implementation.
+
+It sometimes makes sense to use both next to each other, eg:
+
+```python
+def do_that_thing():
+    """
+    Perform some action and return some thing
+    """
+    # This has been implemented this way because of these crazy reason.
+```
+
+Related reading:
+
+- http://stackoverflow.com/questions/19074745/python-docstrings-descriptions-vs-comments
