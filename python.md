@@ -125,6 +125,27 @@ from django import http, shortcuts
 This keeps the module namespace cleaner and less like to have accidental
 collisions. It also makes the module more concise and readable.
 
+Further, it fosters writing isolated unit tests in that it works well with
+`mock.patch.object` to fake/stub/mock _direct_ collaborators of the
+system-under-test. Using the more general `mock.patch` often leads to accidental integration tests 
+as an indirect collaborator (several calls away) is patchd.
+
+
+Eg:
+
+```python
+import mock
+from somepackage import somemodule
+
+@mock.patch.object(somemodule, 'collaborator')
+def test_a_single_unit(collaborator):
+    somemodule.somefunction(1)
+    collaborator.assert_called_with(value=1)
+```
+
+Remember, in the long term, slow integration tests will rot your test suite.
+Fast isolated unit tests keep things healthy. 
+
 ## Application logic in interface layer
 
 Interface code like view modules and management command classes should contain
@@ -150,14 +171,14 @@ Avoid this pattern:
 def do_something(*args, **kwargs):
     if thing_done_already():
         return
-    if thing_not_ready():
+    if preconditions_not_met():
         return
     ...
 ```
 
-where the function checks some condition and returns without doing anything.
-From the caller's point of view, it can't tell whether the action was successful
-or not.
+where the function makes some defensive checks and returns without doing
+anything if these fail. From the caller's point of view, it can't tell whether
+the action was successful or not. This leads to subtle bugs.
 
 It's much better to be explicit and use exceptions to indicate that an action
 couldn't be taken. Eg:
@@ -172,22 +193,24 @@ def do_something(*args, **kwargs):
     ...
 ```
 
-Let the calling code decide if how to handle the situation where the action has
-already happened or it pre-conditions aren't met. 
+Let the calling code decide how to handle cases where the action has
+already happened or the pre-conditions aren't met. The calling code is the one
+to decide if doing nothing is the right action.
 
-This does mean using lots of custom exception classes - but that is ok.
+This does mean using lots of custom exception classes (which some people are
+afraid of) - but that is ok.
 
 
 ## <a name="docstrings">Docstrings vs. comments</a>
 
 There is a difference:
 
-* *Docstrings* are written between triple quotes within the function/class block. They explain
+* **Docstrings** are written between triple quotes within the function/class block. They explain
    what the function does and are written for people who might want to _use_ that
    function/class but are not interested in the implementation details.
 
-* In contrast, *comments* are written as `# blah blah blah` and are written for
-  people who want to _change_ or _extend_ the implementation.
+* In contrast, **comments** are written as `# blah blah blah` and are written for
+  people who want to understand the implementation so they can _change_ or _extend_ it.
 
 It sometimes makes sense to use both next to each other, eg:
 
