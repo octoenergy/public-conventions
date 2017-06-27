@@ -9,6 +9,7 @@ Contents:
 - [Import modules, not objects](#import-modules-not-objects)
 - [Application logic in interface layer](#application-logic-in-interface-layer)
 - [Don't do nothing silently](#dont-do-nothing-silently)
+- [Don't rely on implicit ordering of querysets](#implicit-ordering)
 - [Docstrings vs comments](#docstrings)
 
 
@@ -199,6 +200,14 @@ to decide if doing nothing is the right action.
 
 This does mean using lots of custom exception classes (which some people are
 afraid of) - but that is ok.
+
+
+## <a name="implicit-ordering">Don't rely on implicit ordering of querysets</a>
+
+If you grab the `.first()` or `.last()` element of a queryset, ensure you
+explicitly sort it with `.order_by()`. Don't rely on the default ordering set
+in the `Meta` class of the model as this may change later on breaking your
+assumptions.
 
 
 ## <a name="docstrings">Docstrings vs. comments</a>
