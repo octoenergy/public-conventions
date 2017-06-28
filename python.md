@@ -2,7 +2,7 @@
 
 These are a series of conventions and anti-patterns for writing Python and
 Django application code. They are to aid code-review in that common comments can
-reference single detailed explanation.
+reference a single detailed explanation.
 
 Django:
 
