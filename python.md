@@ -1,19 +1,29 @@
 # Python
 
-Contents:
+These are a series of conventions and anti-patterns for writing Python and
+Django application code. They are to aid code-review in that common comments can
+reference single detailed explanation.
+
+Django:
 
 - [`CharField` choices](#charfield-choices)
 - [Model field naming conventions](#model-field-naming-conventions)
 - [Encapsulate model mutation](#encapsulate-model-mutation)
 - [Group methods and properties on models](#group-methods-and-properties-on-models)
+- [Don't rely on implicit ordering of querysets](#implicit-ordering)
+
+Python:
+
 - [Import modules, not objects](#import-modules-not-objects)
 - [Application logic in interface layer](#application-logic-in-interface-layer)
 - [Don't do nothing silently](#dont-do-nothing-silently)
-- [Don't rely on implicit ordering of querysets](#implicit-ordering)
 - [Docstrings vs comments](#docstrings)
 
 
-## `CharField` choices
+## Django
+
+
+### `CharField` choices
 
 The values stored in the database should be uppercase and separated with
 underscores. A human-readable version should also be added in the tuples
@@ -28,7 +38,8 @@ CHANNEL_CHOICES = (
 channel = models.CharField(max_length=128, choices=CHANNEL_CHOICES)
 ```
 
-## Model field naming conventions
+
+### Model field naming conventions
 
 `DateTimeField`s should generally have suffix `_at`. For example:
 
@@ -36,7 +47,8 @@ channel = models.CharField(max_length=128, choices=CHANNEL_CHOICES)
 - `sent_at`
 - `period_starts_at`
 
-There are some exceptions such as `available_from` and `available_to`.
+There are some exceptions such as `available_from` and `available_to` but stick
+with the convention unless you have a very good reason not to.
 
 `DateField`s should have suffix `_date`:
 
@@ -46,22 +58,27 @@ There are some exceptions such as `available_from` and `available_to`.
 This convention also applies to variable names.
 
 
-## Encapsulate model mutation
+### Encapsulate model mutation
 
 Don't call a model's `save` method from anywhere but "mutator" methods on the
-model itself. This provides a useful overview of the lifecycle of a model as you
-can see all the ways it can mutate in once place.
+model itself. 
 
 Similarly, avoid calling `SomeModel.objects.create` or even
 `SomModel.related_objects.create` from outside of the model itself. Encapsulate
 these in "factory" methods (classmethods for the `objects.create` call).
 
-Inspiration:
+Doing this provides a useful overview of the lifecycle of a model as you
+can see all the ways it can mutate in once place.
+
+Also, this practice leads to better tests as you have a simple, readable method
+to stub when testing units that call into the model layer.
+
+Further reading:
 
 - [Django models, encapsulation and data integrity](https://www.dabapps.com/blog/django-models-and-encapsulation/), by Tom Christie
 
 
-## Group methods and properties on models
+### Group methods and properties on models
 
 To keep models well organised and easy to understand, group their methods and
 properties into these groups using a comment:
@@ -107,7 +124,18 @@ class SomeModel(models.Model):
 ```
 
 
-## Import modules, not objects
+### <a name="implicit-ordering">Don't rely on implicit ordering of querysets</a>
+
+If you grab the `.first()` or `.last()` element of a queryset, ensure you
+explicitly sort it with `.order_by()`. Don't rely on the default ordering set
+in the `Meta` class of the model as this may change later on breaking your
+assumptions.
+
+
+## Python 
+
+
+### Import modules, not objects
 
 Instead of:
 
@@ -147,7 +175,7 @@ def test_a_single_unit(collaborator):
 Remember, in the long term, slow integration tests will rot your test suite.
 Fast isolated unit tests keep things healthy. 
 
-## Application logic in interface layer
+### Application logic in interface layer
 
 Interface code like view modules and management command classes should contain
 no application logic. It should all be extracted into other modules so other
@@ -156,14 +184,15 @@ no application logic. It should all be extracted into other modules so other
 The role of interface layers is simply to translate transport-layer
 requests (like HTTP requests) into domain requests. And similarly, translate domain
 responses into transport responses (eg convert an application exception into a
-error HTTP response).
+HTTP error response).
 
 A useful thought exercise to go through when adding code to a view is to imagine
 needing to expose the same functionality via a REST API or a management command.
 Would anything need duplicating from the view code? If so, then this tells you
 that there's logic in the view layer that needs extracting.
 
-## <a name="dont-do-nothing-silently">Don't do nothing silently</a>
+
+### <a name="dont-do-nothing-silently">Don't do nothing silently</a>
 
 Avoid this pattern:
 
@@ -195,19 +224,32 @@ def do_something(*args, **kwargs):
 ```
 
 Let the calling code decide how to handle cases where the action has
-already happened or the pre-conditions aren't met. The calling code is the one
-to decide if doing nothing is the right action.
+already happened or the pre-conditions aren't met. The calling code is usually
+in the best place to decide if doing nothing is the right action.
 
-This does mean using lots of custom exception classes (which some people are
+If you _really_ doesn't matter if the action succeeds or fails from the caller's
+point-of-view (a "fire-and-forget" action), then use a wrapper function that
+delegates to the main function but swallows all exceptions:
+
+```python
+
+def do_something(*args, **kwargs):
+    try:
+        _do_something(*args, **kwargs)
+    except (ThingsAlreadyDone, ThingNotReady):
+        # Ignore these cases
+        pass
+
+def _do_something(*args, **kwargs):
+    if thing_done_already():
+        raise ThingAlreadyDone
+    if thing_not_ready():
+        raise ThingNotReady
+    ...
+```
+
+This practice does mean using lots of custom exception classes (which some people are
 afraid of) - but that is ok.
-
-
-## <a name="implicit-ordering">Don't rely on implicit ordering of querysets</a>
-
-If you grab the `.first()` or `.last()` element of a queryset, ensure you
-explicitly sort it with `.order_by()`. Don't rely on the default ordering set
-in the `Meta` class of the model as this may change later on breaking your
-assumptions.
 
 
 ## <a name="docstrings">Docstrings vs. comments</a>
