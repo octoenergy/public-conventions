@@ -12,7 +12,11 @@ Django:
 - [Group methods and properties on models](#group-methods-and-properties-on-models)
 - [Don't rely on implicit ordering of querysets](#implicit-ordering)
 
-Python:
+Application:
+
+- [Publishing events](#events)
+
+General python:
 
 - [Import modules, not objects](#import-modules-not-objects)
 - [Application logic in interface layer](#application-logic-in-interface-layer)
@@ -130,6 +134,32 @@ If you grab the `.first()` or `.last()` element of a queryset, ensure you
 explicitly sort it with `.order_by()`. Don't rely on the default ordering set
 in the `Meta` class of the model as this may change later on breaking your
 assumptions.
+
+
+## Application
+
+### <a name="events">Publishing events</a>
+
+When publishing application events, the `params` should be things that are known
+*before* the event, while `meta` should be things known *after* the event as
+well as general contextual fields that aren't directly related to the event
+itself (like a request user-agent).
+
+Example:
+
+```python
+result = do_something(foo, bar)
+
+events.publish(
+    event=events.types.SOMETHING_WAS_DONE,
+    params={
+        'foo': foo,
+        'bar': bar,
+    },
+    meta={
+        'result': result
+    })
+```
 
 
 ## Python 
@@ -252,7 +282,7 @@ This practice does mean using lots of custom exception classes (which some peopl
 afraid of) - but that is ok.
 
 
-## <a name="docstrings">Docstrings vs. comments</a>
+### <a name="docstrings">Docstrings vs. comments</a>
 
 There is a difference:
 
