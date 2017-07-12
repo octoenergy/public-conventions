@@ -1,8 +1,8 @@
 # Python
 
-These are a series of conventions and anti-patterns for writing Python and
-Django application code. They are to aid code-review in that common comments can
-reference a single detailed explanation.
+These are a series of conventions (to use) and anti-patterns (to avoid) for
+writing Python and Django application code. They are intended to be an aid to
+code-review in that common comments can reference a single detailed explanation.
 
 Django:
 
@@ -11,6 +11,7 @@ Django:
 - [Encapsulate model mutation](#encapsulate-model-mutation)
 - [Group methods and properties on models](#group-methods-and-properties-on-models)
 - [Don't rely on implicit ordering of querysets](#implicit-ordering)
+- [Only use `.get` with unique fields](#uniqueness)
 
 Application:
 
@@ -126,6 +127,35 @@ class SomeModel(models.Model):
     def is_call_dave(self):
         return self.name.lower() == "dave"
 ```
+
+### <a name="uniqueness">Only use `.get` with unique fields</a>
+
+Ensure calls to `.objects.get` and `.objects.get_or_create` use fields that have
+a uniqueness constraint across them. If the fields aren't guaranteed to be
+unique, use `.objects.filter`.
+
+Don't do this:
+
+```python
+try:
+    thing = Thing.objects.get(name=some_value)
+except Thing.DoesNotExist:
+    pass
+else:
+    thing.do_something()
+```
+
+unless the `name` field has a `unique=True`. Instead do this:
+
+```python
+things = Thing.objects.filter(name=some_value)
+if things.count() == 1:
+    things.first().do_something()
+```
+
+The same applies when looking up using more than one field.
+
+This implies we never need to catch `MultipleObjectsReturned`.
 
 
 ### <a name="implicit-ordering">Don't rely on implicit ordering of querysets</a>
