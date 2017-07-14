@@ -12,6 +12,7 @@ Django:
 - [Group methods and properties on models](#group-methods-and-properties-on-models)
 - [Don't rely on implicit ordering of querysets](#implicit-ordering)
 - [Only use `.get` with unique fields](#uniqueness)
+- [Be conservative with model `@property` methods](#property-methods)
 
 Application:
 
@@ -164,6 +165,31 @@ If you grab the `.first()` or `.last()` element of a queryset, ensure you
 explicitly sort it with `.order_by()`. Don't rely on the default ordering set
 in the `Meta` class of the model as this may change later on breaking your
 assumptions.
+
+
+### <a name="property-methods">Be conservative with model `@property` methods</a>
+
+It's not always obvious when to decorate a model method as a property. Here
+are some rules-of-thumb:
+
+A property method should not trigger a database call. Don't do this:
+
+```python
+@property
+def num_children(self):
+    return self.kids.count()
+```
+
+Use a method instead.
+
+Property methods should generally just derive a new value from the fields on
+the model. A common use-case is predicates like:
+
+```python
+@property
+def is_closed(self):
+    return self.status = self.CLOSED
+```
 
 
 ## Application
@@ -336,3 +362,6 @@ def do_that_thing():
 Related reading:
 
 - http://stackoverflow.com/questions/19074745/python-docstrings-descriptions-vs-comments
+
+
+
