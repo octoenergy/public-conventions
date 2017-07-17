@@ -188,7 +188,7 @@ the model. A common use-case is predicates like:
 ```python
 @property
 def is_closed(self):
-    return self.status = self.CLOSED
+    return self.status == self.CLOSED
 ```
 
 
