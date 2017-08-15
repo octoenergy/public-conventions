@@ -17,6 +17,7 @@ Django:
 Application:
 
 - [Publishing events](#events)
+- [Triggering Celery tasks](#celery-tasks)
 
 General python:
 
@@ -216,6 +217,39 @@ events.publish(
         'result': result
     })
 ```
+
+### <a name="celery-tasks">Triggering Celery tasks</a>
+
+Care is required when changing Celery task signatures as publishers and
+consumers get deployed at different times. It's important that changes to how an
+event is published don't cause consumers to crash.
+
+To protect against this, we should do two things:
+
+1. Celery tasks should always be called by passing kwargs (not args). Eg:
+
+```python
+some_tasks.apply_async(kwargs={'arg1': 1, 'arg2': 2}, queue="some-queue")
+```
+
+2. Task functions should accept `*args` and `**kwargs` in their signature to 
+   allow them to handle changes in the published args without crashing
+   immediately.
+
+Together these two steps will provide some robustness to signature changes but
+they are not watertight.
+
+For frequently called tasks (that may be in-flight during a deployment), a
+two-phase approach is required (similar to how backwards-incompatible database
+migrations are handled).
+
+First the consumer function needs to be updated to handle both the old and new way
+of calling it (this may be to return new payloads to the queue if they can't be
+handled). This then needs to be deployed.
+
+Second, the publisher and consumer can be modified to use the new calling
+args/kwargs. When this deploys, the older consumers should handle any published
+events gracefully before they are terminated.
 
 
 ## Python 
