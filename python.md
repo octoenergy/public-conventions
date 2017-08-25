@@ -475,11 +475,6 @@ class TestSomeFunction:
 
         output = some_function(input)
 
-        assert output = 300 
+        assert output == 300 
 ```
 This applies less to functional tests which can make many calls to the system.
-
-
-
-
-
