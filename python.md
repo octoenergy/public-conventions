@@ -26,6 +26,12 @@ General python:
 - [Don't do nothing silently](#dont-do-nothing-silently)
 - [Docstrings vs comments](#docstrings)
 
+Testing:
+
+- [Test folder structure](#test-folder-structure)
+- [Test class structure ](#test-class-structure)
+- [Test method structure ](#test-method-structure)
+
 
 ## Django
 
@@ -398,4 +404,77 @@ Related reading:
 - http://stackoverflow.com/questions/19074745/python-docstrings-descriptions-vs-comments
 
 
+## Testing
 
+### <a name="test-folder-structure">Test folder structure</a>
+
+Tests are organised by their type:
+
+- `tests/unit/` - Isolated unit tests that test the behaviour of a single unit.
+    Collaborators should be mocked.  No database or network access is permitted.
+
+- `tests/integration/` - For testing several units and how they are plumbed
+    together. These often require database access and use factories for set-up.
+    These are best avoided in favour or isolated unit tests (to drive
+    design) and end-to-end functional tests (to help us sleep better at night
+    knowing things work as expected).
+
+- `tests/functional/` - For end-to-end tests designed to check everything is
+    plumbed together correctly. These should use webtest or Django's
+    `call_command` function to trigger the test and only patch third party
+    calls.
+
+
+### <a name="test-class-structure">Test class structure</a>
+
+The folder path of a test module should mirror the structure of the module it's testing. 
+Eg `octoenergy/path/to/something.py` should have tests in
+`tests/path/to/test_something.py`.
+
+For each function/class being tested, use a test class to group its tests. Eg:
+
+```python
+from somewhere import some_function
+
+
+class TestSomeFunction:
+
+    def test_does_something_in_a_certain_way(self):
+        ...
+
+    def test_does_something_in_a_different_way(self):
+        ...
+```
+
+Name the test methods so that they complete a sentence started by the test class
+name. This is done in the above example to give:
+
+- "test some_function does something in a certain way"
+- "test some_function does something in a different way"
+
+In this way, ensure the names accurately describe what the test is testing.
+
+
+### <a name="test-method-structure">Test method structure</a>
+
+A unit test has three steps:
+
+- ARRANGE: put the world in the right state for the test
+- ACT: call the unit under test (and possibly capture its output)
+- ASSERT: assert that the right output was returned (or the right calls to
+    collaborators were made).
+
+To aid readability, organise your test methods in this way, adding a blank line
+between each step. Trivial example:
+
+```python
+class TestSomeFunction:
+
+    def test_does_something_in_a_certain_way(self):
+        input = {'a': 100}
+
+        output = some_function(input)
+
+        assert output == 300 
+```
+This applies less to functional tests which can make many calls to the system.
