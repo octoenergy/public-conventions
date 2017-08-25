@@ -3,7 +3,7 @@
 Contents:
 
 - [Commit messages](#commit-messages)
-- [Commit history](#commit-history)
+- [Commit granularity](#commit-granularity)
 - [Pull requests](#pull-requests)
 
 
@@ -41,26 +41,31 @@ Note especially:
 
 - The blank line between the first line and the detailed explanation.
 
-Any non-trivial commit should have an explanation - one-liner commit messages
-should be rare.
+Only truly trivial changes should have a one-line commit message. All others
+should have some detail on what problem is being fixed and how the commit fixes
+it. To this end, use a 
+[commit message template](http://codeinthehole.com/tips/a-useful-template-for-commit-messages/).
 
 
-## Commit history
+## Commit granularity
 
 Ensure the codebase "makes sense" after each commit. Primarily that means the tests should
 pass but also that the codebase isn't broken between commits. 
 
-Avoid small "bug-fix" commits that should have been part of a previous commit.
-Rebase/squash these commits before marking a pull request as ready for review.
+Avoid small "bug-fix" or "linting" commits that should have been part of a
+previous commit. Rebase/squash these commits to give a clean history before
+marking a pull request as ready for review.
 
-It's fine to force-push PR branches, although coordinate with other
-collaborators if multiple people are working on the same branch.
+Of course, rebasing an already-pushed branch means a force-push is required to
+push to Github. This is fine when you're the only person working on the branch
+but, when there's more than one person working on the branch, make sure you talk
+to each before force-pushing to avoid clobbering each other's work.
 
 
 ## Pull requests
 
-Ensure the PR can be reviewed in chronological order, commit by commit (see
-[commit history](#commit-history).
+Strive for PRs that can be reviewed in chronological order, commit by commit (see
+[commit granularity](#commit-granularity).
 
-Avoid merge commits in PRs. Rebase against `origin/master` when you want to pull
-changes from `master` into your branch.
+Avoid unnecessary merge commits in PR branches. Rebase against `origin/master`
+when you want to pull changes from `master` into your branch.
