@@ -17,6 +17,7 @@ Django:
 Application:
 
 - [Publishing events](#events)
+- [Logging exceptions](#logging-exceptions)
 - [Triggering Celery tasks](#celery-tasks)
 
 General python:
@@ -217,6 +218,56 @@ events.publish(
         'result': result
     })
 ```
+
+### <a name="logging-exceptions">Logging exceptions</a>
+
+Use `logger.exception` in `except` blocks but pass a useful message - don't just
+pass on the caught exception's message. Don't even format the exception's
+message into the logged message - Sentry will pick up the original exception
+automatically. 
+
+Doing this enables Sentry to group the logged errors together rather than
+treating each logged exception as a new error. 
+See [Sentry's docs](https://docs.sentry.io/clients/python/integrations/logging/#usage) for further info.
+
+Don't do this:
+
+```python
+try:
+    do_something()
+except UnableToDoSomething as e:
+    logger.exception(str(e))
+```
+
+or this:
+
+```python
+try:
+    do_something()
+except UnableToDoSomething as e:
+    logger.exception("Unable to do something: %s" % e)
+```
+
+Instead, do this:
+
+```python
+try:
+    do_something()
+except UnableToDoSomething:
+    logger.exception("Unable to do something")
+```
+
+If you do need to format data into the message string, don't use the `%`
+operator. Instead, pass the parameters as args:
+https://docs.sentry.io/clients/python/integrations/logging/#usage
+
+```python
+try:
+    do_something(arg=x)
+except UnableToDoSomething:
+    logger.exception("Unable to do something with arg %s", x)
+```
+
 
 ### <a name="celery-tasks">Triggering Celery tasks</a>
 
