@@ -228,6 +228,9 @@ events.publish(
 Prefer passing IDs of model instances rather than the instances of themselves.
 Eg, prefer `params={'bill_id': bill.id}` to `params={'bill': bill}`.
 
+Also, call `.isoformat()` on any dates or datetimes as that gives a more useful
+string.
+
 ### <a name="logging-exceptions">Logging exceptions</a>
 
 Use `logger.exception` in `except` blocks but pass a useful message - don't just
