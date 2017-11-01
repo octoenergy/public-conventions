@@ -22,6 +22,7 @@ Application:
 
 General python:
 
+- [Wrap with parens not backslashes](#wrapping)
 - [Import modules, not objects](#import-modules-not-objects)
 - [Application logic in interface layer](#application-logic-in-interface-layer)
 - [Don't do nothing silently](#dont-do-nothing-silently)
@@ -317,6 +318,22 @@ events gracefully before they are terminated.
 
 ## Python 
 
+
+### <a name="wrapping">Wrap with parens not backslashes</a>
+
+That is, prefer:
+
+```python
+from path.to.some.module import (
+    thing1, thing2, thing3, thing4)
+```
+
+over:
+
+```python
+from path.to.some.module import \
+    thing1, thing2, thing3, thing4
+```
 
 ### Import modules, not objects
 
