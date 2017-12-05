@@ -439,7 +439,7 @@ Let the calling code decide how to handle cases where the action has
 already happened or the pre-conditions aren't met. The calling code is usually
 in the best place to decide if doing nothing is the right action.
 
-If you _really_ doesn't matter if the action succeeds or fails from the caller's
+If it _really_ doesn't matter if the action succeeds or fails from the caller's
 point-of-view (a "fire-and-forget" action), then use a wrapper function that
 delegates to the main function but swallows all exceptions:
 
@@ -472,8 +472,9 @@ There is a difference:
    what the function does and are written for people who might want to _use_ that
    function/class but are not interested in the implementation details.
 
-* In contrast, **comments** are written as `# blah blah blah` and are written for
-  people who want to understand the implementation so they can _change_ or _extend_ it.
+* In contrast, **comments** are written `# like this` and are written for
+  people who want to understand the implementation so they can _change_ or _extend_ it. They will commonly 
+  explain _why_ something has been implemented the way it has.
 
 It sometimes makes sense to use both next to each other, eg:
 
@@ -482,7 +483,7 @@ def do_that_thing():
     """
     Perform some action and return some thing
     """
-    # This has been implemented this way because of these crazy reason.
+    # This has been implemented this way because of these crazy reasons.
 ```
 
 Related reading:
@@ -513,9 +514,9 @@ Tests are organised by their type:
 
 ### <a name="test-class-structure">Test class structure</a>
 
-The folder path of a test module should mirror the structure of the module it's testing. 
+The folder path of a unit (or integration) test module should mirror the structure of the module it's testing. 
 Eg `octoenergy/path/to/something.py` should have tests in
-`tests/path/to/test_something.py`.
+`tests/unit/path/to/test_something.py`.
 
 For each function/class being tested, use a test class to group its tests. Eg:
 
@@ -538,7 +539,10 @@ name. This is done in the above example to give:
 - "test some_function does something in a certain way"
 - "test some_function does something in a different way"
 
-In this way, ensure the names accurately describe what the test is testing.
+Using this technique, ensure the names accurately describe what the test is testing.
+
+This is less important for functional tests which don't call into a single
+object's API.
 
 
 ### <a name="test-method-structure">Test method structure</a>
@@ -547,7 +551,7 @@ A unit test has three steps:
 
 - ARRANGE: put the world in the right state for the test
 - ACT: call the unit under test (and possibly capture its output)
-- ASSERT: assert that the right output was returned (or the right calls to
+- ASSERT: check that the right output was returned (or the right calls to
     collaborators were made).
 
 To aid readability, organise your test methods in this way, adding a blank line
@@ -564,3 +568,26 @@ class TestSomeFunction:
         assert output == 300 
 ```
 This applies less to functional tests which can make many calls to the system.
+
+For functional tests, use comments and blank lines to ensure each step of the
+test is easily understandable. Eg:
+
+```python
+def test_some_longwinded_process(support_client, factory):
+    # Create an electricity-only account with one agreement
+    account = factory.create_electricity_only_account()
+    product = factory.create_green_product()
+    agreement = factory.ElectricityAgreement(tariff__product=product, account=account)
+
+    # Load account detail page and check the agreement is shown
+    response = support_client.get('account', number=account.number)
+    response.assert_status_ok()
+
+    # Fill in form to revoke agreement
+    ...
+
+    # Check agreemnt has been revoked
+    ...
+```
+
+You get the idea. J
