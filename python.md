@@ -13,6 +13,7 @@ Django:
 - [Don't rely on implicit ordering of querysets](#implicit-ordering)
 - [Only use `.get` with unique fields](#uniqueness)
 - [Be conservative with model `@property` methods](#property-methods)
+- [Ensure `__str__` is unique](#unique-str)
 
 Application:
 
@@ -199,6 +200,17 @@ the model. A common use-case is predicates like:
 def is_closed(self):
     return self.status == self.CLOSED
 ```
+
+
+### <a name="unique-str">Ensure `__str__` is unique</a>
+
+Ensure the string returned by a model's `__str__` method uniquely identifies
+that instance.
+
+This is important as Sentry (and other tools) often just print `repr(instance)`
+of the instance (which prints the output from `__str__`). When debugging, it's
+important to know exactly which instances are involved in an error, hence why
+this string should uniquely identify a single model instance.
 
 
 ## Application
