@@ -33,7 +33,8 @@ Testing:
 
 - [Test folder structure](#test-folder-structure)
 - [Test class structure ](#test-class-structure)
-- [Test method structure ](#test-method-structure)
+- [Unit test method structure ](#test-method-structure)
+- [Functional test method structure ](#functional-test-method-structure)
 
 
 ## Django
@@ -545,7 +546,7 @@ This is less important for functional tests which don't call into a single
 object's API.
 
 
-### <a name="test-method-structure">Test method structure</a>
+### <a name="test-method-structure">Unit test method structure</a>
 
 A unit test has three steps:
 
@@ -569,6 +570,9 @@ class TestSomeFunction:
 ```
 This applies less to functional tests which can make many calls to the system.
 
+
+### <a name="functional-test-method-structure">Functional test method structure</a>
+
 For functional tests, use comments and blank lines to ensure each step of the
 test is easily understandable. Eg:
 
@@ -590,4 +594,4 @@ def test_some_longwinded_process(support_client, factory):
     ...
 ```
 
-You get the idea. J
+You get the idea. 
