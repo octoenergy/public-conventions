@@ -11,6 +11,7 @@ Django:
 - [Encapsulate model mutation](#encapsulate-model-mutation)
 - [Group methods and properties on models](#group-methods-and-properties-on-models)
 - [Don't rely on implicit ordering of querysets](#implicit-ordering)
+- [Create filter methods on querysets, not managers](#queryset-filters)
 - [Only use `.get` with unique fields](#uniqueness)
 - [Be conservative with model `@property` methods](#property-methods)
 - [Ensure `__str__` is unique](#unique-str)
@@ -138,6 +139,40 @@ class SomeModel(models.Model):
     @property
     def is_call_dave(self):
         return self.name.lower() == "dave"
+```
+
+### <a name="queryset-filters">Create filter methods on querysets, not managers</a>
+
+Django’s model manager and queryset are similar, see the [docs](https://docs.djangoproject.com/en/stable/topics/db/managers/)
+for an explanation of the differences. However, when creating methods that return a queryset we’re
+better off creating these on a custom queryset class rather than a custom manager.
+
+A manager method is only available on a manager or related-manager. So `Article.objects` or
+`Author.articles`. They’re not available to querysets, which is what’s returned from a manager or
+queryset method, so they cannot be chained. In the example below `my_custom_filter()` is a method
+on a custom manager class, so an `AttributeError` is raised when attempting to call it from a
+queryset, i.e. the return value of `.filter()`.
+
+```
+>>> Article.objects.my_custom_filter().filter(is_published=True)
+<QuerySet [<Article (1)>, <Article (2)>]>
+>>> Article.objects.filter(is_published=True).my_custom_filter()
+AttributeError: 'QuerySet' object has no attribute 'my_custom_filter'
+```
+
+Below is an example of creating a custom queryset class and using it as a model’s manager. This
+allows us to call it on both the manager and queryset.
+
+```
+class ArticleQuerySet(models.QuerySet):
+
+    def my_custom_filter(self):
+        return self.filter(headline__contains='Lennon')
+
+
+class Article(models.Model):
+
+    objects = ArticleQuerySet.as_manager()
 ```
 
 ### <a name="uniqueness">Only use `.get` with unique fields</a>
