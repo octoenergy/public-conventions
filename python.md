@@ -56,6 +56,12 @@ CHANNEL_CHOICES = (
 channel = models.CharField(max_length=128, choices=CHANNEL_CHOICES)
 ```
 
+This is because the database value is a code or symbol intended to be used
+within application logic but not shown to the end user - making it uppercase
+makes this distinction clear.  Using a human-readable version for the database
+value can lead to bugs when a future maintainer wants to change the version
+shown to the end user.
+
 
 ### Model field naming conventions
 
