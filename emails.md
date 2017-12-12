@@ -128,7 +128,7 @@ The platform we use to send these emails is Sendgrid, the details for which are 
 All dynamic data in Sendgrid is handled via a CSV, where you can pick a name for each column. Once this is done, the syntax for adding a merge field is [% MERGE_FIELD_NAME %]. You can test this is working correctly by sending a test email to yourself in Sendgrid with data for your email address populated.
 
 ### Yeoman generator
-A generator using Yeoman has been created to make building, editing, and generating emails as quickly as possible. Once installed, you will be able to run `yo email` in a directory to build an email and dev environment from scratch, and will offer to add to the source code an example of the following for east=y reproduction:
+A generator using Yeoman has been created to make building, editing, and generating emails as quickly as possible. Once installed, you will be able to run `yo email` in a directory to build an email and dev environment from scratch, and will offer to add to the source code an example of the following for easy reproduction:
 • Title
 • Breakout box
 • CTA button
@@ -147,7 +147,7 @@ The base template in this generator has already tested so there’s no need to w
 Right now this is only available in the style of the standard consumer site emails, but Ashley will be working on adding the Intercom style in the near future.
 
 The repo for this can be found at:
-[Github - octoenergy = email generator repo](https://foundation.zurb.com/emails/docs/)
+[octoenergy Github - email generator repo](https://github.com/octoenergy/email-generator)
 
 
 ## Testing
