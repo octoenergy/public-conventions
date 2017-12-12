@@ -6,21 +6,21 @@
 This is the standard style for our emails and matches the brand of our consumer site.
 
 #### Blocks
-*title [text only]* - The title of the email (not shown in the actual HTML)
+**title [text only]** - The title of the email (not shown in the actual HTML)
 
-*preview-text [text only]* - A hidden HTML element at the start of the email. This is shown underneath the subject line of an email in a users  inbox and should reflect what is happening in the email
+**preview-text [text only]** - A hidden HTML element at the start of the email. This is shown underneath the subject line of an email in a users  inbox and should reflect what is happening in the email
 
-*query_width [pixel value - default 600px]* - the value at which mobile styles kick in on platforms that support it.
+**query_width [pixel value - default 600px]** - the value at which mobile styles kick in on platforms that support it.
 
-*content_width [number - default 600]* - The container width of the email. This should make the value of query_width but as a number instead of a pixel value.
+**content_width [number - default 600]** - The container width of the email. This should make the value of query_width but as a number instead of a pixel value.
 
-*footer_width [number - default 600]* - The footer width of the email. This should make the value of query_width but as a number instead of a pixel value.
+**footer_width [number - default 600]** - The footer width of the email. This should make the value of query_width but as a number instead of a pixel value.
 
-*extrastyles-mobile [CSS selectors]* - Any mobile-specific styles for the email
+**extrastyles-mobile [CSS selectors]** - Any mobile-specific styles for the email
 
-*extrastyles [CSS selectors]* - Any new styles specific to the email
+**extrastyles [CSS selectors]** - Any new styles specific to the email
 
-*notifications [HTML]* - An area at the top of the email to display a notification to the user. Example contents:
+**notifications [HTML]** - An area at the top of the email to display a notification to the user. Example contents:
 ```
 <tr>
     <td bgcolor="#27b1f9">
@@ -45,33 +45,33 @@ This is the standard style for our emails and matches the brand of our consumer 
 </tr>
 ```
 
-*top-padding [number - default 50]* - An HTML row to add padding above email content, who’s height you can alter.
+**top-padding [number - default 50]** - An HTML row to add padding above email content, who’s height you can alter.
 
-*header [HTML]* - An area to add a header/title for an email. Sits inside a `<tr>` tag, so appropriate HTML inside the tag would be:
+**header [HTML]** - An area to add a header/title for an email. Sits inside a `<tr>` tag, so appropriate HTML inside the tag would be:
 ```
 <td class="text" style="font-size: 18px; line-height: 24px; color: {% email_text_colour recipient %}; font-weight: 300;">
     // CONTENT
 </td>
 ```
 
-*breakout [HTML]* - A wrapper for the breakout_content block that displays content in an info-style box for emphasis. If you don’t want to use this in an email, you should add an empty block like so:
+**breakout [HTML]** - A wrapper for the breakout_content block that displays content in an info-style box for emphasis. If you don’t want to use this in an email, you should add an empty block like so:
 `{% block breakout %}{% endblock %}`
 
-*layout [HTML]* - Change this to alter the core layout of the email (not recommended)
+**layout [HTML]** - Change this to alter the core layout of the email (not recommended)
 
-*container_content [HTML]* - A chance to add custom HTML just above the content block. As the content block is designed to be just text, use this to add something a bit more complex should you need to. The block is inside a `<table>` tag and so any content you add should start with a `<tr>`
+**container_content [HTML]** - A chance to add custom HTML just above the content block. As the content block is designed to be just text, use this to add something a bit more complex should you need to. The block is inside a `<table>` tag and so any content you add should start with a `<tr>`
 
-*content_styles [inline CSS]* - Use this to change the style of the main content text.
+**content_styles [inline CSS]** - Use this to change the style of the main content text.
 
-*content [text]* - The main body of the email. Use only text, spans, and simple `<br/>` tags here.
+**content [text]** - The main body of the email. Use only text, spans, and simple `<br/>` tags here.
 
-*signoff [text - default ‘Love and power’]* - Use if you’d like to change the sign-off.
+**signoff [text - default ‘Love and power’]** - Use if you’d like to change the sign-off.
 
-*sender [text - default ‘The Octopus Energy team’]* - Use if you’d like to change the sender name.
+**sender [text - default ‘The Octopus Energy team’]** - Use if you’d like to change the sender name.
 
-*ps [HTML]* - A chance to add custom HTML just above the content block. This block is inside a `<table>` tag so any content in this block should start with a `<tr>` tag.
+**ps [HTML]** - A chance to add custom HTML just above the content block. This block is inside a `<table>` tag so any content in this block should start with a `<tr>` tag.
 
-*logo [HTML]* - Use this if you’d like to change the logo in the email footer. By default this block contains two `<div>` tags, with one containing an SVG image for platforms that can support it, and a PNG fallback. For an example of the markup, just the `template.html` file.
+**logo [HTML]** - Use this if you’d like to change the logo in the email footer. By default this block contains two `<div>` tags, with one containing an SVG image for platforms that can support it, and a PNG fallback. For an example of the markup, just the `template.html` file.
 
 #### Inverting colours
 This template changes its colour scheme based on a users preference, as some have issues reading white text on a black background. To accomplish this, we have three variables inside the template:
@@ -90,33 +90,33 @@ If you would like to add something specific for those who have (or have not) opt
 This email is styled like a simple letter (black text on a white background). The style is used exclusively for our welcome emails, either direct or from third parties.
 
 #### Blocks
-*title [text only]* - The title of the email (not shown in the actual HTML)
+**title [text only]** - The title of the email (not shown in the actual HTML)
 
-*preview-text [text only]* - A hidden HTML element at the start of the email. This is shown underneath the subject line of an email in a users  inbox and should reflect what is happening in the email.
+**preview-text [text only]** - A hidden HTML element at the start of the email. This is shown underneath the subject line of an email in a users  inbox and should reflect what is happening in the email.
 
-*extrastyles-mobile [CSS selectors]* - Any mobile-specific styles for the email.
+**extrastyles-mobile [CSS selectors]** - Any mobile-specific styles for the email.
 
-*extrastyles [CSS selectors]* - Any new styles specific to the email.
+**extrastyles [CSS selectors]** - Any new styles specific to the email.
 
-*content [text]* - The main body of the email. Use only text, spans, and simple `<br/>` tags here.
+**content [text]** - The main body of the email. Use only text, spans, and simple `<br/>` tags here.
 
-*signoff [text - default ‘Love and power’]* - Use if you’d like to change the sign-off.
+**signoff [text - default ‘Love and power’]** - Use if you’d like to change the sign-off.
 
-*ps [HTML]* - Use this block to ad a PS. This block is inside a `<table>` tag so any content in this block should start with a `<tr>` tag.
+**ps [HTML]** - Use this block to ad a PS. This block is inside a `<table>` tag so any content in this block should start with a `<tr>` tag.
 
 ### Intercom template (template-intercom.html)
 This template mirrors the style of Intercom’s emails, as our users are used to receiving communications in this style. Most commonly, this style is used for ad-hoc marketing emails through Sendgrid, but is also used occasionally for Kraken communications.
 
 #### Blocks
-*content [text]* - The main body of the email. Use only text, spans, and simple `<br/>` tags here.
+**content [text]** - The main body of the email. Use only text, spans, and simple `<br/>` tags here.
 
-*signoff [text]* - Use if you’d like to change the sign-off.
+**signoff [text]** - Use if you’d like to change the sign-off.
 
-*ps [HTML]* - Use this block to ad a PS. This block is inside a `<table>` tag so any content in this block should start with a `<tr>` tag.
+**ps [HTML]** - Use this block to ad a PS. This block is inside a `<table>` tag so any content in this block should start with a `<tr>` tag.
 
-*footer-image [text]* - The `src` attribute of the image at the bottom of the email. By default, it’s an image of Pete Miller.
+**footer-image [text]** - The `src` attribute of the image at the bottom of the email. By default, it’s an image of Pete Miller.
 
-*footer-signoff [text]* - The first name of the person the email is from.
+**footer-signoff [text]** - The first name of the person the email is from.
 
 ## Ad hoc emails
 We frequently send marketing emails to our users separate to those sent through the site.  These are made on the fly and usually overseen by Pete Miller.
