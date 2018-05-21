@@ -15,6 +15,7 @@ Django:
 - [Only use `.get` with unique fields](#uniqueness)
 - [Be conservative with model `@property` methods](#property-methods)
 - [Ensure `__str__` is unique](#unique-str)
+- [Flash messages](#flash-messages)
 
 Application:
 
@@ -253,6 +254,35 @@ This is important as Sentry (and other tools) often just print `repr(instance)`
 of the instance (which prints the output from `__str__`). When debugging, it's
 important to know exactly which instances are involved in an error, hence why
 this string should uniquely identify a single model instance.
+
+
+### <a name="flash-messages">Effective flash messages</a>
+
+Flash messages are those one-time messages shown to users after an action has
+been performed. They are triggered using the `django.contrib.messages` package,
+normally from within a view class/function.
+
+Here's a few tips.
+
+- Don't say "successfully" in flash messages (eg "The thing was updated
+  successfully"). Prefer a more active tone (eg "The thing was updated").
+
+- Don't include IDs that are meaningless to the end user (eg "Thing 1234 was
+  updated").
+
+- Consider including links to related resources that might be a common next step
+  for the user. HTML can be included in flash messages
+
+  ```python
+  msg = (
+      '<h4>Some heading</h4>'
+      '<p>An action was performed. Now do you want to <a href="%s">do the next thing</a>.</p>'
+  ) % next_thing_url
+  messages.success(request, msg, extra_tags='safe')
+  ```
+
+  Note the `safe` tag which allow HTML to be included in the message.
+
 
 
 ## Application
