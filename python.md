@@ -462,14 +462,13 @@ prefer:
 from django import http, shortcuts
 ```
 
-This keeps the module namespace cleaner and less like to have accidental
+This keeps the module namespace cleaner and less likely to have accidental
 collisions. It also makes the module more concise and readable.
 
-Further, it fosters writing isolated unit tests in that it works well with
-`mock.patch.object` to fake/stub/mock _direct_ collaborators of the
+Further, it fosters writing simpler isolated unit tests in that import modules
+works well with `mock.patch.object` to fake/stub/mock _direct_ collaborators of the
 system-under-test. Using the more general `mock.patch` often leads to accidental integration tests 
-as an indirect collaborator (several calls away) is patchd.
-
+as an indirect collaborator (several calls away) is patched.
 
 Eg:
 
