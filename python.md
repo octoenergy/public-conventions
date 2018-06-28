@@ -8,6 +8,7 @@ Django:
 
 - [`CharField` choices](#charfield-choices)
 - [Model field naming conventions](#model-field-naming-conventions)
+- [Class naming conventions](#class-naming-conventions)
 - [Encapsulate model mutation](#encapsulate-model-mutation)
 - [Group methods and properties on models](#group-methods-and-properties-on-models)
 - [Don't rely on implicit ordering of querysets](#implicit-ordering)
@@ -62,6 +63,32 @@ within application logic but not shown to the end user - making it uppercase
 makes this distinction clear.  Using a human-readable version for the database
 value can lead to bugs when a future maintainer wants to change the version
 shown to the end user.
+
+
+### Class naming conventions
+
+Given we [import modules, not objects](#import-modules-not-objects), there's no need to suffix
+view/form/serializer classes names with `View`/`Form`/`Serializer`. 
+
+Within a calling module, it's nicer to have:
+
+```python
+from django.views import generic
+from . import forms
+
+class SetPassword(generic.FormView):
+    form_class = forms.NewPassword
+```
+
+rather than:
+
+```python
+from django.views import generic
+from . import forms
+
+class SetPassword(generic.FormView):
+    form_class = forms.NewPasswordForm
+```
 
 
 ### Model field naming conventions
@@ -435,14 +462,13 @@ prefer:
 from django import http, shortcuts
 ```
 
-This keeps the module namespace cleaner and less like to have accidental
+This keeps the module namespace cleaner and less likely to have accidental
 collisions. It also makes the module more concise and readable.
 
-Further, it fosters writing isolated unit tests in that it works well with
-`mock.patch.object` to fake/stub/mock _direct_ collaborators of the
+Further, it fosters writing simpler isolated unit tests in that import modules
+works well with `mock.patch.object` to fake/stub/mock _direct_ collaborators of the
 system-under-test. Using the more general `mock.patch` often leads to accidental integration tests 
-as an indirect collaborator (several calls away) is patchd.
-
+as an indirect collaborator (several calls away) is patched.
 
 Eg:
 
