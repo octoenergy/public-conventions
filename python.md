@@ -412,10 +412,10 @@ pass kwargs (positional args get a `TypeError`). Syntax:
 
 In general, prefer calling functions with kwargs where it's not immediately
 obvious what the positional args are (ie most of the time). This
-improves readability and make collaborator tests clearer (ie writing the
+improves readability and makes collaborator tests clearer (ie writing the
 `collabator.assert_called_with(...)` assertion).
 
-Further, _always_ using keyword-only args for "public" domain functions (ie
+Further, _always_ use keyword-only args for "public" domain functions (ie
 those which are called from the interface layer or from packages within the
 domain layer).
 
