@@ -69,7 +69,7 @@ shown to the end user.
 ### Class naming conventions
 
 Given we [import modules, not objects](#import-modules-not-objects), there's no need to suffix
-view/form/serializer classes names with `View`/`Form`/`Serializer`. 
+view/form/serializer classes names with `View`/`Form`/`Serializer`.
 
 Within a calling module, it's nicer to have:
 
@@ -114,7 +114,7 @@ This convention also applies to variable names.
 ### Encapsulate model mutation
 
 Don't call a model's `save` method from anywhere but "mutator" methods on the
-model itself. 
+model itself.
 
 Similarly, avoid calling `SomeModel.objects.create` or even
 `SomModel.related_objects.create` from outside of the model itself. Encapsulate
@@ -136,9 +136,9 @@ Further reading:
 To keep models well organised and easy to understand, group their methods and
 properties into these groups using a comment:
 
-- Factories 
+- Factories
 - Mutators
-- Queries 
+- Queries
 - Properties
 
 Contrived example:
@@ -349,10 +349,10 @@ string.
 Use `logger.exception` in `except` blocks but pass a useful message - don't just
 pass on the caught exception's message. Don't even format the exception's
 message into the logged message - Sentry will pick up the original exception
-automatically. 
+automatically.
 
 Doing this enables Sentry to group the logged errors together rather than
-treating each logged exception as a new error. 
+treating each logged exception as a new error.
 See [Sentry's docs](https://docs.sentry.io/clients/python/integrations/logging/#usage) for further info.
 
 Don't do this:
@@ -408,7 +408,7 @@ To protect against this, we should do two things:
 some_tasks.apply_async(kwargs={'arg1': 1, 'arg2': 2}, queue="some-queue")
 ```
 
-2. Task functions should accept `*args` and `**kwargs` in their signature to 
+2. Task functions should accept `*args` and `**kwargs` in their signature to
    allow them to handle changes in the published args without crashing
    immediately.
 
@@ -446,7 +446,7 @@ Further, _always_ use keyword-only args for "public" domain functions (ie
 those which are called from the interface layer or from packages within the
 domain layer).
 
-## Python 
+## Python
 
 
 ### <a name="wrapping">Wrap with parens not backslashes</a>
@@ -467,7 +467,7 @@ from path.to.some.module import \
 
 ### Import modules, not objects
 
-Instead of:
+Usually, you should import modules rather than their objects. Instead of:
 
 ```python
 from django.http import (
@@ -482,11 +482,11 @@ from django import http, shortcuts
 ```
 
 This keeps the module namespace cleaner and less likely to have accidental
-collisions. It also makes the module more concise and readable.
+collisions. It also usually makes the module more concise and readable.
 
 Further, it fosters writing simpler isolated unit tests in that import modules
 works well with `mock.patch.object` to fake/stub/mock _direct_ collaborators of the
-system-under-test. Using the more general `mock.patch` often leads to accidental integration tests 
+system-under-test. Using the more general `mock.patch` often leads to accidental integration tests
 as an indirect collaborator (several calls away) is patched.
 
 Eg:
@@ -502,7 +502,19 @@ def test_a_single_unit(collaborator):
 ```
 
 Remember, in the long term, slow integration tests will rot your test suite.
-Fast isolated unit tests keep things healthy. 
+Fast isolated unit tests keep things healthy.
+
+#### When to import objects directly
+
+Avoiding object imports isn't a hard and fast rule. Sometimes it can significantly
+impair readability. This is particularly the case with commonly used objects
+in the standard library. Some examples where you should import the object instead:
+
+```python
+from decimal import Decimal
+from typing import Optional, Tuple, Dict
+from collections import defaultdict
+```
 
 ### Application logic in interface layer
 
@@ -590,7 +602,7 @@ There is a difference:
    function/class but are not interested in the implementation details.
 
 * In contrast, **comments** are written `# like this` and are written for
-  people who want to understand the implementation so they can _change_ or _extend_ it. They will commonly 
+  people who want to understand the implementation so they can _change_ or _extend_ it. They will commonly
   explain _why_ something has been implemented the way it has.
 
 It sometimes makes sense to use both next to each other, eg:
@@ -631,7 +643,7 @@ Tests are organised by their type:
 
 ### <a name="test-class-structure">Test class structure</a>
 
-The folder path of a unit (or integration) test module should mirror the structure of the module it's testing. 
+The folder path of a unit (or integration) test module should mirror the structure of the module it's testing.
 Eg `octoenergy/path/to/something.py` should have tests in
 `tests/unit/path/to/test_something.py`.
 
@@ -682,7 +694,7 @@ class TestSomeFunction:
 
         output = some_function(input)
 
-        assert output == 300 
+        assert output == 300
 ```
 This applies less to functional tests which can make many calls to the system.
 
@@ -710,4 +722,4 @@ def test_some_longwinded_process(support_client, factory):
     ...
 ```
 
-You get the idea. 
+You get the idea.
