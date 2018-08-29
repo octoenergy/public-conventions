@@ -50,7 +50,7 @@ The values stored in the database should be uppercase and separated with
 underscores. A human-readable version should also be added in the tuples
 provided to the field.
 
-```python
+```code|python
 TELESALES, FIELD_SALES = "TELESALES", "FIELD_SALES"
 CHANNEL_CHOICES = (
     (TELESALES, "Telesales"),
