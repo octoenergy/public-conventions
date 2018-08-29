@@ -24,7 +24,7 @@ If you think there should be any changes to these, then raise them with the team
 
 Use soft tabs set to 4 spaces.
 
-```css
+```
 /* Bad */
 .selector {
 ..display: flex;
@@ -38,7 +38,7 @@ Use soft tabs set to 4 spaces.
 
 Place 1 space before the leading brace and place 1 space after the colon of a declaration.
 
-```css
+```
 /* Bad */
 .selector{
     position:relative;
@@ -52,14 +52,14 @@ Place 1 space before the leading brace and place 1 space after the colon of a de
 
 Place an empty newline at the end of the file.
 
-```css
+```
 /* Bad */
 .selector {
     clear: both;
 }
 ```
 
-```css
+```
 /* Good */
 .selector {
     clear: both;
@@ -86,7 +86,7 @@ The chosen code format ensures that code is: easy to read; easy to clearly comme
 + Place the closing brace of a ruleset in the same column as the first character of the ruleset
 + Separate each ruleset by a blank line
 
-```css
+```
 /* Bad */
 .selector-1, .selector-2, .selector-3 { display: block; font-family: helvetica,arial,sans-serif; background: #fff; background: linear-gradient(#fff,rgba(0,0,0,0.8)) }
 .selector-a, .selector-b { padding: 10px }
@@ -111,7 +111,7 @@ The chosen code format ensures that code is: easy to read; easy to clearly comme
 
 ## <a name='declaration-order'>Declaration order</a>
 
-```css
+```
 .selector {
 	/* Positioning */
 	position
@@ -320,7 +320,7 @@ All code should be lowercase unless a react component name contains capitals: Th
 
 **_(Note: for more info on our approach to handling SASS for react components, see our [Styleguide](https://octopus.energy/_styleguide))_**
 
-```css
+```
 /* Bad */
 BODY {
     margin: 0;
@@ -355,7 +355,7 @@ Most of these are fairly obvious, but are also part of the Stylelint tests and s
 
 ## <a name='comments'>Comments</a>
 
-```css
+```
 /* -----------------------------------------------------------------------------
  * Section block
  * -------------------------------------------------------------------------- */
@@ -368,7 +368,7 @@ Most of these are fairly obvious, but are also part of the Stylelint tests and s
 
 **Example**:
 
-```css
+```
 /* ==========================================================================
    Typography
    ========================================================================== */
