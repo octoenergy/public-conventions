@@ -9,7 +9,7 @@ Contents:
 
 Instead of:
 
-```html+django
+```
 {% if obj.channel == "FIELD_SALES" %}
     ...
 {% endif %}
@@ -17,7 +17,7 @@ Instead of:
 
 add a property to the model/class to allow:
 
-```html+django
+```
 {% if obj.is_field_sales %}
     ...
 {% endif %}
