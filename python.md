@@ -24,6 +24,7 @@ Application:
 - [Logging exceptions](#logging-exceptions)
 - [Triggering Celery tasks](#celery-tasks)
 - [Keyword-arg only functions](#kwarg-only-functions)
+- [Minimise system clock calls](#system-clock)
 
 General python:
 
@@ -446,7 +447,24 @@ Further, _always_ use keyword-only args for "public" domain functions (ie
 those which are called from the interface layer or from packages within the
 domain layer).
 
-## Python
+### <a name="system-clock">Minimise system clock calls</a>
+
+Avoids calls to the system clock in the domain layer of the application. That
+is, calls to `localtime.now()`, `localtime.today()` etc. Think of such calls
+like network or database calls.
+
+Instead, prefer computing relevant datetimes or dates at the interface layer and
+passing them in. This won't always be possible but often is.
+
+Why?
+
+1. This makes testing easier as you don't need to mock a system call.  Your
+   functions will be purer with controlled inputs and outputs. 
+
+2. It also avoids issues where Celery tasks are publishing on one day but get
+   executed on another. It removes an assumption from the code. 
+
+## Python 
 
 
 ### <a name="wrapping">Wrap with parens not backslashes</a>
