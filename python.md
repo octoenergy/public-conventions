@@ -37,6 +37,7 @@ Testing:
 
 - [Test folder structure](#test-folder-structure)
 - [Test class structure ](#test-class-structure)
+- [Isolation ](#test-isolation)
 - [Unit test method structure ](#test-method-structure)
 - [Functional test method structure ](#functional-test-method-structure)
 
@@ -673,6 +674,21 @@ Using this technique, ensure the names accurately describe what the test is test
 This is less important for functional tests which don't call into a single
 object's API.
 
+### <a name="test-isolation">Isolation</a>
+
+Don't assume that tests that use the database are fully isolated from each other. Your
+tests should not make assertions about the global state of the database.
+
+For example, a test should not assert that there are only a certain number of model
+instances in the database, as another test may have created some too.
+
+#### Why aren't they isolated?
+
+While in most cases tests *are* isolated (i.e. they run in separate database transactions),
+a few of our tests use the Pytest marker ``transaction=true``. This causes them to use
+``TransactionTestCase``, which, confusingly, doesn't run in a transaction. Because we
+run our tests concurrently (using the ``--numprocesses`` flag), these
+non-wrapped transactions are not isolated from other tests running at the same time.
 
 ### <a name="test-method-structure">Unit test method structure</a>
 
