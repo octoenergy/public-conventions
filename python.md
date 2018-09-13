@@ -680,7 +680,8 @@ Don't assume that tests that use the database are fully isolated from each other
 tests should not make assertions about the global state of the database.
 
 For example, a test should not assert that there are only a certain number of model
-instances in the database, as another test may have created some too.
+instances in the database, as a transactional test (which does commit to the same DB) 
+running concurrently may have created some.
 
 #### Why aren't they isolated?
 
