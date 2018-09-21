@@ -1,0 +1,15 @@
+{
+  "name": "octo-styleguide",
+  "version": "1.0.0",
+  "description": "Octopus Energy styleguide",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/octoenergy/styleguide.git"
+  },
+  "author": "octoenergy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/octoenergy/styleguide/issues"
+  },
+  "homepage": "https://github.com/octoenergy/styleguide#readme"
+}
