@@ -31,3 +31,61 @@ The rules enabled in this configuration are:
 - [react/prop-types](https://github.com/yannickcr/eslint-plugin-react/blob/HEAD/docs/rules/prop-types.md)
 - [react/react-in-jsx-scope](https://github.com/yannickcr/eslint-plugin-react/blob/HEAD/docs/rules/react-in-jsx-scope.md)
 - [react/require-render-return](https://github.com/yannickcr/eslint-plugin-react/blob/HEAD/docs/rules/require-render-return.md)
+
+## Testing
+
+### Integration testing
+
+Containers should have intregration tests that fully mount the component and test the main functionality of the container and child
+components.
+
+Discretion is required as to whether a class component requires an integration test. If it is capable of altering the state of the store
+then it is advised to mount the component with a proper store.
+
+### Unit testing
+
+All functional and class components should have simple unit tests which successfully shallow mount the components.
+
+# Redux
+
+## Testing
+
+### Black-box testing
+
+In order to more accurately simulate the behaviour of the application being tested, the applications's actions, reducers, and selectors
+should be tested together.
+
+We do this by dispatching actions to the store, and querying the state using selectors. Verifying the outcome using the selectors is
+a way of covering all three aspects in a single pass. The reducers are implicitly tested.
+
+#### Format
+
+The format of these tests are as follows:
+
+##### Create a store from the combined reducer
+
+```
+import { createStore } from 'redux'
+import combinedReducer from './reducers'
+
+const store = createStore(combinedReducer)
+```
+
+##### Dispatch actions to the store using action creators
+
+```
+import * actions from './actions'
+
+store.dispatch(actions.add(something));
+```
+
+#### Query the store using a selector
+
+```
+import * selectors from './selectors'
+
+const state = store.getState()
+const somethingFromStore = selectors.somethingSelector(state)
+
+expect(somethingFromStore).toBe(something)
+```
