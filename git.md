@@ -1,5 +1,7 @@
 # Git
 
+This is a guide to how to use `git` at Octopus Energy.
+
 Contents:
 
 - [Commit messages](#commit-messages)
@@ -33,7 +35,7 @@ Commit messages should take this form:
 > 
 > - Use a hanging indent
 
-(Taken from Tim Pope's [A note about git commit messages](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html))
+(Taken from Tim Pope's seminal [A note about git commit messages](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).)
 
 Note especially:
 
@@ -42,8 +44,8 @@ Note especially:
 - The blank line between the first line and the detailed explanation.
 
 Only truly trivial changes should have a one-line commit message. All others
-should have some detail on what problem is being fixed and how the commit fixes
-it. To this end, use a 
+should include some detail on what problem is being fixed and how the commit fixes
+it. To this end, consider using a 
 [commit message template](http://codeinthehole.com/tips/a-useful-template-for-commit-messages/).
 
 
@@ -54,7 +56,7 @@ pass but also that the codebase isn't broken between commits.
 
 Avoid small "bug-fix" or "linting" commits that should have been part of a
 previous commit. Rebase/squash these commits to give a clean history before
-marking a pull request as ready for review.
+requesting code review for a pull-request.
 
 Of course, rebasing an already-pushed branch means a force-push is required to
 push to Github. This is fine when you're the only person working on the branch
@@ -65,7 +67,11 @@ to each before force-pushing to avoid clobbering each other's work.
 ## Pull requests
 
 Strive for PRs that can be reviewed in chronological order, commit by commit (see
-[commit granularity](#commit-granularity).
+[commit granularity](#commit-granularity)).
 
-Avoid unnecessary merge commits in PR branches. Rebase against `origin/master`
+Avoid merge commits in PR branches. Rebase against `origin/master`
 when you want to pull changes from `master` into your branch.
+
+Further reading:
+
+- [Advanced pull-request crafting](https://codeinthehole.com/tips/advanced-pull-request-crafting/)
