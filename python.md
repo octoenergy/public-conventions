@@ -17,6 +17,7 @@ Django:
 - [Be conservative with model `@property` methods](#property-methods)
 - [Ensure `__str__` is unique](#unique-str)
 - [Flash messages](#flash-messages)
+- [Avoid model-forms](#model-forms)
 
 Application:
 
@@ -313,6 +314,51 @@ Here's a few tips.
 
   Note the `safe` tag which allow HTML to be included in the message.
 
+### <a name="model-forms">Avoid model forms</a>
+
+[Django's model-forms](https://docs.djangoproject.com/en/2.1/topics/forms/modelforms/) are a useful crutch for rapidly building web projects.
+However for a late-stage Django project (like ours), they are best avoided apart from the
+most degenerate, simple scenarios.
+
+Why? Because they conflate validation and persistence logic which, over time,
+leads to hard-to-maintain code. As soon as you need to add more sophisticated
+actions (than a simple DB write) to a successful form submission, model-forms
+are the wrong choice.  Once you start overriding `.save()`, you're on the path
+to maintenance hell.  Future maintainers will thank you if you ensure forms are
+only responsible for validating dictionaries of data, nothing more,
+single-responsibility principle and all that.
+
+Instead, use plain subclasses of `form.Form` and Django's `fields_for_model`
+function to extract the form fields you need. Handle the `form_valid` scenario
+in the view with a single call into the domain layer to perform all necessary
+actions.
+
+One advantage of this is you can pluck form fields off several models to build a
+sophisticated form, which allows views to be kept simple and thin (handling
+multiple forms in the same view should be avoided).
+
+Example:
+
+```py
+from django import forms
+from myproject.someapp import models
+
+class SampleForm(forms.Form):
+
+    # Grab fields from two different models
+    user_fields = forms.fields_for_model(models.User)
+    profile_fields = forms.fields_for_model(models.Profile)
+
+    name = user_fields['name']
+    age = profile_fields['age']
+```
+
+The same principle applies to other ORM-constructs, like DRF's model
+serializers, which trade-off good structure and long-term maintability for
+short-term development speed.
+
+This is an important step in extricating a project from Django's tight grip,
+moving towards treating Django as a library rather than framework.
 
 
 ## Application
