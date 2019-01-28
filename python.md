@@ -49,15 +49,18 @@ Testing:
 
 ### `CharField` choices
 
-The values stored in the database should be uppercase and separated with
-underscores. A human-readable version should also be added in the tuples
-provided to the field.
+The values stored in the database should be:
+
+- Uppercase and separated with underscores. 
+- Namespaced with a string prefix.
+
+A human-readable version should also be added in the tuples provided to the field.
 
 ```
-TELESALES, FIELD_SALES = "TELESALES", "FIELD_SALES"
+CHANNEL_TELESALES, CHANNEL_FIELD_SALES = "TELESALES", "FIELD_SALES"
 CHANNEL_CHOICES = (
-    (TELESALES, "Telesales"),
-    (FIELD_SALES, "Field-sales"),
+    (CHANNEL_TELESALES, "Telesales"),
+    (CHANNEL_FIELD_SALES, "Field-sales"),
 )
 channel = models.CharField(max_length=128, choices=CHANNEL_CHOICES)
 ```
