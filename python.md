@@ -12,6 +12,7 @@ Django:
 - [Encapsulate model mutation](#encapsulate-model-mutation)
 - [Group methods and properties on models](#group-methods-and-properties-on-models)
 - [Don't rely on implicit ordering of querysets](#implicit-ordering)
+- [Don't use audit fields for application logic](#audit-fields)
 - [Create filter methods on querysets, not managers](#queryset-filters)
 - [Only use `.get` with unique fields](#uniqueness)
 - [Be conservative with model `@property` methods](#property-methods)
@@ -252,6 +253,34 @@ If you grab the `.first()` or `.last()` element of a queryset, ensure you
 explicitly sort it with `.order_by()`. Don't rely on the default ordering set
 in the `Meta` class of the model as this may change later on breaking your
 assumptions.
+
+
+### <a name="audit-fields">Don't use audit fields for application logic</a>
+
+It's useful to add audit fields to model to capture datetimes when that database
+record was created or updated:
+
+```py
+class SomeModel(models.Model):
+    ...
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+```
+
+But don't use these fields for application logic. If you need to use the
+creation time of an object, add a separate field that must be explicitly set upon
+creation. Why?
+
+- Often the creation time of a domain object in the real world is different from
+  the time when your insert it's record into the database (eg when backfilling).
+
+- Fields with `auto_now_add=True` are harder to test as it's a pain to the
+  set the value when creating fixtures.
+
+- Explicit is better than implicit.
+
+These automatically set fields should only be used for audit and reporting
+purposes.
 
 
 ### <a name="property-methods">Be conservative with model `@property` methods</a>
