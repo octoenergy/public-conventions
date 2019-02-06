@@ -9,6 +9,7 @@ Django:
 - [`CharField` choices](#charfield-choices)
 - [Model field naming conventions](#model-field-naming-conventions)
 - [Class naming conventions](#class-naming-conventions)
+- [Model method naming conventions](#model-method-naming-conventions)
 - [Encapsulate model mutation](#encapsulate-model-mutation)
 - [Group methods and properties on models](#group-methods-and-properties-on-models)
 - [Don't rely on implicit ordering of querysets](#implicit-ordering)
@@ -116,6 +117,16 @@ with the convention unless you have a very good reason not to.
 - `supply_date`
 
 This convention also applies to variable names.
+
+
+### Model method naming conventions
+
+* For query methods (ie methods that look something up and return it), prefix with `get_`.
+
+* Prefer "latest" to "last" in method names as "latest" implies chronological order where the
+  ordering is not explicit when using "last"; ie
+  `get_latest_payment_schedule`. Similarly, prefer `earliest` to `first` in
+  method names.
 
 
 ### Encapsulate model mutation
