@@ -18,6 +18,7 @@ Django:
 - [Ensure `__str__` is unique](#unique-str)
 - [Flash messages](#flash-messages)
 - [Avoid model-forms](#model-forms)
+- [Avoid multiple domain calls from an interface component](#one-domain-call)
 
 Application:
 
@@ -362,6 +363,88 @@ short-term development speed.
 
 This is an important step in extricating a project from Django's tight grip,
 moving towards treating Django as a library rather than framework.
+
+
+### <a name="one-domain-call">Avoid multiple domain calls from an interface component</a>
+
+An interface component, like a view class/function or Celery task, should only make one
+call into the domain layer (ie the packages in your codebase where application
+logic lives).
+
+Recall: the job of any interface component is this: 
+
+1. Translate requests from the language of the interface (ie HTTP requests or serialized Celery task payloads)
+   into domain objects (eg `Account` instances)
+
+2. Call into the domain layer of your application to fetch some query results or
+   perform an action.
+
+3. Translate any returned values (or exceptions) from the domain layer back into the
+   language of the interface (eg into a 200 HTTP response for a successful query,
+   or a 503 HTTP response if an action wasn't possible). Note, this step only
+   applies to interfaces components that can _respond_ in some way - this
+   doesn't apply to fire-and-forget Celery tasks where there's no results
+   back-end.
+
+This convention mandates that step 2 involves a single call into the domain
+layer to keep the interface easy-to-maintain and to avoid leaking application
+logic into the interface layer.
+
+So avoid this kind of thing:
+
+```python
+
+class SomeView(generic.FormView):
+
+    def form_valid(self, form):
+        account = form.cleaned_data['account']
+        payment = form.cleaned_data['payment']
+
+        result = some_domain_module.do_something(account, payment)
+        if result:
+            some_other_domain_module.do_something_else(account)
+        else:
+            form.add_error(None, str(e))
+            return self.form_invalid(form)
+        
+        some_logging_module.log_event(account, payment)
+
+        return shortcuts.redirect("success")
+```
+
+where the view class is making multiple calls into the domain layer.
+
+Instead, encapsulate the domain functionality that the interface requires in a
+single domain call:
+
+```python
+class SomeView(generic.FormView):
+
+    def form_valid(self, form):
+        try:
+            some_domain_module.do_something(
+                account=form.cleaned_data['account'],
+                payment=form.cleaned_data['payment'])
+        except some_domain_module.UnableToDoSomething as e:
+            form.add_error(None, str(e))
+            return self.form_invalid(form)
+
+        return shortcuts.redirect("success")
+```
+Note the use of domain-specific exceptions to handle failure conditions. 
+
+Since fire-and-forget Celery tasks can't respond, their implementation should be
+simple: just loading the appropriate domain objects and making a single call
+into the domain layer. Something like:
+
+```python
+@app.task()
+def perform_some_action(foo_id, bar_id, *args, **kwargs):
+    foo = Foo.objects.get(id=foo_id)
+    bar = Bar.objects.get(id=bar_id)
+
+    some_domain_module.perform_action(foo, bar)
+```
 
 
 ## Application
