@@ -56,7 +56,7 @@ The values stored in the database should be:
 
 A human-readable version should also be added in the tuples provided to the field.
 
-```
+```python
 CHANNEL_TELESALES, CHANNEL_FIELD_SALES = "TELESALES", "FIELD_SALES"
 CHANNEL_CHOICES = (
     (CHANNEL_TELESALES, "Telesales"),
@@ -79,7 +79,7 @@ view/form/serializer classes names with `View`/`Form`/`Serializer`.
 
 Within a calling module, it's nicer to have:
 
-```
+```python
 from django.views import generic
 from . import forms
 
@@ -89,7 +89,7 @@ class SetPassword(generic.FormView):
 
 rather than:
 
-```
+```python
 from django.views import generic
 from . import forms
 
@@ -149,7 +149,7 @@ properties into these groups using a comment:
 
 Contrived example:
 
-```
+```python
 class SomeModel(models.Model):
     name = models.CharField(max_length=255)
 
@@ -204,7 +204,7 @@ AttributeError: 'QuerySet' object has no attribute 'my_custom_filter'
 Below is an example of creating a custom queryset class and using it as a model’s manager. This
 allows us to call it on both the manager and queryset.
 
-```
+```python
 class ArticleQuerySet(models.QuerySet):
 
     def my_custom_filter(self):
@@ -224,7 +224,7 @@ unique, use `.objects.filter`.
 
 Don't do this:
 
-```
+```python
 try:
     thing = Thing.objects.get(name=some_value)
 except Thing.DoesNotExist:
@@ -235,7 +235,7 @@ else:
 
 unless the `name` field has a `unique=True`. Instead do this:
 
-```
+```python
 things = Thing.objects.filter(name=some_value)
 if things.count() == 1:
     things.first().do_something()
@@ -261,7 +261,7 @@ are some rules-of-thumb:
 
 A property method should not trigger a database call. Don't do this:
 
-```
+```python
 @property
 def num_children(self):
     return self.kids.count()
@@ -272,7 +272,7 @@ Use a method instead.
 Property methods should generally just derive a new value from the fields on
 the model. A common use-case is predicates like:
 
-```
+```python
 @property
 def is_closed(self):
     return self.status == self.CLOSED
@@ -307,7 +307,7 @@ Here's a few tips.
 - Consider including links to related resources that might be a common next step
   for the user. HTML can be included in flash messages
 
-  ```
+  ```python
   msg = (
       '<h4>Some heading</h4>'
       '<p>An action was performed. Now do you want to <a href="%s">do the next thing</a>.</p>'
@@ -342,7 +342,7 @@ multiple forms in the same view should be avoided).
 
 Example:
 
-```py
+```python
 from django import forms
 from myproject.someapp import models
 
@@ -375,7 +375,7 @@ itself (like a request user-agent).
 
 Example:
 
-```
+```python
 result = do_something(foo, bar)
 
 events.publish(
@@ -408,7 +408,7 @@ See [Sentry's docs](https://docs.sentry.io/clients/python/integrations/logging/#
 
 Don't do this:
 
-```
+```python
 try:
     do_something()
 except UnableToDoSomething as e:
@@ -417,7 +417,7 @@ except UnableToDoSomething as e:
 
 or this:
 
-```
+```python
 try:
     do_something()
 except UnableToDoSomething as e:
@@ -426,7 +426,7 @@ except UnableToDoSomething as e:
 
 Instead, do this:
 
-```
+```python
 try:
     do_something()
 except UnableToDoSomething:
@@ -437,7 +437,7 @@ If you do need to format data into the message string, don't use the `%`
 operator. Instead, pass the parameters as args:
 https://docs.sentry.io/clients/python/integrations/logging/#usage
 
-```
+```python
 try:
     do_something(arg=x)
 except UnableToDoSomething:
@@ -455,7 +455,7 @@ To protect against this, we should do two things:
 
 1. Celery tasks should always be called by passing kwargs (not args). Eg:
 
-```
+```python
 some_tasks.apply_async(kwargs={'arg1': 1, 'arg2': 2}, queue="some-queue")
 ```
 
@@ -483,7 +483,7 @@ events gracefully before they are terminated.
 Python 3 supports keyword-only arguments where callers of a function HAVE to
 pass kwargs (positional args get a `TypeError`). Syntax:
 
-```py
+```python
     def f(*, name, age):
         ...
 ```
@@ -521,14 +521,14 @@ Why?
 
 That is, prefer:
 
-```
+```python
 from path.to.some.module import (
     thing1, thing2, thing3, thing4)
 ```
 
 over:
 
-```
+```python
 from path.to.some.module import \
     thing1, thing2, thing3, thing4
 ```
@@ -537,7 +537,7 @@ from path.to.some.module import \
 
 Usually, you should import modules rather than their objects. Instead of:
 
-```
+```python
 from django.http import (
     HttpResponse, HttpResponseRedirect, HttpResponseBadRequest)
 from django.shortcuts import render, get_object_or_404
@@ -545,7 +545,7 @@ from django.shortcuts import render, get_object_or_404
 
 prefer:
 
-```
+```python
 from django import http, shortcuts
 ```
 
@@ -559,7 +559,7 @@ as an indirect collaborator (several calls away) is patched.
 
 Eg:
 
-```
+```python
 import mock
 from somepackage import somemodule
 
@@ -578,7 +578,7 @@ Avoiding object imports isn't a hard and fast rule. Sometimes it can significant
 impair readability. This is particularly the case with commonly used objects
 in the standard library. Some examples where you should import the object instead:
 
-```
+```python
 from decimal import Decimal
 from typing import Optional, Tuple, Dict
 from collections import defaultdict
@@ -605,7 +605,7 @@ that there's logic in the view layer that needs extracting.
 
 Avoid this pattern:
 
-```
+```python
 
 def do_something(*args, **kwargs):
     if thing_done_already():
@@ -622,7 +622,7 @@ the action was successful or not. This leads to subtle bugs.
 It's much better to be explicit and use exceptions to indicate that an action
 couldn't be taken. Eg:
 
-```
+```python
 
 def do_something(*args, **kwargs):
     if thing_done_already():
@@ -640,7 +640,7 @@ If it _really_ doesn't matter if the action succeeds or fails from the caller's
 point-of-view (a "fire-and-forget" action), then use a wrapper function that
 delegates to the main function but swallows all exceptions:
 
-```
+```python
 
 def do_something(*args, **kwargs):
     try:
@@ -675,7 +675,7 @@ There is a difference:
 
 It sometimes makes sense to use both next to each other, eg:
 
-```
+```python
 def do_that_thing():
     """
     Perform some action and return some thing
@@ -717,7 +717,7 @@ Eg `octoenergy/path/to/something.py` should have tests in
 
 For each function/class being tested, use a test class to group its tests. Eg:
 
-```
+```python
 from somewhere import some_function
 
 
@@ -770,7 +770,7 @@ A unit test has three steps:
 To aid readability, organise your test methods in this way, adding a blank line
 between each step. Trivial example:
 
-```
+```python
 class TestSomeFunction:
 
     def test_does_something_in_a_certain_way(self):
@@ -788,7 +788,7 @@ This applies less to functional tests which can make many calls to the system.
 For functional tests, use comments and blank lines to ensure each step of the
 test is easily understandable. Eg:
 
-```
+```python
 def test_some_longwinded_process(support_client, factory):
     # Create an electricity-only account with one agreement
     account = factory.create_electricity_only_account()
