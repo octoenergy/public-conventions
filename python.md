@@ -29,6 +29,7 @@ Application:
 - [Triggering Celery tasks](#celery-tasks)
 - [Keyword-arg only functions](#kwarg-only-functions)
 - [Minimise system clock calls](#system-clock)
+- [Modelling periods of time](#time-periods)
 
 General python:
 
@@ -636,6 +637,30 @@ Why?
 
 2. It also avoids issues where Celery tasks are publishing on one day but get
    executed on another. It removes an assumption from the code. 
+
+### <a name="time-periods">Modelling periods of time</a>
+
+It's common for domain objects to model some period of time that defines when an
+object is "active" or "valid". When faced with this challenge, prefer to use
+_datetime_ fields where the upper bound is nullable and exclusive. Eg:
+
+```python
+class SomeModel(models.Model):
+    ...
+    active_from = models.DateTimeField()
+    active_to = models.DateTimeField(null=True)
+```
+Specifically, try and avoid using `datetime.date` fields as these are more error-prone
+due to implicit conversion of datetimes and complications from daylight-savings
+time.
+
+Further, whether using `date`s or `datetime`s, allowing the upper bound to be
+exclusive allows zero-length periods to be modelled, which is often required
+(even if it isn't obvious that will be the case at first).
+
+Don't follow this rule dogmatically: there will be cases where the appropriate
+domain concept is a date instead of a datetime, but in general, prefer to model
+with datetimes.
 
 ## Python 
 
