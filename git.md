@@ -52,11 +52,11 @@ it. To this end, consider using a
 ## Commit granularity
 
 Ensure the codebase "makes sense" after each commit. Primarily that means the tests should
-pass but also that the codebase isn't broken between commits. 
+pass but also that the codebase isn't broken (in some sense) between commits. 
 
-Avoid small "bug-fix" or "linting" commits that should have been part of a
-previous commit. Rebase/squash these commits to give a clean history before
-requesting code review for a pull-request.
+Avoid small "bug-fix", "linting" or "address code review comments" commits that
+should have been part of a previous commit. Rebase/squash these commits to give
+a clean history before requesting code review for a pull-request.
 
 Of course, rebasing an already-pushed branch means a force-push is required to
 push to Github. This is fine when you're the only person working on the branch
@@ -69,7 +69,7 @@ to each before force-pushing to avoid clobbering each other's work.
 Strive for PRs that can be reviewed in chronological order, commit by commit (see
 [commit granularity](#commit-granularity)).
 
-Avoid merge commits in PR branches. Rebase against `origin/master`
+Avoid merge commits in PR branches by rebasing against `origin/master`
 when you want to pull changes from `master` into your branch.
 
 Further reading:
