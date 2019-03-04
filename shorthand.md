@@ -16,6 +16,8 @@ For comments so pedantic you're almost embarrassed to write them, wrap in `<sup>
 
 > 🐼<sup>"Direct Debit" should be title-case.</sup>
 
+"Panda-ntic" if you will.
+
 ### 👀
 Please eyeball this change/commit/code:
 > 👀 Hey @team, is this change ok? I'm not that familiar with $domain_concept
