@@ -305,18 +305,71 @@ Never.
 We use [BEM](http://getbem.com/) (Block, element, modifier) for our class naming conventions.
 
 
-### Class names in React components
+### Class names in React/Django templates
 
-For our React components, each selector in a component `.scss` file will start with the name of the component followed by the class name. For example, if we were creating a green button class in a container called `JoinComponent`, the class selector would be:
+BEM lends itself nicely to React components. The block name will typically be the same as the Component name. We use the flattening technique to prevent grandchild selectors, but if you have multiple layers of html nesting, consider whether it would be neater to start a new component and a new block. This can also be used for html not crafted with React. Let's look at a chunky example.
 
 
 ```
-.JoinComponent-button--green {
+<ul class="SomeCollection">
+    <li class="SomeCollection__item">
+         <a class="EnergyProduct">
+            <p class="EnergyProduct__content">
+               Items cost <span class="EnergyProduct__price">£100</span> or something
+            </p>
+         </a>
 
+         <a class="EnergyProduct EnergyProduct--my-favourite">
+            <p class="EnergyProduct__content">
+               Favourite items cost <span class="EnergyProduct__price--my-favourite">£10</span> less
+            </p>
+         </a>
+    </li>
+</ul>
+```
+
+````
+.SomeCollection {
+    // Styles that relate to the collection itself, display, positioning etc
+
+    &__item {
+        // styling for each item in the list, eg margin, spacing
+    }
 }
-```
 
-All code should be lowercase unless a react component name contains capitals: This applies to element names, attributes, attribute values, selectors, properties and property values.
+.EnergyProduct {
+    // common styling for all the links and states
+    // this means we don't tie all items in this list to this style and we could add styles
+    // for eg a BoilerProduct or Electric vehicles product later and reuse the collection styles
+    // but add different items without making these styles too complex with lots of modifiers
+
+    &:hover {
+        text-decoration: underline;
+    }
+
+    &--my-favourite {
+        // maybe favourites have a different background
+    }
+
+    &__price {
+        // this is a grandchild, but we flatten it out to avoid making the markup structure too ridged
+
+        &--my-favourite {
+            // maybe highlight the price is lower.
+            // Note we don't try and tie this to the block modifier,
+            // again to avoid enforcing the structure in the markup and nesting style.
+        }
+    }
+}
+````
+
+
+Blocks, and element styles should use CamelCase, modifiers should be hyphenated.
+
+Finally a few things to avoid:
+
+- Nesting styles and styling tags directly. Try to avoid writing rules that are compiled to things like `.Component > .InnerComponent > p > a`. It's very hard to overwrite later.
+- `@extend`. It's usually better to add that class directly to the html or add a custom bit of padding/background colour/ border to your component manually then extend a style.
 
 **_(Note: for more info on our approach to handling SASS for react components, see our [Styleguide](https://octopus.energy/_styleguide))_**
 
