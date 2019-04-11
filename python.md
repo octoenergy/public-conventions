@@ -1,6 +1,6 @@
 # Python
 
-These are a series of conventions (to use) and anti-patterns (to avoid) for
+These are a series of conventions (to follow) and anti-patterns (to avoid) for
 writing Python and Django application code. They are intended to be an aid to
 code-review in that common comments can reference a single detailed explanation.
 
@@ -31,7 +31,7 @@ Application:
 - [Minimise system clock calls](#system-clock)
 - [Modelling periods of time](#time-periods)
 
-General python:
+General Python:
 
 - [Wrap with parens not backslashes](#wrapping)
 - [Import modules, not objects](#import-modules-not-objects)
@@ -185,20 +185,20 @@ class SomeModel(models.Model):
 
     # Queries
 
-    def num_apples(self):
+    def get_num_apples(self):
         return self.fruits.filter(type="APPLE").count()
 
 
     # Properties
 
     @property
-    def is_call_dave(self):
+    def is_called_dave(self):
         return self.name.lower() == "dave"
 ```
 
 ### <a name="queryset-filters">Create filter methods on querysets, not managers</a>
 
-Django’s model manager and queryset are similar, see the [docs](https://docs.djangoproject.com/en/stable/topics/db/managers/)
+Django’s model managers and `QuerySet`s are similar, see the [docs](https://docs.djangoproject.com/en/stable/topics/db/managers/)
 for an explanation of the differences. However, when creating methods that return a queryset we’re
 better off creating these on a custom queryset class rather than a custom manager.
 
@@ -270,7 +270,7 @@ assumptions.
 
 ### <a name="audit-fields">Don't use audit fields for application logic</a>
 
-It's useful to add audit fields to model to capture datetimes when that database
+It's useful to add audit fields to models to capture datetimes when that database
 record was created or updated:
 
 ```py
@@ -285,7 +285,7 @@ creation time of an object, add a separate field that must be explicitly set upo
 creation. Why?
 
 - Often the creation time of a domain object in the real world is different from
-  the time when your insert it's record into the database (eg when backfilling).
+  the time when you inserted its record into the database (eg when backfilling).
 
 - Fields with `auto_now_add=True` are harder to test as it's a pain to the
   set the value when creating fixtures.
@@ -320,6 +320,8 @@ def is_closed(self):
     return self.status == self.CLOSED
 ```
 
+If in doubt, use a method not a property.
+
 
 ### <a name="unique-str">Ensure `__str__` is unique</a>
 
@@ -330,6 +332,12 @@ This is important as Sentry (and other tools) often just print `repr(instance)`
 of the instance (which prints the output from `__str__`). When debugging, it's
 important to know exactly which instances are involved in an error, hence why
 this string should uniquely identify a single model instance.
+
+It's fine to use something like:
+```py
+def __str__(self):
+    return f"#{self.id} ..."
+```
 
 
 ### <a name="flash-messages">Effective flash messages</a>
