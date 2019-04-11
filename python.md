@@ -125,6 +125,8 @@ This convention also applies to variable names.
 
 * For query methods (ie methods that look something up and return it), prefix with `get_`.
 
+* For setter methods (ie methods that set fields and call save), prefix with `set_`.
+
 * Prefer "latest" to "last" in method names as "latest" implies chronological order where the
   ordering is not explicit when using "last"; ie
   `get_latest_payment_schedule`. Similarly, prefer `earliest` to `first` in
