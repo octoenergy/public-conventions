@@ -26,7 +26,7 @@ Application:
 
 - [Publishing events](#events)
 - [Logging exceptions](#logging-exceptions)
-- [Triggering Celery tasks](#celery-tasks)
+- [Celery tasks](#celery-tasks)
 - [Keyword-arg only functions](#kwarg-only-functions)
 - [Minimise system clock calls](#system-clock)
 - [Modelling periods of time](#time-periods)
@@ -487,8 +487,8 @@ simple: just loading the appropriate domain objects and making a single call
 into the domain layer. Something like:
 
 ```python
-@app.task()
-def perform_some_action(foo_id, bar_id, *args, **kwargs):
+@app.task(queue=settings.SOME_QUEUE)
+def perform_some_action(*, foo_id, bar_id, *args, **kwargs):
     foo = Foo.objects.get(id=foo_id)
     bar = Bar.objects.get(id=bar_id)
 
@@ -577,25 +577,39 @@ except UnableToDoSomething:
 ```
 
 
-### <a name="celery-tasks">Triggering Celery tasks</a>
+### <a name="celery-tasks">Celery tasks</a>
 
 Care is required when changing Celery task signatures as publishers and
 consumers get deployed at different times. It's important that changes to how an
 event is published don't cause consumers to crash.
 
-To protect against this, we should do two things:
-
-1. Celery tasks should always be called by passing kwargs (not args). Eg:
+To protect against this, Celery tasks should be defined like this:
 
 ```python
-some_tasks.apply_async(kwargs={'arg1': 1, 'arg2': 2}, queue="some-queue")
+@app.task(queue=settings.MY_QUEUE)
+def my_task(*, foo, bar, **kwargs):
+    ...
+````
+
+and called like this:
+
+```python
+my_task.apply_async(kwargs={'foo': 1, 'bar': 2})
 ```
 
-2. Task functions should accept `*args` and `**kwargs` in their signature to
-   allow them to handle changes in the published args without crashing
-   immediately.
+Things to note:
 
-Together these two steps will provide some robustness to signature changes but
+1. The task is declared with a specific queue. It's easier to troubleshoot queue
+   issues if tasks are categorised like this. Note that the queue is specified when
+   we declare the task, not when we trigger the task, as we want each specific task
+   to be added to the same queue.
+2. The task is called using `kwargs`, not `args` - and the task declaration uses a
+   leading `*` to enforce this.
+3. The task signature ends with ``**kwargs`` to capture any additional arguments. This
+   simplifies the future addition of arguments, as older workers can still handle newer
+   tasks without crashing.
+
+These steps will provide some robustness to signature changes but
 they are not watertight.
 
 For frequently called tasks (that may be in-flight during a deployment), a
