@@ -1,4 +1,4 @@
-# Octopus Energy house conventions
+# Octopus Energy conventions
 
 This doc details house conventions for code written at Octopus Energy.
 
@@ -10,8 +10,9 @@ similar to the [Go code review comments](https://github.com/golang/go/wiki/CodeR
 
 Contents:
 
-- [Git](git.md)
 - [Python](python.md)
+- [Python architecture patterns](patterns.md)
+- [Git](git.md)
 - [CSS](css.md)
 - [HTML and Django templates](html.md)
 - [Email templates](emails.md)
