@@ -609,7 +609,7 @@ Things to note:
    simplifies the future addition of arguments, as older workers can still handle newer
    tasks without crashing.
 
-These steps will provide some robustness to signature changes but
+These steps provide some robustness to signature changes but
 they are not watertight.
 
 For frequently called tasks (that may be in-flight during a deployment), a
