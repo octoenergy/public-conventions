@@ -662,6 +662,25 @@ Why?
 2. It also avoids issues where Celery tasks are publishing on one day but get
    executed on another. It removes an assumption from the code. 
 
+Avoid the pattern of using a default of `None` for a date/datetime parameter
+then calling the system clock to populate it if no value is explicitly passed. 
+Instead of:
+```py
+def some_function(*, base_date=None):
+    if base_date is None:
+        base_date = datetime.date.today()
+    ...
+```
+prefer the more explicit:
+```py
+def some_function(*, base_date):
+```
+which forcers callers to compute the date they want to use for the function.
+As suggested above, such system-clock calls should be reserved for the interface
+layer of your application and the value passed though into the
+business-logic/domain layers.
+
+
 ### <a name="time-periods">Modelling periods of time</a>
 
 It's common for domain objects to model some period of time that defines when an
