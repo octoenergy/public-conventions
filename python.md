@@ -139,7 +139,7 @@ Don't call a model's `save` method from anywhere but "mutator" methods on the
 model itself.
 
 Similarly, avoid calling `SomeModel.objects.create` or even
-`SomModel.related_objects.create` from outside of the model itself. Encapsulate
+`SomeModel.related_objects.create` from outside of the model itself. Encapsulate
 these in "factory" methods (classmethods for the `objects.create` call).
 
 Doing this provides a useful overview of the lifecycle of a model as you
