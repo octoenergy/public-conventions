@@ -44,4 +44,4 @@ or something like:
 
 🚢 - PR merged (aka shipped)
 
-🏀 - PR can be merged immediately after passing review (ie a "slam dunk")
+🏀 - PR can be merged immediately after passing review (ie a "slam dunk" or, more accurately, an "alley oop")
