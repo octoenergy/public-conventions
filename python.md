@@ -21,6 +21,7 @@ Django:
 - [Flash messages](#flash-messages)
 - [Avoid model-forms](#model-forms)
 - [Avoid multiple domain calls from an interface component](#one-domain-call)
+- [Load resources in dispatch method](#load-in-dispatch)
 
 Application:
 
@@ -496,6 +497,21 @@ def perform_some_action(*, foo_id, bar_id, *args, **kwargs):
 
     some_domain_module.perform_action(foo, bar)
 ```
+
+### <a name="load-in-dispatch">Load resources in `dispatch` method</a>
+
+If using class-based views, perform all model loading and access-control checks
+in the `dispatch` method (or the `get` method if a read-only view). Because:
+
+- This method is expected to return a `HttpResponse` instance and so is a
+  natural place to return a 404 (if the object does not exist) or 403 if the
+  requesting user does not have permission to access the requested object.
+
+- This method is called for _all_ HTTP methods and avoids possible security holes
+  if permissions are only checked in say the `get` method.
+
+In particular, avoid loading resources or checking permissions in other
+commonly-subclassed methods like `get_context_data` or `get_form_kwargs`.
 
 
 ## Application
