@@ -44,7 +44,8 @@ Testing:
 
 - [Test folder structure](#test-folder-structure)
 - [Test class structure ](#test-class-structure)
-- [Isolation ](#test-isolation)
+- [Isolation](#test-isolation)
+- [Freeze time for tests](#freezing-time)
 - [Unit test method structure ](#test-method-structure)
 - [Functional test method structure ](#functional-test-method-structure)
 
@@ -964,6 +965,30 @@ a few of our tests use the Pytest marker ``transaction=true``. This causes them 
 ``TransactionTestCase``, which, confusingly, doesn't run in a transaction. Because we
 run our tests concurrently (using the ``--numprocesses`` flag), these
 non-wrapped transactions are not isolated from other tests running at the same time.
+
+
+### <a name="freezing-time">Freeze or inject time for tests</a>
+
+Don't let tests or the system-under-test call the system clock unless it is
+being explicitly controlled using a tool like [freezegun](https://github.com/spulec/freezegun).
+
+This guards against a whole class of date-related test bugs which often manifest
+themselves if your test-suite runs in the hours before or after mignight.
+Typically these are caused by DST-offsets where a datetime in UTC has a different date to
+one in the local timezone.
+
+For unit tests, it's best to design functions and classes to have
+dates/datetimes injected so freezegun isn't necessary.
+
+For integration or functional tests, wrap the fixture creation and test
+invocation in the freezegun decorator/context-manager to give tight control of what the system
+clock calls will return.
+
+Use this technique to control the context/environment in which a test
+executes so that it behaves predictably whatever time of day the test suite is
+run. Don't always pick a "safe" time for a test to run; use this technique to
+test behaviour at trickier times such as midnight on DST-offset dates.
+
 
 ### <a name="test-method-structure">Unit test method structure</a>
 
