@@ -22,6 +22,7 @@ Django:
 - [Avoid model-forms](#model-forms)
 - [Avoid multiple domain calls from an interface component](#one-domain-call)
 - [Load resources in dispatch method](#load-in-dispatch)
+- [DRF serializers](#drf-serializers)
 
 Application:
 
@@ -512,6 +513,30 @@ in the `dispatch` method (or the `get` method if a read-only view). Because:
 
 In particular, avoid loading resources or checking permissions in other
 commonly-subclassed methods like `get_context_data` or `get_form_kwargs`.
+
+
+### <a name="drf-serializers">DRF serializers</a>
+
+Serializers provided by Django-REST-Framework are useful, not just for writing
+REST APIs. They can used anywhere you want to clean and validate a nested
+dictionary of data. Here are some conventions for writing effective serializers.
+
+Be liberal in what is accepted in valid input.
+
+- Allow optional fields to be omitted from the payload, or have `null` or `""`
+  passed as their value.
+
+- Convert inputs into normal forms (by eg stripping whitespace or upper-casing).
+
+In contrast, be conservative in what is returned in the `validated_data` dict.
+Ensure `valdiated_data` has a consistent data structure no matter what valid
+input is used. Don't make calling code worry about whether a particular key _exists_ in the
+dict. In practice, this often involves using a `validate` method to ensure
+optional fields are populated with their default values.
+
+Misc:
+
+- Ensure validation error messages end with a period.
 
 
 ## Application
