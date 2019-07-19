@@ -1,5 +1,14 @@
 # Architecture patterns
 
+Django:
+
+- [Serialize template context](#serialize-template-context)
+
+Application:
+
+- [Layered approach](#layered-approach)
+- [Domain file structure conventions](#domain-file-structure-conventions)
+
 ## Django
 
 ### Serialize template context
@@ -164,7 +173,7 @@ Related reading:
 
 - [How to structure Django projects](https://www.jamesbeith.co.uk/blog/how-to-structure-django-projects/) by James Beith
 
-### Domain layer organisation
+### Domain file structure conventions
 
 In a layered approach, the fattest layer will be the domain layer. To ensure
 it remains easy to find functionality, prefer these conventions.
