@@ -143,4 +143,25 @@ passed as a single object. Hence when there's a collection of different objects,
 we pass a dictionary containing them all.
 
 
+## Application
+
+### Layered approach
+
+An application should be split into three layers, each with their own role:
+
+- `interfaces` - where functionality for websites, command-line applications,
+  Celery tasks live. This covers anywhere where some external event (ie a HTTP
+  request) triggers a query or an action. No application logic should live in
+  this layer, just the translation of the interface event into a domain-layer call.
+
+- `data` - where data models (eg Django models) live. Models should not contain
+  any business logic and should be kept very thin.
+
+- `domain` - where core business logic lives. Functionality in the domain layer
+  should be agnostic of which interface is calling it. 
+
+Related reading:
+
+- [How to structure Django projects](https://www.jamesbeith.co.uk/blog/how-to-structure-django-projects/) by James Beith
+
 
