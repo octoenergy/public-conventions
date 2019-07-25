@@ -571,6 +571,28 @@ Eg, prefer `params={'bill_id': bill.id}` to `params={'bill': bill}`.
 Also, call `.isoformat()` on any dates or datetimes as that gives a more useful
 string.
 
+Prefer using the [reverse domain name notation](https://en.wikipedia.org/wiki/Reverse_domain_name_notation) naming convention for event type constants. This can aid performing queries in our logging platform.
+
+Example:
+
+```
+COMMS_MESSAGE_SEND_SUCCESS = "comms.message.send-success"
+COMMS_MESSAGE_SEND_ERROR = "comms.message.send-error"
+```
+
+Which then makes it easy to perform these three such queries.
+
+```
+# Only successful send message events
+json.event:"comms.message.send-success"
+
+# Only error send message events
+json.event:"comms.message.send-error"
+
+# All send message events (i.e. both success and error)
+json.event:"comms.message.send-*"
+```
+
 ### <a name="logging-exceptions">Logging exceptions</a>
 
 Use `logger.exception` in `except` blocks but pass a useful message - don't just
