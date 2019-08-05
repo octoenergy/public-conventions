@@ -156,18 +156,29 @@ we pass a dictionary containing them all.
 
 ### Layered approach
 
-An application should be split into three layers, each with their own role:
+An application should be split into architectural layers, each with their own role, 
+each ignorant of lower-level layers.  
+
+Here are our current layers, listed in order with the lowest-level layer first.
 
 - `interfaces` - where functionality for websites, command-line applications,
-  Celery tasks live. This covers anywhere where some external event (ie a HTTP
+  Celery tasks live. This covers anywhere where some external event (eg a HTTP
   request) triggers a query or an action. No application logic should live in
-  this layer, just the translation of the interface event into a domain-layer call.
+  this layer, just the translation of the interface event into a application- or
+  domain-layer call.
+
+- `application` - where the "use-cases" of the application live. Use-cases are
+  the actions that the application supports (eg "submit a meter-reading",
+  "regsiter a new account", "process a move-out"). The use-case package should
+  contain functionality to orchestrate that journey can call into the domain
+  layer for re-usable domain functionality that doesn't belong to one particular
+  use-case.
+
+- `domain` - where re-useable business logic lives. Functionality in the domain layer
+  should be agnostic of which application use-case is calling it. 
 
 - `data` - where data models (eg Django models) live. Models should not contain
   any business logic and should be kept very thin.
-
-- `domain` - where core business logic lives. Functionality in the domain layer
-  should be agnostic of which interface is calling it. 
 
 Related reading:
 
