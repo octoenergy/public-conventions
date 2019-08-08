@@ -157,9 +157,9 @@ we pass a dictionary containing them all.
 ### Layered approach
 
 An application should be split into architectural layers, each with their own role, 
-each ignorant of lower-level layers.  
+each ignorant of the layers that call into them.
 
-Here are our current layers, listed in order with the lowest-level layer first.
+Here are our current layers, listed in order with the outer-most layer first.
 
 - `interfaces` - where functionality for websites, command-line applications,
   Celery tasks live. This covers anywhere where some external event (eg a HTTP
@@ -167,10 +167,10 @@ Here are our current layers, listed in order with the lowest-level layer first.
   this layer, just the translation of the interface event into a application- or
   domain-layer call.
 
-- `application` - where the "use-cases" of the application live. Use-cases are
-  the actions that the application supports (eg "submit a meter-reading",
-  "regsiter a new account", "process a move-out"). The use-case package should
-  contain functionality to orchestrate that journey can call into the domain
+- `application` - where the "use cases" of the application live. Use-cases are
+  the actions that the application supports (eg "submit a meter reading",
+  "register a new account", "process a move-out"). This layer should
+  contain functionality for orchestrating each use-case journey. It can call into the domain
   layer for re-usable domain functionality that doesn't belong to one particular
   use-case.
 
