@@ -1,5 +1,14 @@
 # Architecture patterns
 
+Django:
+
+- [Serialize template context](#serialize-template-context)
+
+Application:
+
+- [Layered approach](#layered-approach)
+- [Domain file structure conventions](#domain-file-structure-conventions)
+
 ## Django
 
 ### Serialize template context
@@ -143,4 +152,64 @@ passed as a single object. Hence when there's a collection of different objects,
 we pass a dictionary containing them all.
 
 
+## Application
 
+### Layered approach
+
+An application should be split into architectural layers, each with their own role, 
+each ignorant of the layers that call into them.
+
+Here are our current layers, listed in order with the outer-most layer first.
+
+- `interfaces` - where functionality for websites, command-line applications,
+  Celery tasks live. This covers anywhere where some external event (eg a HTTP
+  request) triggers a query or an action. No application logic should live in
+  this layer, just the translation of the interface event into a application- or
+  domain-layer call.
+
+- `application` - where the "use cases" of the application live. Use-cases are
+  the actions that the application supports (eg "submit a meter reading",
+  "register a new account", "process a move-out"). This layer should
+  contain functionality for orchestrating each use-case journey. It can call into the domain
+  layer for re-usable domain functionality that doesn't belong to one particular
+  use-case.
+
+- `domain` - where re-useable business logic lives. Functionality in the domain layer
+  should be agnostic of which application use-case is calling it. 
+
+- `data` - where data models (eg Django models) live. Models should not contain
+  any business logic and should be kept very thin.
+
+Related reading:
+
+- [How to structure Django projects](https://www.jamesbeith.co.uk/blog/how-to-structure-django-projects/) by James Beith
+
+### Domain file structure conventions
+
+In a layered approach, the fattest layer will be the domain layer. To ensure
+it remains easy to find functionality, prefer these conventions.
+
+- Package functionality by domain category/subcategory;
+- House read-only functionality in a module/package called `queries`.
+- House write functionality in a module/package called `operations`.
+
+For example:
+
+```
+octoenergy/
+    domain/
+        $category/
+            $subcategory/
+                queries.py
+                operations.py
+                ...
+```
+
+This means a developer whose code needs to ask a question about the
+`$subcategory` part of the domain (eg "where did this account last submit a
+meter-reading?")  know where to look to find an answer.
+
+This isn't a strict requirement - if there's a better naming convention for your
+part of the domain then use it. 
+
+Think of these modules as the _public_ API of the `$subcategory` of the domain.
