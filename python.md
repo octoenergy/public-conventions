@@ -1,3 +1,4 @@
+Title: Python Conventions
 # Python
 
 These are a series of conventions (to follow) and anti-patterns (to avoid) for
