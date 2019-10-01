@@ -23,6 +23,7 @@ Django:
 - [Avoid multiple domain calls from an interface component](#one-domain-call)
 - [Load resources in dispatch method](#load-in-dispatch)
 - [DRF serializers](#drf-serializers)
+- [Handling out-of-band form errors](#out-of-band-form-errors)
 
 Application:
 
@@ -538,6 +539,36 @@ optional fields are populated with their default values.
 Misc:
 
 - Ensure validation error messages end with a period.
+
+### <a name="out-of-band-form-errors">Out-of-band form errors</a>
+
+In a `FormView` sometimes an error occurs _after_ the initial payload has been
+validated. For instance, a payment partner's API might respond with an error
+when registering a new bankcard even though the submitted bankcard details
+appeared to be valid. To handle this situation in a `FormView` subclass, use the
+following pattern:
+
+```py
+from django.views import generic
+from . import forms
+
+class CreateSomething(generic.FormView):
+    form_class = forms.Something
+
+    ...
+
+    def form_valid(self, form):
+        try:
+            thing = domain.create_a_thing(
+                foo=form.cleaned_data['foo'],
+                bar=form.cleaned_data['bar'],
+            )
+        except domain.UnableToCreateThing as e:
+            form.add_error(None, str(e))
+            return self.form_invalid(form)
+
+        # Handle successful creation...
+```
 
 
 ## Application
