@@ -45,6 +45,8 @@ General Python:
 Testing:
 
 - [Test folder structure](#test-folder-structure)
+- [Test module names for unit and integration tests](#test-module-names-unit)
+- [Test module names for functional tests](#test-module-names-functional)
 - [Test class structure ](#test-class-structure)
 - [Isolation](#test-isolation)
 - [Freeze time for tests](#freezing-time)
@@ -995,13 +997,24 @@ Tests are organised by their type:
     calls.
 
 
-### <a name="test-class-structure">Test class structure</a>
+### <a name="test-module-names-unit">Test module names for unit and integration tests</a>
 
-The folder path of a unit (or integration) test module should mirror the structure of the module it's testing.
+The file path of a unit (or integration) test module should mirror the structure of the application module it's testing.
+
 Eg `octoenergy/path/to/something.py` should have tests in
 `tests/unit/path/to/test_something.py`.
 
-For each function/class being tested, use a test class to group its tests. Eg:
+### <a name="test-module-names-functional">Test module names for functional tests</a>
+
+The file path of a functional test module should adopt the same naming as the
+_use-case_ it is testing. Don't mirror the name of an application module.
+
+Eg The "direct registration" journey should have functional tests in somewhere
+like `tests/functional/consumersite/test_direct_registration.py`.
+
+### <a name="test-class-structure">Test class structure</a>
+
+For each object being tested, use a test class to group its tests. Eg:
 
 ```python
 from somewhere import some_function
