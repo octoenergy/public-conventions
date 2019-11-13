@@ -184,10 +184,11 @@ Related reading:
 
 - [How to structure Django projects](https://www.jamesbeith.co.uk/blog/how-to-structure-django-projects/) by James Beith
 
-### Domain file structure conventions
+### Domain layer file-structure conventions
 
 In a layered approach, the fattest layer will be the domain layer. To ensure
-it remains easy to find functionality, prefer these conventions.
+it remains discoverable (ie it's easy to for developers to find functionality
+they are looking for), prefer these conventions.
 
 - Package functionality by domain category/subcategory;
 - House read-only functionality in a module/package called `queries`.
@@ -205,9 +206,26 @@ octoenergy/
                 ...
 ```
 
+Or, for when there's a lot of queries/operations to house:
+
+```
+octoenergy/
+    domain/
+        $category/
+            $subcategory/
+                queries/
+                    __init__.py  # import all "public" objects into here
+                    topic1.py
+                    topic2.py
+                operations/
+                    __init__.py  # import all "public" objects into here
+                    topic1.py
+                    topic2.py
+```
+
 This means a developer whose code needs to ask a question about the
 `$subcategory` part of the domain (eg "where did this account last submit a
-meter-reading?")  know where to look to find an answer.
+meter-reading?") knows where to look to find an answer.
 
 This isn't a strict requirement - if there's a better naming convention for your
 part of the domain then use it. 
