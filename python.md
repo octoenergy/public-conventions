@@ -461,7 +461,7 @@ class SomeView(generic.FormView):
         if result:
             some_other_domain_module.do_something_else(account)
         else:
-            form.add_error(None, str(e))
+            form.add_error(None, "Couldn't do something")
             return self.form_invalid(form)
         
         some_logging_module.log_event(account, payment)
@@ -483,6 +483,7 @@ class SomeView(generic.FormView):
                 account=form.cleaned_data['account'],
                 payment=form.cleaned_data['payment'])
         except some_domain_module.UnableToDoSomething as e:
+            # Here we assume the exception message is suitable for end-users. 
             form.add_error(None, str(e))
             return self.form_invalid(form)
 
@@ -566,10 +567,38 @@ class CreateSomething(generic.FormView):
                 bar=form.cleaned_data['bar'],
             )
         except domain.UnableToCreateThing as e:
+            # Handle *anticipated* exceptions; things we know might go wrong but
+            # can't do much about (eg vendor errors). Here we assume the exception 
+            # message is suitable for end-users but often it needs some
+            # adjusting.
             form.add_error(None, str(e))
             return self.form_invalid(form)
+        except Exception as e
+            # Optional handling of *unanticipated* errors. When this happens, we want to send
+            # details of the error to Sentry so such errors can be investigated
+            # and fixed. It's optional as we could omit this block and let the
+            # exception percolate up to generate a 500 response which Sentry
+            # will capture automatically. It's a bit friendlier to the user to
+            # show them some custom copy rather than a generic 500 response.
 
-        # Handle successful creation...
+            # Ensure your logger has the Raven handler so the exception is sent
+            # to Sentry.
+            logger.exception("Unable to create a thing")
+            
+            # Depending on context, it might not be appropriate to
+            # show the exception message to the end-user. If possible, offer
+            # some guidance on what the end-user should do next (eg contact
+            # support, try again, etc). Ensure the tone is apologetic.
+            msg = (
+                "Really sorry, we weren't able to do the thing as an unanticipated "
+                "error occurred. Error message: %s"
+            ) % e
+            form.add_error(None, msg)
+            return self.form_invalid(form) 
+        else:
+            # Handle successful creation...
+            message.success(self.request, "Created the thing!")
+            return http.HttpResponseFound(...)
 ```
 
 
