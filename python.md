@@ -534,10 +534,31 @@ Be liberal in what is accepted in valid input.
 - Convert inputs into normal forms (by eg stripping whitespace or upper-casing).
 
 In contrast, be conservative in what is returned in the `validated_data` dict.
-Ensure `valdiated_data` has a consistent data structure no matter what valid
+Ensure `validated_data` has a consistent data structure no matter what valid
 input is used. Don't make calling code worry about whether a particular key _exists_ in the
-dict. In practice, this often involves using a `validate` method to ensure
-optional fields are populated with their default values.
+dict. 
+
+In practice, this means:
+
+- Optional fields where `None` is not a valid value have a default value set in
+  the serializer field declaration.
+
+- If `None` is a valid value, then use this snippet at the end of your
+  `validate` method to ensure there are no missing keys in the `validated_data`
+  dict:
+
+  ```py
+  def validate(self, data):
+      ...
+
+      # Ensure optional fields not in submitted data still have a key in the validated data.
+      for field_name in self.fields.keys():
+          if field_name not in data:
+              data[field_name] = None
+
+      return data
+
+  ```
 
 Misc:
 
