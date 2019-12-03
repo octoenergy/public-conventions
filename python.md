@@ -541,24 +541,29 @@ dict.
 In practice, this means:
 
 - Optional fields where `None` is not a valid value have a default value set in
-  the serializer field declaration.
+  the serializer field declaration.  
 
-- If `None` is a valid value, then use this snippet at the end of your
-  `validate` method to ensure there are no missing keys in the `validated_data`
-  dict:
+- If optional string-based fields have `allow_null=True`, then convert any
+  `None` values to the field default.
 
-  ```py
-  def validate(self, data):
-      ...
+To that end, use this snippet at the end of your `validate` method to ensure
+there are no missing keys in the `validated_data` dict and that `None` is only
+included as a value in `validated_data` when it's a field's default.
 
-      # Ensure optional fields not in submitted data still have a key in the validated data.
-      for field_name in self.fields.keys():
-          if field_name not in data:
-              data[field_name] = None
+```py
+def validate(self, data):
+    ...
+    # Ensure validated data includes all fields and None is only used as a value when it's 
+    # the default value for a field.
+    for field_name, field in self.fields.items():
+        if field_name not in data:
+            data[field_name] = field.initial
+        elif data[field_name] is None and data[field_name] != field.initial:
+            data[field_name] = field.initial
 
-      return data
+    return data
 
-  ```
+```
 
 Misc:
 
