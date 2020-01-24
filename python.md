@@ -506,18 +506,48 @@ def perform_some_action(*, foo_id, bar_id, *args, **kwargs):
 
 ### <a name="load-in-dispatch">Load resources in `dispatch` method</a>
 
-If using class-based views, perform all model loading and access-control checks
-in the `dispatch` method (or the `get` method if a read-only view). Because:
+If using class-based views, perform all model loading, access-control and
+pre-condition checks in the `dispatch` method (or the `get` method if a read-only view). Because:
 
 - This method is expected to return a `HttpResponse` instance and so is a
   natural place to return a 404 (if the object does not exist) or 403 if the
   requesting user does not have permission to access the requested object.
 
 - This method is called for _all_ HTTP methods and avoids possible security holes
-  if permissions are only checked in say the `get` method.
+  if permissions are only checked in, say, the `get` method.
 
 In particular, avoid loading resources or checking permissions in other
 commonly-subclassed methods like `get_context_data` or `get_form_kwargs`.
+
+When checking pre-conditions, avoid adding business logic to the `dispatch`
+method. Instead encapsulate the check as a function in the domain layer and call
+that from dispatch - something like this:
+
+```py
+from django.views import generic
+from django import shortcuts, http
+
+from project.data import models
+from project.interfaces import acl
+from project.domain.frobs import checks
+
+
+class ActOnFrob(generic.FormView):
+    
+    def dispatch(self, request, *args, **kwargs):
+        # Load the resource specified in the URL.
+        self.frob = shortcuts.get_object_or_404(models.Frob, id=kwargs["id"])
+
+        # Check if the request user is allowed to mutate the resource.
+        if not acl.can_user_administer_frob(request.user, self.frob):
+            return http.HttpResponseForbidden("...")
+
+        # Check the pre-conditions for the resource to be mutated.
+        if not checks.can_frob_be_mutated(self.frob):
+            return http.HttpResponseForbidden("...")
+
+        return super().dispatch(request, *args, **kwargs)
+```
 
 
 ### <a name="drf-serializers">DRF serializers</a>
