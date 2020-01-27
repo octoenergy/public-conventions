@@ -8,6 +8,7 @@ Application:
 
 - [Layered approach](#layered-approach)
 - [Domain file structure conventions](#domain-file-structure-conventions)
+- [Application layer conventions](#application-layer-conventions)
 
 ## Django
 
@@ -184,10 +185,11 @@ Related reading:
 
 - [How to structure Django projects](https://www.jamesbeith.co.uk/blog/how-to-structure-django-projects/) by James Beith
 
-### Domain file structure conventions
+### Domain layer file-structure conventions
 
 In a layered approach, the fattest layer will be the domain layer. To ensure
-it remains easy to find functionality, prefer these conventions.
+it remains discoverable (ie it's easy to for developers to find functionality
+they are looking for), prefer these conventions.
 
 - Package functionality by domain category/subcategory;
 - House read-only functionality in a module/package called `queries`.
@@ -205,11 +207,86 @@ octoenergy/
                 ...
 ```
 
+Or, for when there's a lot of queries/operations to house:
+
+```
+octoenergy/
+    domain/
+        $category/
+            $subcategory/
+                queries/
+                    __init__.py  # import all "public" objects into here
+                    topic1.py
+                    topic2.py
+                    ...
+                operations/
+                    __init__.py  # import all "public" objects into here
+                    topic1.py
+                    topic2.py
+                    ...
+```
+
 This means a developer whose code needs to ask a question about the
 `$subcategory` part of the domain (eg "where did this account last submit a
-meter-reading?")  know where to look to find an answer.
+meter-reading?") knows where to look to find an answer.
 
 This isn't a strict requirement - if there's a better naming convention for your
 part of the domain then use it. 
 
 Think of these modules as the _public_ API of the `$subcategory` of the domain.
+
+### Application layer conventions
+
+The application layer contains "use-cases" which are journeys or actions that
+the platform supports. They are intended to be called from the interface
+layer. Normally a use-case involves some kind of write operation. Read-only
+entry-points in the interface layer can normally call straight into the domain layer.
+
+The basic file structure is as follows:
+
+```
+octoenergy/
+    application/
+        usecases/
+            $category/
+                $usecase_name/
+                    __init__.py  # import all "public" objects into here
+                    _component1.py
+                    _component2.py
+                    ...
+```
+
+Eg:
+
+```
+octoenergy/
+    application/
+        usecases/
+            comms/
+                annual_statements/
+                    __init__.py    # import all "public" objects into here
+                    _trigger.py    # responsible for spawning Celery tasks
+                    _documents.py  # responsible for building PDF documents
+                    ...
+```
+
+For simpler use-cases, a module (rather than a package) can suffice.
+
+Conventions:
+
+- Import everything "public" into the `__init__.py` module. This includes any
+  exceptions that a use-case function might raise.
+
+- Prefix the other modules with underscores to indicate they are private and
+  shouldn't be imported from directly.
+
+- Ensure public functions requires kwarg-only arguments (ie `def
+  my_public_function(*, foo, bar)`).
+
+- Ensure public functions have docstrings, detailing their parameters and return
+  types as well as any exception types that can be raised.
+
+It's not always obvious when something should live in the application- or domain
+layer. In general, lean towards putting functionality in the domain layer so it
+is re-usable by other use-cases. But make sure it's designed in a re-usable and use-case
+agnostic way.
