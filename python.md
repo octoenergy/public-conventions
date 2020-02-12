@@ -38,6 +38,7 @@ General Python:
 
 - [Wrap with parens not backslashes](#wrapping)
 - [Import modules, not objects](#import-modules-not-objects)
+- [Convenience imports](#convenience-imports)
 - [Application logic in interface layer](#application-logic-in-interface-layer)
 - [Don't do nothing silently](#dont-do-nothing-silently)
 - [Docstrings vs comments](#docstrings)
@@ -956,6 +957,86 @@ from decimal import Decimal
 from typing import Optional, Tuple, Dict
 from collections import defaultdict
 ```
+
+### <a name="convenience-imports">Convenience imports</a>
+
+A useful pattern is to import the "public" objects from a package into its
+`__init__.py` module to make life easier for calling code. This does need to be
+done with care though - here's a few guidelines:
+
+#### Don't use wildcard imports
+
+Don't use wildcard imports (ie `from somewhere import *`), even if each imported
+module specifies an `__all__` variable. 
+
+Instead of:
+```py
+# hallandoates/__init__.py
+from ._problems import *
+from ._features import *
+```
+prefer:
+```py
+# hallandoates/__init__.py
+from ._problems import ICantGoForThat, NoCanDo
+from ._features import man_eater, rich_girl, shes_gone
+```
+
+Why? 
+
+- Wildcard imports can make it harder for maintainers to find where functionality lives.
+- Wildcard imports can confuse static analysis tools like mypy.
+- If submodules don't specify an `__all__` variable, a large number of objects
+  can be inadvertanty imported into the `__init__.py` module, leading to a danger of name collisions.
+
+Fundamentally, it's better to be explicit (even if it is more verbase).
+
+#### Only use convenience imports in leaf-node packages
+
+Don't structure packages like this:
+
+```txt
+foo/
+    bar/
+        waldo/
+            __init__.py
+            thud.py
+        __init__.py  # imports from _bar.py and _qux.py
+        _bar.py
+        _qux.py
+```
+where a non-leaf-node package, `foo.bar` has convenience imports in its
+`__init__.py` module. Doing this means imports from subpackages like `foo.bar.waldo.thud`
+will unecessarily import everything in `waldo`'s `__init__.py` module. This is
+wasteful and increases the change of circular import problems.
+
+Only use convenience imports in leaf-node packages; that is, packages with no
+subpackages.
+
+#### Don't expose modules as public objects in `__init__.py`
+
+If your package structure looks like:
+
+```txt
+foo/
+    bar/
+        __init__.py
+        bar.py
+        qux.py
+```
+
+don't do this:
+
+```py
+# foo/bar/__init__.py
+import bar, qux
+```
+
+where the modules `bar` and `qux` have been imported.
+
+It's better for callers to import modules using their explicit path rather than
+this kind of trickery.
+
 
 ### Application logic in interface layer
 
