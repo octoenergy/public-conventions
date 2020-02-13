@@ -235,6 +235,20 @@ part of the domain then use it.
 
 Think of these modules as the _public_ API of the `$subcategory` of the domain.
 
+Sometimes it isn't obvious what the "category" of a function is. Use these
+rules-of-thumb:
+
+- For functions in a `queries` package, use the category defined by the type of
+  object being _returned_. For example, if your function returns `Account`s, package
+  it in `octoenergy.domain.accounts.queries`.
+
+- For functions in an `operations` package, use the category defined by the type of
+  primary object being passed in (or _operated_ on). That is, if your function
+  adds a new `MeterPoint` to a `Property`, package it in
+  `octoenergy.domain.properties.operations` as the `Property` instance is the
+  primary object in this scenario.
+
+
 ### Application layer conventions
 
 The application layer contains "use-cases" which are journeys or actions that
