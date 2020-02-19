@@ -29,6 +29,7 @@ Application:
 
 - [Publishing events](#events)
 - [Logging exceptions](#logging-exceptions)
+- [Exception imports](#exception-imports)
 - [Celery tasks](#celery-tasks)
 - [Keyword-arg only functions](#kwarg-only-functions)
 - [Minimise system clock calls](#system-clock)
@@ -760,6 +761,41 @@ try:
 except UnableToDoSomething:
     logger.exception("Unable to do something with arg %s", x)
 ```
+
+### <a name="exception-imports">Exception imports</a>
+
+Ensure exception classes are importable from the same location as functionality that
+raise them. 
+
+For example, prefer:
+```py
+from octoenergy.domain import operations
+
+try:
+    operations.do_the_thing()
+except operations.UnableToDoTheThing as e:
+    ...
+```
+
+where the `UnableToDoTheThing` exception is importable from the `operations`
+module, just like the `do_the_thing` function which can raise it.
+
+This is simpler (ie fewer imports) and reads better than when the exception class lives elsewhere:
+
+```py
+from octoenergy.domain import operations
+from octoenergy.somewhere.other import exceptions
+
+try:
+    operations.do_the_thing()
+except exceptions.UnableToDoTheThing as e:
+    ...
+```
+
+In general, be wary of re-using the same exception type for different use-cases;
+this can lead to ambiguity and bugs. Furthermore, it rarely makes sense to have
+`exceptions.py` modules of exception classes used in many places. In general,
+prefer to define exception types in the same module as where they are raised.
 
 
 ### <a name="celery-tasks">Celery tasks</a>
