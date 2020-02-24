@@ -43,6 +43,7 @@ General Python:
 - [Application logic in interface layer](#application-logic-in-interface-layer)
 - [Don't do nothing silently](#dont-do-nothing-silently)
 - [Docstrings vs comments](#docstrings)
+- [Random is insecure](#random-is-insecure)
 
 Testing:
 
@@ -54,6 +55,7 @@ Testing:
 - [Freeze time for tests](#freezing-time)
 - [Unit test method structure ](#test-method-structure)
 - [Functional test method structure ](#functional-test-method-structure)
+- [Random is not unique](#random-is-not-unique)
 
 
 ## Django
@@ -1178,6 +1180,24 @@ Related reading:
 - http://stackoverflow.com/questions/19074745/python-docstrings-descriptions-vs-comments
 
 
+### <a name="#random-is-insecure">Random is insecure</a>
+
+From 
+
+> Warning The pseudo-random generators of this module should not be used for security
+> purposes. For security or cryptographic uses, see the secrets module.
+
+The [random](https://docs.python.org/3/library/random.html) module is useful for statistical
+randomness that can be made far less random by
+setting the seed of the random number generator. This is very useful for cases where
+statistical randomness is needed as well as repeatability when something interesting turns
+up, such as fuzzing complex systems.
+
+If you are doing something that is related to security, such as generating a session
+token, use [secrets](https://docs.python.org/3/library/secrets.html), which is a cryptographically
+strong random number generator.
+
+
 ## Testing
 
 ### <a name="test-folder-structure">Test folder structure</a>
@@ -1332,3 +1352,35 @@ def test_some_longwinded_process(support_client, factory):
 ```
 
 You get the idea.
+
+### <a name="random-is-not-unique">Random is not unique</a>
+
+If you need to generate some unique values in a test, don't use random to create
+them because random != a sequence of unique numbers. Either use a counter or, if
+a counter won't do, save which random values you have already used and guard against
+using them more than once, for example:
+
+```python
+class UniqueInt:
+    def __init__(self):
+        self.used = set()
+
+    def get(self):
+        while v is None or v in self.used:
+            v = random.randint()
+
+        self.used.add(v)
+        return v
+
+
+_unique_int_state = UniqueInt()  # <-- module level state variable
+
+
+# avoid problems with mypy - use a thunk instead of a function pointer into a class
+def unique_int() -> int:
+    return _unique_int_state.get()
+
+```
+
+While storing state at the module level should set off alarm bells, the tricks
+we play in factories to write clean tests make this impossible.
