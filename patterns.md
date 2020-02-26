@@ -7,7 +7,7 @@ Django:
 Application:
 
 - [Layered approach](#layered-approach)
-- [Domain file structure conventions](#domain-file-structure-conventions)
+- [Domain layer conventions](#domain-layer-conventions)
 - [Application layer conventions](#application-layer-conventions)
 
 ## Django
@@ -185,10 +185,10 @@ Related reading:
 
 - [How to structure Django projects](https://www.jamesbeith.co.uk/blog/how-to-structure-django-projects/) by James Beith
 
-### Domain layer file-structure conventions
+### <a name="domain-layer-conventions">Domain layer conventions</a>
 
 In a layered approach, the fattest layer will be the domain layer. To ensure
-it remains discoverable (ie it's easy to for developers to find functionality
+it remains discoverable (ie easy for developers to find functionality
 they are looking for), prefer these conventions.
 
 - Package functionality by domain category/subcategory;
@@ -249,7 +249,7 @@ rules-of-thumb:
   primary object in this scenario.
 
 
-### Application layer conventions
+### <a name="application-layer-conventions">Application layer conventions</a>
 
 The application layer contains "use-cases" which are journeys or actions that
 the platform supports. They are intended to be called from the interface
