@@ -29,6 +29,7 @@ Application:
 
 - [Publishing events](#events)
 - [Logging exceptions](#logging-exceptions)
+- [Distinguish between anticipated and unanticipated exceptions](#distinguish-exceptions)
 - [Exception imports](#exception-imports)
 - [Celery tasks](#celery-tasks)
 - [Keyword-arg only functions](#kwarg-only-functions)
@@ -465,7 +466,7 @@ class SomeView(generic.FormView):
         else:
             form.add_error(None, "Couldn't do something")
             return self.form_invalid(form)
-        
+
         some_logging_module.log_event(account, payment)
 
         return shortcuts.redirect("success")
@@ -761,6 +762,34 @@ try:
 except UnableToDoSomething:
     logger.exception("Unable to do something with arg %s", x)
 ```
+
+### <a name="distinguish-exceptions">Distinguish between anticipated and unanticipated exceptions</a>
+
+When calling functions that can raise exceptions, ensure your handling
+distinguishes between _anticipated_ and _unanticipated_ exceptions. It generally
+makes sense to use separate exception classes for anticipated exceptions and to
+log any other exceptions to Sentry:
+
+For example:
+
+```py
+try:
+    some_usecase.do_something()
+except some_usecase.UnableToDoSomething:
+    # We know about this failure condition. No code change is required so we
+    # don't log the error to Sentry.
+    pass
+except Exception:
+    # This is *unanticipated* so we log the exception to Sentry as some change is
+    # required to handle this more gracefully.
+    logger.exception("Unable to do something")
+```
+
+The rule of thumb is that anything logged to Sentry requires a code change to
+fix it. If nothing can be done (ie a vendor time-out), publish an application
+event instead.
+
+
 
 ### <a name="exception-imports">Exception imports</a>
 
@@ -1149,7 +1178,6 @@ def _do_something(*args, **kwargs):
 
 This practice does mean using lots of custom exception classes (which some people are
 afraid of) - but that is ok.
-
 
 ### <a name="docstrings">Docstrings vs. comments</a>
 
