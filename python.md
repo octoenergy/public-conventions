@@ -1360,3 +1360,55 @@ def test_some_longwinded_process(support_client, factory):
 ```
 
 You get the idea.
+
+
+## Documentation
+
+### READMEs
+
+Each directory within the domain layer should be modular and intuitive to use. A README can 
+optionally be placed in the root module directory and should detail specifics such as:
+
+- How is this module laid out?
+- How might someone use it?
+- What are the use cases?
+- How to extend behaviour (e.g. adding a new flow handler)
+- Who to contact if you run into errors
+
+### Docstrings
+
+Important classes and modules which are intended to be used throughout the whole codebase
+should be well documented. Docstrings are helpful and, if used, should be laid out like the 
+following:
+
+```
+"""
+*<Short summary>* (1 line)
+    * Responsibility
+
+*<More Information>* (5-10 lines)
+    * How does it interact with the project?
+    * What depends on it?
+    * What does it depend on?
+    * When is it used (when does it need to change)?
+    * Data structures?
+
+Params:
+	param1 (<type>): Description of parameter1.
+	param2 (<type>): Description of parameter2.
+
+Returns (func):
+	Description of what this function returns
+
+Attributes (class):
+	attr1 (<type>): Description of attribute1.
+	attr2 (<type>): Description of attribute2.
+
+Methods (class):
+	method1 (<type>): Description of method1.
+	method2 (<type>): Description of method2.
+"""
+```
+
+Writing documentation helps you think about the structure of the module and how it fits with 
+the SOLID principles.
