@@ -35,6 +35,7 @@ Application:
 - [Keyword-arg only functions](#kwarg-only-functions)
 - [Minimise system clock calls](#system-clock)
 - [Modelling periods of time](#time-periods)
+- [Induced 5xx responses](#induced-5xx)
 
 General Python:
 
@@ -955,6 +956,19 @@ Don't follow this rule dogmatically: there will be cases where the appropriate
 domain concept is a date instead of a datetime, but in general, prefer to model
 with datetimes.
 
+
+### <a name="induced-5xx">Induced 5xx responses</a>
+
+Ensure your interface code (eg views, forms and serializers) can't be induced to
+crash through a manipulated request. In effect, this means don't make
+assumptions about the incoming request and code defensively.
+
+Examples:
+
+1. Use `shortcuts.get_object_or_404` to look-up model instances using values
+   from the request.
+
+2. Don't assume values in query parameters have the type you expect them to.
 
 ## Python 
 
