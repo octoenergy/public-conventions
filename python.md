@@ -55,6 +55,7 @@ Testing:
 - [Freeze time for tests](#freezing-time)
 - [Unit test method structure ](#test-method-structure)
 - [Functional test method structure ](#functional-test-method-structure)
+- [Don't use numbered variables](#numbered-variables)
 
 
 ## Django
@@ -953,6 +954,7 @@ Don't follow this rule dogmatically: there will be cases where the appropriate
 domain concept is a date instead of a datetime, but in general, prefer to model
 with datetimes.
 
+
 ## Python 
 
 
@@ -1360,3 +1362,45 @@ def test_some_longwinded_process(support_client, factory):
 ```
 
 You get the idea.
+
+
+### <a name="numbered-variables">Don't use numbered variables</a>
+
+Avoid numbering variables like so:
+
+```py
+def test_something(factory):
+    account1 = factory.Account()
+    account2 = factory.Account()
+    ...
+```
+
+There's _always_ a better naming that avoids numeric suffixes and more
+clearly expresses intent.
+
+For instance, if you need more than one of something and it's not important
+to distinguish between each instance, just use an iterable:
+
+```py
+def test_something(factory):
+    accounts = [factory.Account(), factory.Account()]
+    ...
+    # some action happens to the accounts
+    ...
+    for account in accounts:
+        assert account.action_happened  # some assertion on each item in iterable
+```
+
+If you do need to distinguish between the instances later on, then use
+the distinguishing features to guide the naming of each variable. For example:
+
+```py
+def test_something(factory):
+    withdrawn_account = factory.Account(status="WITHDRAWN")
+    active_account = factory.Account(status="ACTIVE")
+    accounts = [withdrawn_account, active_account]
+    ...
+    # some action happens to the accounts
+    ...
+    assert active_account.action_happened 
+```
