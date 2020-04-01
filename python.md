@@ -879,6 +879,40 @@ Second, the publisher and consumer can be modified to use the new calling
 args/kwargs. When this deploys, the older consumers should handle any published
 events gracefully before they are terminated.
 
+#### How tasks should handle exceptions
+
+The result of a task has two separate components, both of which we log:
+
+1. The task state (`SUCCESS` or `FAILURE`). This is determined by whether there was an unhandled exception when calling
+   the task.
+2. The return value. This is whatever the task function returns.
+
+Tasks should not fail unless there is a problem that needs to be looked into. In other words, a failure should be
+treated similarly to a 500 response from a webworker: it indicates an unexpected issue with our system. 
+
+Return values are optional, but sometimes useful for debugging.
+
+**Example:** How should a task handle idempotency?
+
+```python
+@app.task(queue=settings.MY_QUEUE)
+def my_task(*, foo, **kwargs):
+    try:
+        do_something(foo)
+    except AlreadyProcessed:
+        return "Already processed"
+````
+
+The error handling above recognises that we should not treat an action already having been performed as a system error.
+Rather,
+it may have arisen because the task was executed twice, which we should expect to happen sometimes. However,
+following the principle of "Don't do nothing silently", we return a helpful message so that someone could see what
+is happening if they need to debug this task.
+
+
+Avoid using the [``throws`` argument in a Celery task decorator](https://docs.celeryproject.org/en/stable/userguide/tasks.html#Task.throws),
+as this mark tasks as failed, but swallows the exception, preventing it from being sent to Sentry.
+
 ### <a name="kwarg-only-functions">Keyword-only functions</a>
 
 Python 3 supports keyword-only arguments where callers of a function HAVE to
