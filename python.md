@@ -830,6 +830,8 @@ prefer to define exception types in the same module as where they are raised.
 
 ### <a name="celery-tasks">Celery tasks</a>
 
+#### Task signatures
+
 Care is required when changing Celery task signatures as publishers and
 consumers get deployed at different times. It's important that changes to how an
 event is published don't cause consumers to crash.
@@ -860,8 +862,10 @@ Things to note:
    simplifies the future addition of arguments, as older workers can still handle newer
    tasks without crashing.
 
-These steps provide some robustness to signature changes but
-they are not watertight.
+#### Changing task signatures
+
+The pattern above provides some robustness to signature changes but
+it is not watertight.
 
 For frequently called tasks (that may be in-flight during a deployment), a
 two-phase approach is required (similar to how backwards-incompatible database
