@@ -906,7 +906,7 @@ def my_task(*, foo, **kwargs):
 The error handling above recognises that we should not treat an action already having been performed as a system error.
 Rather,
 it may have arisen because the task was executed twice, which we should expect to happen sometimes. However,
-following the principle of "Don't do nothing silently", we return a helpful message so that someone could see what
+following the principle of [Don't do nothing silently](#dont-do-nothing-silently), we return a helpful message so that someone could see what
 is happening if they need to debug this task.
 
 
