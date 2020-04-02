@@ -911,7 +911,7 @@ is happening if they need to debug this task.
 
 
 Avoid using the [``throws`` argument in a Celery task decorator](https://docs.celeryproject.org/en/stable/userguide/tasks.html#Task.throws),
-as this mark tasks as failed, but swallows the exception, preventing it from being sent to Sentry.
+as this marks tasks as failed, but swallows the exception, preventing it from being sent to Sentry.
 
 ### <a name="kwarg-only-functions">Keyword-only functions</a>
 
