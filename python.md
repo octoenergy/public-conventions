@@ -1031,6 +1031,21 @@ A useful pattern is to import the "public" objects from a package into its
 `__init__.py` module to make life easier for calling code. This does need to be
 done with care though - here's a few guidelines:
 
+#### Prefix module names with an underscore
+
+If the `__init__.py` defines the _public_ API of your package, it makes sense to
+indicate that the other package modules are _private_ and shouldn't be imported
+directly by callers external to the parent package.
+
+Do this by using an underscore prefix, eg:
+
+```txt
+mypackage/
+    __init__.py  # Public API
+    _foo.py
+    _bar.py
+```
+
 #### Don't use wildcard imports
 
 Don't use wildcard imports (ie `from somewhere import *`), even if each imported
