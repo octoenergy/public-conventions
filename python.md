@@ -1031,6 +1031,32 @@ A useful pattern is to import the "public" objects from a package into its
 `__init__.py` module to make life easier for calling code. This does need to be
 done with care though - here's a few guidelines:
 
+#### Establish a canonical import path by prefixing private module names with underscores
+
+One danger of a convenience import is that it can present two different ways to access an object, e.g.:
+`mypackage.something` versus  `mypackage.foo.something`.
+
+To avoid this, prefix modules that are accessible from a convenience import with an underscore, to indicate that they
+are _private_ and shouldn't be imported directly by callers external to the parent package, e.g.:
+
+```txt
+mypackage/
+    __init__.py  # Public API
+    _foo.py
+    _bar.py
+```
+
+It's okay for private and public modules to coexist in the same package, as long as the public modules aren't used in
+convenience imports. For example, in the following structure we might expect calling code to access `mypackage.blue` and
+`mypackage.bar.green`, but not `mypackage._foo.blue` or `mypackage.green`. 
+
+```txt
+mypackage/
+    __init__.py
+    _foo.py  # Defines blue
+    bar.py  # Defines green
+```
+
 #### Don't use wildcard imports
 
 Don't use wildcard imports (ie `from somewhere import *`), even if each imported
