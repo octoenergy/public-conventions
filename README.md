@@ -17,3 +17,4 @@ Contents:
 - [HTML and Django templates](html.md)
 - [Email templates](emails.md)
 - [Emoji shorthand](shorthand.md) (used in code-review and Slack messages)
+- [Terraform](terraform.md)
