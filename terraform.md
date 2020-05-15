@@ -7,18 +7,24 @@ easily get complicated and hard to maintain.
 This is why we decided to write our own guideline on how to structure a
 `terraform` codebase.
 
-## Patterns
+Contents:
 
-## Name files after the resource they manage
+- [Name files after the resource they manage](#commit-messages)
+- [Allow callers to add security group ingress rules](#ingress-rules)
 
-Files should be named with the AWS (or other cloud provider) components they are
-referring to. Keeping this open to future needs, if a component is getting more
-in use than others we can make the filename more specific.
+
+## <a name="resource-naming">Name files after the resource they manage</a>
+
+Files should be named after the AWS (or other cloud provider) components they
+manage (eg `ec2.tf`). If the file for a particular component gets large, then
+add a suffix to distinguish between differnent groups of component (eg
+`ec2_api.tf`).
+
 The idea is to keep a balance between too many small files and too few huge
 files.
 
 ```
-/my-projet/
+/my-project/
 ├─ modules/
 │   └─ database/
 │       ├─ ec2.tf
@@ -27,46 +33,37 @@ files.
 │       ├─ rds.tf
 │       └─ variables.tf
 └─ workspaces/
-   └─ someclient-prod/
+    └─ someclient-prod/
+        ├─ acm.tf      
         ├─ backend.tf      # To set the backend instruction of terraform
-        ├─ cloudflare.tf
         ├─ config.tf       # To set provider(s), required terraform version, ...
-        ├─ ec2_api.tf      # Subset of EC2 for API related resources.
-        ├─ ec2_worker.tf   # Subset of EC2 for workers related resources.
-        ├─ rds.tf
-        ├─ keypair.tf
-        ├─ iam.tf
-        ├─ variables.tf
-        └─ outputs.tf
+        ├─ route53.tf
+        ├─ main.tf         # Where modules are imported
+        └─ variables.tf
 ```
 
 __As filenames doesn't matter for terraform, we can easily refactor them
 overtime.__
 
-### Allow callers to add security group ingress rules
 
-When a service needs to access a database of any kind (i.e. PostgreSQL, RabbitMQ,
-...), the database security group needs to be open from the service so the
-communication can be established.
+## <a name="ingress-rules">Allow callers to add security group ingress rules</a>
 
-The idea is to use the composability principale to compose the database security
-group (and the client if we also want to restrict outbound rules).
-Let's assume you have 2 modules, a module to create a database and a module that
-needs to connect to the database.
+When a component in one module needs to connect to a component in another module
+(eg an application server needs to connect to PostgreSQL), the security group in
+the server module needs to allow packets from the client module. There's
+several ways of handling this in Terraform but prefer the following approach. 
 
-1. The database module needs to create a security group that the database users
-and expose its ID as a module output.
-2. The connecting module needs to accept the database security group ID as a
-variable so it can create all the appropriate aws_security_group_rule resouces
-to grant itself access.
+1. Expose the security group ID from server module as an output.
+2. Inject this security group ID into client modules that want to connect to the
+   components in the server module.
+3. In each client module, add ingress rules to the server security group.
 
-__Note, don't use `ingress` or `egress` attributes as they don't work together
-([here](https://www.terraform.io/docs/providers/aws/r/security_group_rule.html)
-for more details) with `aws_security_group_rule` resources.__
+For example, support we have a "database" module that a "services" module needs
+to connect to. First create and export a `aws_security_group` that an RDS
+instance uses:
 
 ```hcl
 # file: module/database/ec2.tf
-
 resource "aws_security_group" "rds" {
   name_prefix = "my-db-"
   # ...
@@ -81,31 +78,38 @@ resource "aws_security_group_rule" "rds_outbound_to_all" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 }
-```
 
-```hcl
-# file: module/database/outputs.tf
+resource "aws_db_instance" "default" {
+  vpc_security_group_ids = [aws_security_group.rds.id]
+  # ...
+}
 
-output "security_group_id" {
+# file module/database/outputs.tf
+output "rds_security_group_id" {
   value = aws_security_group.rds.id
 }
 ```
 
+then inject this security group ID into the services module:
+
 ```hcl
-# file: rds.tf
+# file: module/service/variables.tf
+variable "database_security_group_id" {}
+
+# file: main.tf
 module "my_database" {
   source = "module/database"
 }
-```
 
-```hcl
-# file: ec2.tf
 module "my_service" {
   source = "module/service"
 
-  database_security_group_id = module.my_database.security_group_id
+  database_security_group_id = module.my_database.rds_security_group_id
 }
 ```
+
+and add the `aws_security_group_rule` rules that allows components in the services module to 
+connect to the database:
 
 ```hcl
 # file: module/service/ec2.tf
@@ -119,3 +123,11 @@ resource "aws_security_group_rule "rds_inbound_from_service" {
   source_security_group_id = aws_security_group.service.id
 }
 ```
+
+Note:  don't use `ingress` or `egress` attributes on the exported
+`aws_security_group` resource as they don't work together with separate
+`aws_security_group_rule` resources (see the [Terraform docs](https://www.terraform.io/docs/providers/aws/r/security_group_rule.html))
+
+The advantage of this approach is it allows many calling modules to connect to a
+particular service without having to modify the service's module (or its
+parameters).
