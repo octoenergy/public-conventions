@@ -11,6 +11,7 @@
 1. [Naming Conventions](#naming-conventions)
 1. [Miscellaneous rules](#misc)
 1. [Comments](#comments)
+1. [Styled components](#styled-components)
 
 ## <a name="rules">Enforcing the rules</a>
 
@@ -450,5 +451,123 @@ h6 {
     ...
 }
 ```
+
+## <a name='styled-components'>Styled Components</a>
+
+Not strictly speaking SASS, but some of the same ideas apply. Here are a few specific styled component considerations:
+
+### Styles in the styles/theme files
+
+Try to keep styles in the styled component file, rather than passing props in the JSX. This makes it easier to use the themes. Some notable exceptions are NavLink, which required its activeStyles passed as a prop, and some SVG components which take a fill for convenience. We may wish to push the later into using styled components.
+
+We also try and keep any logic of 'in this theme we do this' in the theme files - ideally we should never ask which theme is active in a theme file. Mixins and defaults can help with this - see [theme specific assets](#theme-specific-assets).
+
+
+
+### Mixins
+
+We use component mixins to try and keep the themes DRY. These are just functions that help to define the shape of a theme block, and can be used to specify sensible defaults. We're working towards a tiered naming system that reflects how the colour/style of a component might be percieved in different settings. For example:
+
+- A designer calls a colour skyBlue
+- A theme calls it accentPrimary
+- A component calls it backgroundColor
+
+All these are correct, but where you use a variable can influence how you want to reference it. To help with this, mixins also serve as an API for a themable component - they define what you can change and provide a consistent name for that to pass into the mixin in the theme file. However, we can then create whatever block shape serves the component in the mixin, so you might do something like:
+
+```
+...
+    input: {
+        primary: inputMixin({
+            color: black,
+            backgroundColor: white,
+            boxShadow: `0 0 0 5rem ${white}`,
+            borderBottom: `0.2rem solid ${skyBlue}`,
+            prefixColor: black,
+        })
+     }
+...     
+```     
+
+in a theme file, but the mixin can reflect a more complex structure:
+
+```
+
+export default ({
+    color,
+    backgroundColor,
+    borderBottom,
+    boxShadow,
+    labelColor,
+    helpTextColor,
+    prefixColor,
+    validBorderBottomColor,
+    focusBorderBottom='none',
+}) => ({
+    color: color,
+    backgroundColor: backgroundColor,
+    borderBottom: borderBottom,
+    boxShadow: boxShadow,
+    focus: {
+        borderBottom: focusBorderBottom,
+    },
+    label: {
+        color: labelColor,
+    },
+    prefix: {
+        color: prefixColor,
+    },
+    helpText: {
+        color: helpTextColor,
+    },
+    valid: {
+        borderBottomColor: validBorderBottomColor,
+    },
+});
+
+```
+
+which is then more helpful in the component. The component only ever has to care that it will be given a path like `label.color` to use, so and changes to the theme colours have no implications for the component.
+
+
+#### <a name='theme-specific-assets'>Example which needs some theme specific asset</a>
+```
+${theme=='octopus' &&
+    css`
+	background: url('something/octopus/specific')
+    `}
+```
+
+we would do something like this in a mixin:
+
+```
+const bannerMixin = ({
+   backgroundUrl,
+   backgroundColor,
+}) => ({
+  backgroundColor,
+  header: {
+        backgroundUrl,
+    }
+})
+
+export default someComponentMixin
+```
+which is then used like this in e.g the octopus theme file:
+
+```
+primaryBanner: bannerMixin({
+     backgroundColor: backgroundPrimary,
+     backgroundUrl: 'something/octopus/specific'
+}),
+```
+
+Then in the styled component file:
+
+```
+background: url(${header.backgroundUrl});
+```
+
+This helps to keep anything specific to a theme in that brands theme file.
+
 
 **[[⬆ ]](#TOC)**
