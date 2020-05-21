@@ -15,5 +15,6 @@ Contents:
 - [Git](git.md)
 - [CSS](css.md)
 - [HTML and Django templates](html.md)
+- [GraphQL](graphql.md)
 - [Email templates](emails.md)
 - [Emoji shorthand](shorthand.md) (used in code-review and Slack messages)
