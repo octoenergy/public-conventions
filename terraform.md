@@ -9,8 +9,40 @@ This is why we decided to write our own guideline on how to structure a
 
 Contents:
 
+- [Name files after the resource they manage](#resource-naming)
 - [Allow callers to add security group ingress rules](#ingress-rules)
 
+## <a name="resource-naming">Name files after the resource they manage</a>
+
+Files should be named after the AWS (or other cloud provider) components they
+manage (eg `ec2.tf`). If the file for a particular component gets large, then
+add a suffix to distinguish between differnent groups of component (eg
+`ec2_api.tf`).
+
+The idea is to keep a balance between too many small files and too few huge
+files.
+
+```
+/my-project/
+├─ modules/
+│   └─ database/
+│       ├─ ec2.tf
+│       ├─ cloudwatch.tf
+│       ├─ outputs.tf
+│       ├─ rds.tf
+│       └─ variables.tf
+└─ workspaces/
+    └─ someclient-prod/
+        ├─ acm.tf      
+        ├─ backend.tf      # To set the backend instruction of Terraform
+        ├─ config.tf       # To set provider(s), required Terraform version, ...
+        ├─ route53.tf
+        ├─ main.tf         # Where modules are imported
+        └─ variables.tf
+```
+
+As filenames doesn't matter for Terraform, we can easily refactor them
+overtime.
 
 ## <a name="ingress-rules">Allow callers to add security group ingress rules</a>
 
