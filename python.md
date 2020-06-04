@@ -974,6 +974,49 @@ from path.to.some.module import \
     thing1, thing2, thing3, thing4
 ```
 
+### Make function signatures explicit
+
+Avoid using ``**kwargs`` in function signatures without good reason. Code with loosely defined
+function signatures can be difficult to work with, as it's unclear what variables are
+entering the function.
+ 
+```python
+def do_something(**kwargs):  # Don't do this
+   ...
+```
+
+Be explicit instead:
+
+```python
+def do_something(foo: int, bar: str):
+   ...
+```
+
+This includes functions that wrap lower level functionality, such as model creation methods:
+
+```python
+class MyModel(models.Model):
+    ...
+    
+    @classmethod
+    def new(cls, **kwargs):  # Don't do this.
+        return cls.objects.create(**kwargs)
+``` 
+
+Instead, do this:
+
+```python
+class MyModel(models.Model):
+    ...
+    
+    @classmethod
+    def new(cls, foo: int, bar: str):
+        return cls.objects.create(foo=foo, bar=bar)
+```
+
+Of course, there are plenty of good use cases for ``**kwargs``, such as making Celery tasks backward
+compatible, or in class based views, but they come with a cost, so use them sparingly.
+
 ### Import modules, not objects
 
 Usually, you should import modules rather than their objects. Instead of:
