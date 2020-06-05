@@ -7,15 +7,15 @@ code-review in that common comments can reference a single detailed explanation.
 Django:
 
 - [`CharField` choices](#charfield-choices)
-- [Model field naming conventions](#model-field-naming-conventions)
 - [Class naming conventions](#class-naming-conventions)
+- [Model field naming conventions](#model-field-naming-conventions)
 - [Model method naming conventions](#model-method-naming-conventions)
 - [Encapsulate model mutation](#encapsulate-model-mutation)
 - [Group methods and properties on models](#group-methods-and-properties-on-models)
-- [Don't rely on implicit ordering of querysets](#implicit-ordering)
-- [Don't use audit fields for application logic](#audit-fields)
 - [Create filter methods on querysets, not managers](#queryset-filters)
 - [Only use `.get` with unique fields](#uniqueness)
+- [Don't rely on implicit ordering of querysets](#implicit-ordering)
+- [Don't use audit fields for application logic](#audit-fields)
 - [Be conservative with model `@property` methods](#property-methods)
 - [Ensure `__str__` is unique](#unique-str)
 - [Flash messages](#flash-messages)
@@ -39,6 +39,7 @@ Application:
 General Python:
 
 - [Wrap with parens not backslashes](#wrapping)
+- [Make function signatures explicit](#make-function-signatures-explicit)
 - [Import modules, not objects](#import-modules-not-objects)
 - [Convenience imports](#convenience-imports)
 - [Application logic in interface layer](#application-logic-in-interface-layer)
@@ -52,7 +53,7 @@ Testing:
 - [Test module names for functional tests](#test-module-names-functional)
 - [Test class structure ](#test-class-structure)
 - [Isolation](#test-isolation)
-- [Freeze time for tests](#freezing-time)
+- [Freeze or inject time for tests](#freezing-time)
 - [Unit test method structure ](#test-method-structure)
 - [Functional test method structure ](#functional-test-method-structure)
 - [Don't use numbered variables](#numbered-variables)
@@ -554,7 +555,7 @@ class ActOnFrob(generic.FormView):
 ```
 
 
-### <a name="drf-serializers">DRF serializers</a>
+### DRF serializers
 
 Serializers provided by Django-REST-Framework are useful, not just for writing
 REST APIs. They can used anywhere you want to clean and validate a nested
@@ -1068,7 +1069,7 @@ from typing import Optional, Tuple, Dict
 from collections import defaultdict
 ```
 
-### <a name="convenience-imports">Convenience imports</a>
+### Convenience imports
 
 A useful pattern is to import the "public" objects from a package into its
 `__init__.py` module to make life easier for calling code. This does need to be
@@ -1279,7 +1280,7 @@ Related reading:
 
 ## Testing
 
-### <a name="test-folder-structure">Test folder structure</a>
+### Test folder structure
 
 Tests are organised by their type:
 
@@ -1407,7 +1408,7 @@ class TestSomeFunction:
 This applies less to functional tests which can make many calls to the system.
 
 
-### <a name="functional-test-method-structure">Functional test method structure</a>
+### Functional test method structure
 
 For functional tests, use comments and blank lines to ensure each step of the
 test is easily understandable. Eg:
