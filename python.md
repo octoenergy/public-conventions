@@ -977,10 +977,11 @@ from path.to.some.module import \
 
 ### Make function signatures explicit
 
-Avoid using ``**kwargs`` in function signatures without good reason. Code with loosely defined
-function signatures can be difficult to work with, as it's unclear what variables are
-entering the function.
- 
+Specify all the parameters you expect your function to take whenever possible. Avoid ``*args`` and ``**kwargs``
+(otherwise known as [var-positional and var-keyword parameters](https://docs.python.org/3/glossary.html#term-parameter))
+without good reason. Code with loosely defined function signatures can be difficult to work with, as it's unclear
+what variables are entering the function.
+
 ```python
 def do_something(**kwargs):  # Don't do this
    ...
