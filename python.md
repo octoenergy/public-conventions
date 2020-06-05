@@ -1019,6 +1019,27 @@ class MyModel(models.Model):
 Of course, there are plenty of good use cases for ``**kwargs``, such as making Celery tasks backward
 compatible, or in class based views, but they come with a cost, so use them sparingly.
 
+#### Using ``**kwargs`` in functions with many parameters
+
+A particularly tempting use of ``**kwargs`` is when a function is passing a large number of parameters around,
+for example:
+
+```python
+def main():
+    do_something(one=1, two=2, three=3, four=4, five=5, six=6, seven=7, eight=8, nine=9, ten=10)
+    
+def do_something(**kwargs):  # Don't do this.
+   _validate(**kwargs)
+   _execute(**kwargs)
+```
+
+This isn't a good use of dynamic parameters, as it makes the code even harder to work with.
+
+At a minimum, specific the parameters explicitly. However, many parametered functions are a smell, so you could
+also consider fixing the underlying problem through refactoring. One option is the
+[Introduce Parameter Object](https://sourcemaking.com/refactoring/introduce-parameter-object) technique, which
+introduces a dedicated class to pass the data.
+
 ### Import modules, not objects
 
 Usually, you should import modules rather than their objects. Instead of:
