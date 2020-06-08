@@ -1035,7 +1035,7 @@ def do_something(**kwargs):  # Don't do this.
 
 This isn't a good use of dynamic parameters, as it makes the code even harder to work with.
 
-At a minimum, specific the parameters explicitly. However, many parametered functions are a smell, so you could
+At a minimum, specify the parameters explicitly. However, many parametered functions are a smell, so you could
 also consider fixing the underlying problem through refactoring. One option is the
 [Introduce Parameter Object](https://sourcemaking.com/refactoring/introduce-parameter-object) technique, which
 introduces a dedicated class to pass the data.
