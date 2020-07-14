@@ -530,6 +530,8 @@ which is then more helpful in the component. The component only ever has to care
 
 
 #### <a name='theme-specific-assets'>Example which needs some theme specific asset</a>
+
+Instead of doing this:
 ```
 ${theme=='octopus' &&
     css`
@@ -557,7 +559,7 @@ which is then used like this in e.g the octopus theme file:
 ```
 primaryBanner: bannerMixin({
      backgroundColor: backgroundPrimary,
-     backgroundUrl: 'something/octopus/specific'
+     backgroundUrl: 'something/octopus/specific' // so this path only appears in the octopus theme file
 }),
 ```
 
