@@ -50,11 +50,11 @@ Errors can manifest as GraphQL validation errors (e.g. provided a string for an 
 An element of the errors array follows the [GraphQL spec](https://graphql.github.io/graphql-spec/June2018/#sec-Errors) and will have the following values:
 
 - `message`: The human-readable error message. This value is not intended to be parsed and may change at any time.
-- `locations`: An array of { "line": x, "column": y } objects that describe where the error was detected during parsing of the 
+- `locations`: An array of { "line": x, "column": y } objects that describe where the error was detected during parsing of the
 - GraphQL query. This is typically only used by interactive viewers such as GraphiQL, including our API Explorer.
 - `path`: The GraphQL query or mutation causing the error.
 - `extensions`: Additional information about the error
-   - `errorClass`: [The class of the error](#error-classes). 
+   - `errorClass`: [The class of the error](#error-classes).
 
 For queries, it is possible to have partially successful responses, where both a partially populated data object and errors are returned. If errors prevent a field in your query from resolving, the field in the data object will be returned with the value null and relevant errors will be in the error object.
 
@@ -76,6 +76,14 @@ Queries, Mutations: Feature not implemented yet
 ##### SERVICE_AVAILABILITY
 
 Queries, Mutations: An intermittent error due to an unavailable service
+
+##### APPLICATION
+
+Mutations: Action could not be performed due to business logic error
+
+##### ACTION_DENIED
+
+Mutations: Action could not be performed due to business logic error
 
 ##### VALIDATION
 
@@ -212,7 +220,7 @@ mutation UpdateUserMutation($input: UserInputType!) {
 }
 ```
 
-where 
+where
 
 ```
 type UserInputType {
@@ -277,4 +285,3 @@ mutation UpdateUserMutation($input: UserInputType!) {
    }
 }
 ```
-
