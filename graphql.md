@@ -15,8 +15,7 @@ Mutations:
 
 ### How to understand errors
 
-Unlike a conventional REST API, GraphQL APIs do not rely on HTTP status codes to signal request outcomes.
-Our GraphQL API always return a JSON body with the 200 status code, even when there are errors.
+The GraphQL API always return a JSON body with the 200 status code, even when there are errors.
 
 If an error occurred, the response body MUST include a top-level errors array that describes the error or errors as demanded by the [GraphQL spec](https://spec.graphql.org/June2018/#sec-Response-Format).
 
@@ -50,11 +49,10 @@ Errors can manifest as GraphQL validation errors (e.g. provided a string for an 
 An element of the errors array follows the [GraphQL spec](https://graphql.github.io/graphql-spec/June2018/#sec-Errors) and will have the following values:
 
 - `message`: The human-readable error message. This value is not intended to be parsed and may change at any time.
-- `locations`: An array of { "line": x, "column": y } objects that describe where the error was detected during parsing of the 
-- GraphQL query. This is typically only used by interactive viewers such as GraphiQL, including our API Explorer.
+- `locations`: An array of { "line": x, "column": y } objects that describe where the error was detected during parsing of the GraphQL query.
 - `path`: The GraphQL query or mutation causing the error.
 - `extensions`: Additional information about the error
-   - `errorClass`: [The class of the error](#error-classes). 
+   - `errorClass`: [The class of the error](#error-classes).
 
 For queries, it is possible to have partially successful responses, where both a partially populated data object and errors are returned. If errors prevent a field in your query from resolving, the field in the data object will be returned with the value null and relevant errors will be in the error object.
 
@@ -212,7 +210,7 @@ mutation UpdateUserMutation($input: UserInputType!) {
 }
 ```
 
-where 
+where
 
 ```
 type UserInputType {
@@ -277,4 +275,3 @@ mutation UpdateUserMutation($input: UserInputType!) {
    }
 }
 ```
-
