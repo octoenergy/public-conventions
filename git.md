@@ -69,8 +69,15 @@ a clean history before requesting code review for a pull-request.
 Of course, rebasing an already-pushed branch means a force-push is required.
 This is fine when you're the only person working on the branch
 but, when there's more than one person working on the branch, make sure you talk
-to each before force-pushing to avoid clobbering each other's work.
+to each before force-pushing to avoid clobbering each other's work. You could also
+consider using:
 
+```
+git push --force-with-lease
+```
+
+instead of force push, as that will prevent you from overwriting unknown upstream
+changes.
 
 ## Pull requests
 
