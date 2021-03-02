@@ -66,6 +66,13 @@ Further, avoid small "bug-fix", "linting" or "address code review comments" comm
 should have been part of a previous commit. Rebase/squash these commits to give
 a clean history before requesting code review for a pull-request.
 
+On the other hand, these are some things that may deserve their own commit:
+
+- Reworking (but not functionally changing) some exisiting code before you make your actual changes to it. If this turns into a bigger refactor than you thought, it won't be mixed up with functional change, and could go in as it's own commit (particularly good if you think it might attract conflicts).
+- independent functional changes. If you're writing 'change this and that' in a commit message, it can be a good indication that you may want to break up the commit.
+- Reformatting *existing* code - not new code added in this PR (that should be squashed into the commit that added it), but try to avoid combining formatting changes with other unrelated changes.
+- Moving existing code or renaming existing things. Again, if you'd added this code in this PR, you can straighten it out before going for review, but if you're moving or renaming existing code, make those changes dedicated commits.
+
 Of course, rebasing an already-pushed branch means a force-push is required.
 This is fine when you're the only person working on the branch
 but, when there's more than one person working on the branch, make sure you talk
