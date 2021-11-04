@@ -1304,7 +1304,7 @@ Related reading:
 
 When naming objects like modules, classes, functions and variables, prefer American English. Eg, use serializers.py instead of serialisers.py. This ensures the names in our codebase match those in the wider ecosystem.
 
-UK spellings are fine for in comments or docstrings.
+UK spellings are fine in comments or docstrings.
 
 ## Testing
 
