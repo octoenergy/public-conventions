@@ -9,7 +9,6 @@ Mutations:
 - [Begin names with action type](#begin-names-with-action-type)
 - [Use an input object type for the argument](#use-an-input-object-type-for-the-argument)
 - [Return an object in the payload](#return-an-object-in-the-payload)
-- [Return all errors at the top-level](#return-all-errors-at-the-top-level)
 
 ## Responses
 
