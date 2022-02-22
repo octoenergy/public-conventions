@@ -73,10 +73,10 @@ The values stored in the database should be:
 A human-readable version should also be added in the tuples provided to the field.
 
 ```python
-CHANNEL_TELESALES, CHANNEL_FIELD_SALES = "TELESALES", "FIELD_SALES"
+TELESALES, FIELD_SALES = "CHANNEL_TELESALES", "CHANNEL_FIELD_SALES"
 CHANNEL_CHOICES = (
-    (CHANNEL_TELESALES, "Telesales"),
-    (CHANNEL_FIELD_SALES, "Field-sales"),
+    (TELESALES, "Telesales"),
+    (FIELD_SALES, "Field-sales"),
 )
 channel = models.CharField(max_length=128, choices=CHANNEL_CHOICES)
 ```
