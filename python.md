@@ -421,7 +421,7 @@ class SampleForm(forms.Form):
 ```
 
 The same principle applies to other ORM-constructs, like DRF's model
-serializers, which trade-off good structure and long-term maintability for
+serializers, which trade-off good structure and long-term maintainability for
 short-term development speed.
 
 This is an important step in extricating a project from Django's tight grip,
@@ -889,8 +889,8 @@ pass kwargs (positional args get a `TypeError`). Syntax:
 
 In general, prefer calling functions with kwargs where it's not immediately
 obvious what the positional args are (ie most of the time). This
-improves readability and makes collaborator tests clearer (ie writing the
-`collabator.assert_called_with(...)` assertion).
+improves readability and makes collaborator tests clearer (i.e. writing the
+`collaborator.assert_called_with(...)` assertion).
 
 Further, _always_ use keyword-only args for "public" domain functions (ie
 those which are called from the interface layer or from packages within the
@@ -898,7 +898,7 @@ domain layer).
 
 ### <a name="system-clock">Minimise system clock calls</a>
 
-Avoids calls to the system clock in the domain layer of the application. That
+Avoid calls to the system clock in the domain layer of the application. That
 is, calls to `localtime.now()`, `localtime.today()` etc. Think of such calls
 like network or database calls.
 
@@ -926,7 +926,7 @@ prefer the more explicit:
 ```py
 def some_function(*, base_date):
 ```
-which forcers callers to compute the date they want to use for the function.
+which forces callers to compute the date they want to use for the function.
 As suggested above, such system-clock calls should be reserved for the interface
 layer of your application and the value passed though into the
 business-logic/domain layers.
@@ -1147,9 +1147,9 @@ Why?
 - Wildcard imports can make it harder for maintainers to find where functionality lives.
 - Wildcard imports can confuse static analysis tools like mypy.
 - If submodules don't specify an `__all__` variable, a large number of objects
-  can be inadvertanty imported into the `__init__.py` module, leading to a danger of name collisions.
+  can be inadvertently imported into the `__init__.py` module, leading to a danger of name collisions.
 
-Fundamentally, it's better to be explicit (even if it is more verbase).
+Fundamentally, it's better to be explicit (even if it is more verbose).
 
 #### Only use convenience imports in leaf-node packages
 
@@ -1167,7 +1167,7 @@ foo/
 ```
 where a non-leaf-node package, `foo.bar` has convenience imports in its
 `__init__.py` module. Doing this means imports from subpackages like `foo.bar.waldo.thud`
-will unecessarily import everything in `waldo`'s `__init__.py` module. This is
+will unnecessarily import everything in `waldo`'s `__init__.py` module. This is
 wasteful and increases the change of circular import problems.
 
 Only use convenience imports in leaf-node packages; that is, packages with no
@@ -1394,7 +1394,7 @@ Don't let tests or the system-under-test call the system clock unless it is
 being explicitly controlled using a tool like [freezegun](https://github.com/spulec/freezegun).
 
 This guards against a whole class of date-related test bugs which often manifest
-themselves if your test-suite runs in the hours before or after mignight.
+themselves if your test-suite runs in the hours before or after midnight.
 Typically these are caused by DST-offsets where a datetime in UTC has a different date to
 one in the local timezone.
 
@@ -1455,7 +1455,7 @@ def test_some_longwinded_process(support_client, factory):
     # Fill in form to revoke agreement
     ...
 
-    # Check agreemnt has been revoked
+    # Check agreement has been revoked
     ...
 ```
 
