@@ -52,22 +52,20 @@ Testing:
 - [Test folder structure](#test-folder-structure)
 - [Test module names for unit and integration tests](#test-module-names-unit)
 - [Test module names for functional tests](#test-module-names-functional)
-- [Test class structure ](#test-class-structure)
+- [Test class structure](#test-class-structure)
 - [Isolation](#test-isolation)
 - [Freeze or inject time for tests](#freezing-time)
-- [Unit test method structure ](#test-method-structure)
-- [Functional test method structure ](#functional-test-method-structure)
+- [Unit test method structure](#test-method-structure)
+- [Functional test method structure](#functional-test-method-structure)
 - [Don't use numbered variables](#numbered-variables)
 
-
 ## Django
-
 
 ### `CharField` choices
 
 The values stored in the database should be:
 
-- Uppercase and separated with underscores. 
+- Uppercase and separated with underscores.
 - Namespaced with a string prefix.
 
 A human-readable version should also be added in the tuples provided to the field.
@@ -83,10 +81,9 @@ channel = models.CharField(max_length=128, choices=CHANNEL_CHOICES)
 
 This is because the database value is a code or symbol intended to be used
 within application logic but not shown to the end user - making it uppercase
-makes this distinction clear.  Using a human-readable version for the database
+makes this distinction clear. Using a human-readable version for the database
 value can lead to bugs when a future maintainer wants to change the version
 shown to the end user.
-
 
 ### Class naming conventions
 
@@ -113,7 +110,6 @@ class SetPassword(generic.FormView):
     form_class = forms.NewPasswordForm
 ```
 
-
 ### Model field naming conventions
 
 `DateTimeField`s should generally have suffix `_at`. For example:
@@ -132,18 +128,16 @@ with the convention unless you have a very good reason not to.
 
 This convention also applies to variable names.
 
-
 ### Model method naming conventions
 
-* For query methods (ie methods that look something up and return it), prefix with `get_`.
+- For query methods (ie methods that look something up and return it), prefix with `get_`.
 
-* For setter methods (ie methods that set fields and call save), prefix with `set_`.
+- For setter methods (ie methods that set fields and call save), prefix with `set_`.
 
-* Prefer "latest" to "last" in method names as "latest" implies chronological order where the
+- Prefer "latest" to "last" in method names as "latest" implies chronological order where the
   ordering is not explicit when using "last"; ie
   `get_latest_payment_schedule`. Similarly, prefer `earliest` to `first` in
   method names.
-
 
 ### Encapsulate model mutation
 
@@ -163,7 +157,6 @@ to stub when testing units that call into the model layer.
 Further reading:
 
 - [Django models, encapsulation and data integrity](https://www.dabapps.com/blog/django-models-and-encapsulation/), by Tom Christie
-
 
 ### Group methods and properties on models
 
@@ -273,14 +266,12 @@ The same applies when looking up using more than one field.
 
 This implies we never need to catch `MultipleObjectsReturned`.
 
-
 ### <a name="implicit-ordering">Don't rely on implicit ordering of querysets</a>
 
 If you grab the `.first()` or `.last()` element of a queryset, ensure you
 explicitly sort it with `.order_by()`. Don't rely on the default ordering set
 in the `Meta` class of the model as this may change later on breaking your
 assumptions.
-
 
 ### <a name="audit-fields">Don't use audit fields for application logic</a>
 
@@ -309,7 +300,6 @@ creation. Why?
 These automatically set fields should only be used for audit and reporting
 purposes.
 
-
 ### <a name="property-methods">Be conservative with model `@property` methods</a>
 
 It's not always obvious when to decorate a model method as a property. Here
@@ -336,7 +326,6 @@ def is_closed(self):
 
 If in doubt, use a method not a property.
 
-
 ### <a name="unique-str">Ensure `__str__` is unique</a>
 
 Ensure the string returned by a model's `__str__` method uniquely identifies
@@ -348,11 +337,11 @@ important to know exactly which instances are involved in an error, hence why
 this string should uniquely identify a single model instance.
 
 It's fine to use something like:
+
 ```py
 def __str__(self):
     return f"#{self.id} ..."
 ```
-
 
 ### <a name="flash-messages">Effective flash messages</a>
 
@@ -390,8 +379,8 @@ most degenerate, simple scenarios.
 Why? Because they conflate validation and persistence logic which, over time,
 leads to hard-to-maintain code. As soon as you need to add more sophisticated
 actions (than a simple DB write) to a successful form submission, model-forms
-are the wrong choice.  Once you start overriding `.save()`, you're on the path
-to maintenance hell.  Future maintainers will thank you if you ensure forms are
+are the wrong choice. Once you start overriding `.save()`, you're on the path
+to maintenance hell. Future maintainers will thank you if you ensure forms are
 only responsible for validating dictionaries of data, nothing more,
 single-responsibility principle and all that.
 
@@ -427,14 +416,13 @@ short-term development speed.
 This is an important step in extricating a project from Django's tight grip,
 moving towards treating Django as a library rather than framework.
 
-
 ### <a name="one-domain-call">Avoid multiple domain calls from an interface component</a>
 
 An interface component, like a view class/function or Celery task, should only make one
 call into the domain layer (ie the packages in your codebase where application
 logic lives).
 
-Recall: the job of any interface component is this: 
+Recall: the job of any interface component is this:
 
 1. Translate requests from the language of the interface (ie HTTP requests or serialized Celery task payloads)
    into domain objects (eg `Account` instances)
@@ -495,7 +483,8 @@ class SomeView(generic.FormView):
 
         return shortcuts.redirect("success")
 ```
-Note the use of domain-specific exceptions to handle failure conditions. 
+
+Note the use of domain-specific exceptions to handle failure conditions.
 
 Since fire-and-forget Celery tasks can't respond, their implementation should be
 simple: just loading the appropriate domain objects and making a single call
@@ -555,7 +544,6 @@ class ActOnFrob(generic.FormView):
         return super().dispatch(request, *args, **kwargs)
 ```
 
-
 ### DRF serializers
 
 Serializers provided by Django-REST-Framework are useful, not just for writing
@@ -572,12 +560,12 @@ Be liberal in what is accepted in valid input.
 In contrast, be conservative in what is returned in the `validated_data` dict.
 Ensure `validated_data` has a consistent data structure no matter what valid
 input is used. Don't make calling code worry about whether a particular key _exists_ in the
-dict. 
+dict.
 
 In practice, this means:
 
 - Optional fields where `None` is not a valid value have a default value set in
-  the serializer field declaration.  
+  the serializer field declaration.
 
 - If optional string-based fields have `allow_null=True`, then convert any
   `None` values to the field default.
@@ -663,13 +651,12 @@ class CreateSomething(generic.FormView):
             return http.HttpResponseFound(...)
 ```
 
-
 ## Application
 
 ### <a name="events">Publishing events</a>
 
 When publishing application events, the `params` should be things that are known
-*before* the event, while `meta` should be things known *after* the event as
+_before_ the event, while `meta` should be things known _after_ the event as
 well as general contextual fields that aren't directly related to the event
 itself (like a request user-agent).
 
@@ -757,7 +744,7 @@ except UnableToDoSomething:
 
 If you do need to format data into the message string, don't use the `%`
 operator. Instead, pass the parameters as args:
-https://docs.sentry.io/clients/python/integrations/logging/#usage
+<https://docs.sentry.io/clients/python/integrations/logging/#usage>
 
 ```python
 try:
@@ -792,14 +779,13 @@ The rule of thumb is that anything logged to Sentry requires a code change to
 fix it. If nothing can be done (ie a vendor time-out), publish an application
 event instead.
 
-
-
 ### <a name="exception-imports">Exception imports</a>
 
 Ensure exception classes are importable from the same location as functionality that
-raise them. 
+raise them.
 
 For example, prefer:
+
 ```py
 from octoenergy.domain import operations
 
@@ -828,7 +814,6 @@ In general, be wary of re-using the same exception type for different use-cases;
 this can lead to ambiguity and bugs. Furthermore, it rarely makes sense to have
 `exceptions.py` modules of exception classes used in many places. In general,
 prefer to define exception types in the same module as where they are raised.
-
 
 ### <a name="celery-tasks">Celery tasks</a>
 
@@ -907,30 +892,33 @@ passing them in. This won't always be possible but often is.
 
 Why?
 
-1. This makes testing easier as you don't need to mock a system call.  Your
-   functions will be purer with controlled inputs and outputs. 
+1. This makes testing easier as you don't need to mock a system call. Your
+   functions will be purer with controlled inputs and outputs.
 
 2. It also avoids issues where Celery tasks are publishing on one day but get
-   executed on another. It removes an assumption from the code. 
+   executed on another. It removes an assumption from the code.
 
 Avoid the pattern of using a default of `None` for a date/datetime parameter
-then calling the system clock to populate it if no value is explicitly passed. 
+then calling the system clock to populate it if no value is explicitly passed.
 Instead of:
+
 ```py
 def some_function(*, base_date=None):
     if base_date is None:
         base_date = datetime.date.today()
     ...
 ```
+
 prefer the more explicit:
+
 ```py
 def some_function(*, base_date):
 ```
+
 which forces callers to compute the date they want to use for the function.
 As suggested above, such system-clock calls should be reserved for the interface
 layer of your application and the value passed though into the
 business-logic/domain layers.
-
 
 ### <a name="time-periods">Modelling periods of time</a>
 
@@ -944,6 +932,7 @@ class SomeModel(models.Model):
     active_from = models.DateTimeField()
     active_to = models.DateTimeField(null=True)
 ```
+
 Specifically, try and avoid using `datetime.date` fields as these are more error-prone
 due to implicit conversion of datetimes and complications from daylight-savings
 time.
@@ -956,9 +945,7 @@ Don't follow this rule dogmatically: there will be cases where the appropriate
 domain concept is a date instead of a datetime, but in general, prefer to model
 with datetimes.
 
-
-## Python 
-
+## Python
 
 ### <a name="wrapping">Wrap with parens not backslashes</a>
 
@@ -1004,7 +991,7 @@ class MyModel(models.Model):
     @classmethod
     def new(cls, **kwargs):  # Don't do this.
         return cls.objects.create(**kwargs)
-``` 
+```
 
 Instead, do this:
 
@@ -1115,7 +1102,7 @@ mypackage/
 
 It's okay for private and public modules to coexist in the same package, as long as the public modules aren't used in
 convenience imports. For example, in the following structure we might expect calling code to access `mypackage.blue` and
-`mypackage.bar.green`, but not `mypackage._foo.blue` or `mypackage.green`. 
+`mypackage.bar.green`, but not `mypackage._foo.blue` or `mypackage.green`.
 
 ```txt
 mypackage/
@@ -1127,22 +1114,25 @@ mypackage/
 #### Don't use wildcard imports
 
 Don't use wildcard imports (ie `from somewhere import *`), even if each imported
-module specifies an `__all__` variable. 
+module specifies an `__all__` variable.
 
 Instead of:
+
 ```py
 # hallandoates/__init__.py
 from ._problems import *
 from ._features import *
 ```
+
 prefer:
+
 ```py
 # hallandoates/__init__.py
 from ._problems import ICantGoForThat, NoCanDo
 from ._features import man_eater, rich_girl, shes_gone
 ```
 
-Why? 
+Why?
 
 - Wildcard imports can make it harder for maintainers to find where functionality lives.
 - Wildcard imports can confuse static analysis tools like mypy.
@@ -1165,6 +1155,7 @@ foo/
         _bar.py
         _qux.py
 ```
+
 where a non-leaf-node package, `foo.bar` has convenience imports in its
 `__init__.py` module. Doing this means imports from subpackages like `foo.bar.waldo.thud`
 will unnecessarily import everything in `waldo`'s `__init__.py` module. This is
@@ -1197,7 +1188,6 @@ where the modules `bar` and `qux` have been imported.
 It's better for callers to import modules using their explicit path rather than
 this kind of trickery.
 
-
 ### Application logic in interface layer
 
 Interface code like view modules and management command classes should contain
@@ -1213,7 +1203,6 @@ A useful thought exercise to go through when adding code to a view is to imagine
 needing to expose the same functionality via a REST API or a management command.
 Would anything need duplicating from the view code? If so, then this tells you
 that there's logic in the view layer that needs extracting.
-
 
 ### <a name="dont-do-nothing-silently">Don't do nothing silently</a>
 
@@ -1278,11 +1267,11 @@ afraid of) - but that is ok.
 
 There is a difference:
 
-* **Docstrings** are written between triple quotes within the function/class block. They explain
+- **Docstrings** are written between triple quotes within the function/class block. They explain
    what the function does and are written for people who might want to _use_ that
    function/class but are not interested in the implementation details.
 
-* In contrast, **comments** are written `# like this` and are written for
+- In contrast, **comments** are written `# like this` and are written for
   people who want to understand the implementation so they can _change_ or _extend_ it. They will commonly
   explain _why_ something has been implemented the way it has.
 
@@ -1298,7 +1287,7 @@ def do_that_thing():
 
 Related reading:
 
-- http://stackoverflow.com/questions/19074745/python-docstrings-descriptions-vs-comments
+- <http://stackoverflow.com/questions/19074745/python-docstrings-descriptions-vs-comments>
 
 ### <a name="naming-language">Prefer American English for naming modules and objects</a>
 
@@ -1313,7 +1302,7 @@ UK spellings are fine in comments or docstrings.
 Tests are organised by their type:
 
 - `tests/unit/` - Isolated unit tests that test the behaviour of a single unit.
-    Collaborators should be mocked.  No database or network access is permitted.
+    Collaborators should be mocked. No database or network access is permitted.
 
 - `tests/integration/` - For testing several units and how they are plumbed
     together. These often require database access and use factories for set-up.
@@ -1325,7 +1314,6 @@ Tests are organised by their type:
     plumbed together correctly. These should use webtest or Django's
     `call_command` function to trigger the test and only patch third party
     calls.
-
 
 ### <a name="test-module-names-unit">Test module names for unit and integration tests</a>
 
@@ -1376,17 +1364,16 @@ Don't assume that tests that use the database are fully isolated from each other
 tests should not make assertions about the global state of the database.
 
 For example, a test should not assert that there are only a certain number of model
-instances in the database, as a transactional test (which does commit to the same DB) 
+instances in the database, as a transactional test (which does commit to the same DB)
 running concurrently may have created some.
 
 #### Why aren't they isolated?
 
-While in most cases tests *are* isolated (i.e. they run in separate database transactions),
+While in most cases tests _are_ isolated (i.e. they run in separate database transactions),
 a few of our tests use the Pytest marker ``transaction=true``. This causes them to use
 ``TransactionTestCase``, which, confusingly, doesn't run in a transaction. Because we
 run our tests concurrently (using the ``--numprocesses`` flag), these
 non-wrapped transactions are not isolated from other tests running at the same time.
-
 
 ### <a name="freezing-time">Freeze or inject time for tests</a>
 
@@ -1410,7 +1397,6 @@ executes so that it behaves predictably whatever time of day the test suite is
 run. Don't always pick a "safe" time for a test to run; use this technique to
 test behaviour at trickier times such as midnight on DST-offset dates.
 
-
 ### <a name="test-method-structure">Unit test method structure</a>
 
 A unit test has three steps:
@@ -1433,8 +1419,8 @@ class TestSomeFunction:
 
         assert output == 300
 ```
-This applies less to functional tests which can make many calls to the system.
 
+This applies less to functional tests which can make many calls to the system.
 
 ### Functional test method structure
 
@@ -1460,7 +1446,6 @@ def test_some_longwinded_process(support_client, factory):
 ```
 
 You get the idea.
-
 
 ### <a name="numbered-variables">Don't use numbered variables</a>
 
