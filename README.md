@@ -17,7 +17,7 @@ Contents:
 
 - [Python](python.md)
 - [Python architecture patterns](patterns.md)
-- [Git](git.md)
+- [Pull Requests](pull-requests.md)
 - [CSS](css.md)
 - [HTML and Django templates](html.md)
 - [GraphQL](graphql.md)
