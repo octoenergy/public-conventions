@@ -182,11 +182,11 @@ class SomeModel(models.Model):
 
     # Mutators
 
-    def anonymise(self):
+    def set_anonymous(self):
         self.name = ''
         self.save()
 
-    def update_name(self, new_name):
+    def set_name(self, new_name):
         self.name = new_name
         self.save()
 
@@ -194,7 +194,6 @@ class SomeModel(models.Model):
 
     def get_num_apples(self):
         return self.fruits.filter(type="APPLE").count()
-
 
     # Properties
 
