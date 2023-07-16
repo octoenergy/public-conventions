@@ -1,38 +1,30 @@
 # Python
 
 These are a series of conventions (to follow) and anti-patterns (to avoid) for
-writing Python and Django application code. They are intended to be an aid to
-code-review in that common comments can reference a single detailed explanation.
+writing Python application code. They are intended to be an aid to code-review
+in that common comments can reference a single detailed explanation.
 
-- [Wrap with parens not backslashes](#wrapping)
 - [Make function signatures explicit](#make-function-signatures-explicit)
 - [Import modules, not objects](#import-modules-not-objects)
+- [Favour singular nouns for class names](#favour-singular-nouns-for-class-names)
+- [Name private things with a leading underscore](#name-private-things-with-a-leading-underscore)
+- [Avoid naming collisions with a trailing underscore](#avoid-naming-collisions-with-a-trailing-underscore)
 - [Convenience imports](#convenience-imports)
 - [Application logic in interface layer](#application-logic-in-interface-layer)
+- [Catching exceptions](#catching-exceptions)
 - [Don't do nothing silently](#dont-do-nothing-silently)
-- [Docstrings vs comments](#docstrings)
-- [Prefer American English for naming modules and objects](#naming-language)
-
-## <a name="wrapping">Wrap with parens not backslashes</a>
-
-That is, prefer:
-
-```python
-from path.to.some.module import thing1, thing2, thing3, thing4
-```
-
-over:
-
-```python
-from path.to.some.module import thing1, thing2, thing3, thing4
-```
+- [Docstrings](#docstrings)
+- [Docstrings vs comments](#docstrings-vs-comments)
+- [Timeouts for HTTP requests](#timeouts-for-http-requests)
 
 ## Make function signatures explicit
 
-Specify all the parameters you expect your function to take whenever possible. Avoid `*args` and `**kwargs`
-(otherwise known as [var-positional and var-keyword parameters](https://docs.python.org/3/glossary.html#term-parameter))
-without good reason. Code with loosely defined function signatures can be difficult to work with, as it's unclear
-what variables are entering the function.
+Specify all the parameters you expect your function to take whenever possible.
+Avoid `*args` and `**kwargs` (otherwise known as
+[var-positional and var-keyword parameters](https://docs.python.org/3/glossary.html#term-parameter))
+without good reason. Code with loosely defined function signatures can be
+difficult to work with, as it's unclear what variables are entering the
+function.
 
 ```python
 def do_something(**kwargs):  # Don't do this
@@ -46,7 +38,8 @@ def do_something(foo: int, bar: str):
     ...
 ```
 
-This includes functions that wrap lower level functionality, such as model creation methods:
+This includes functions that wrap lower level functionality, such as model
+creation methods:
 
 ```python
 class MyModel(models.Model):
@@ -68,13 +61,14 @@ class MyModel(models.Model):
         return cls.objects.create(foo=foo, bar=bar)
 ```
 
-Of course, there are plenty of good use cases for `**kwargs`, such as making Celery tasks backward
-compatible, or in class based views, but they come with a cost, so use them sparingly.
+Of course, there are plenty of good use cases for `**kwargs`, such as making
+Celery tasks backward compatible, or in class based views, but they come with a
+cost, so use them sparingly.
 
 ### Using `**kwargs` in functions with many parameters
 
-A particularly tempting use of `**kwargs` is when a function is passing a large number of parameters around,
-for example:
+A particularly tempting use of `**kwargs` is when a function is passing a large
+number of parameters around, for example:
 
 ```python
 def main():
@@ -88,12 +82,14 @@ def do_something(**kwargs):  # Don't do this.
     _execute(**kwargs)
 ```
 
-This isn't a good use of dynamic parameters, as it makes the code even harder to work with.
+This isn't a good use of dynamic parameters, as it makes the code even harder to
+work with.
 
-At a minimum, specify the parameters explicitly. However, many parametered functions are a smell, so you could
-also consider fixing the underlying problem through refactoring. One option is the
-[Introduce Parameter Object](https://sourcemaking.com/refactoring/introduce-parameter-object) technique, which
-introduces a dedicated class to pass the data.
+At a minimum, specify the parameters explicitly. However, many parameterised
+functions are a smell, so you could also consider fixing the underlying problem
+through refactoring. One option is the
+[Introduce Parameter Object](https://sourcemaking.com/refactoring/introduce-parameter-object)
+technique, which introduces a dedicated class to pass the data.
 
 ## Import modules, not objects
 
@@ -114,11 +110,12 @@ This keeps the module namespace cleaner and less likely to have accidental
 collisions. It also usually makes the module more concise and readable.
 
 Further, it fosters writing simpler isolated unit tests in that import modules
-works well with `mock.patch.object` to fake/stub/mock _direct_ collaborators of the
-system-under-test. Using the more general `mock.patch` often leads to accidental integration tests
-as an indirect collaborator (several calls away) is patched.
+works well with `mock.patch.object` to fake/stub/mock _direct_ collaborators of
+the system-under-test. Using the more general `mock.patch` often leads to
+accidental integration tests as an indirect collaborator (several calls away) is
+patched.
 
-Eg:
+E.g.:
 
 ```python
 import mock
@@ -136,14 +133,98 @@ Fast isolated unit tests keep things healthy.
 
 ### When to import objects directly
 
-Avoiding object imports isn't a hard and fast rule. Sometimes it can significantly
-impair readability. This is particularly the case with commonly used objects
-in the standard library. Some examples where you should import the object instead:
+Avoiding object imports isn't a hard and fast rule. Sometimes it can
+significantly impair readability. This is particularly the case with commonly
+used objects in the standard library. Some examples where you should import the
+object instead:
 
 ```python
 from decimal import Decimal
 from typing import Optional, Tuple, Dict
 from collections import defaultdict
+```
+
+## Favour singular nouns for class names
+
+Try to use singular nouns as the names of Python classes. This tends to result in more readable code, especially when
+dealing with collections of instances.
+
+This applies to enums, too: for example, favour `Weekday` over `Weekdays`, as it's grammatically correct to say
+'this object is a weekday', not 'this object is a weekdays'.
+
+### Example
+
+Consider a class named with a _plural_ noun: `UserDetails`. Naming a list of these is awkward:
+
+```python
+user_details_list: list[UserDetails] = get_user_details_list(account)
+```
+
+A singular noun such as `UserProfile` is better, as we can just use the plural form for the collection:
+
+```python
+user_profiles: list[UserProfile] = get_user_profiles(account)
+```
+
+### Tips for finding a singular noun when you have a plural
+
+- As an alternative to `Options`, `Details` or `Preferences`, you can use `Profile` or `Specification` instead.
+- An easy tweak is to add a noun that describes a collection (such as `Set` or `Batch`) to the end of a class name.
+  For example, `EventBatch` is better than `Events`.
+- [Look at a thesaurus](https://www.thesaurus.com/) - maybe there is already a singular form that you can use.
+
+## Name private things with a leading underscore
+
+When a function, class, method, module or module-level-variable should be
+treated as _private_, prefix its name with an underscore. For example:
+
+- A function or variable named `_foo` should not be used outside the module it's
+  declared in.
+- A class named `_Foo` should not be used outside the module it's declared in.
+- A method named `_foo` should not be used except in the class it's declared on,
+  or its subclasses.
+- A module named `_foo.py` should not be imported directly except by its siblings or
+  direct parent package (although see
+  [the guidance on convenience imports](#convenience-imports) for some restrictions on this).
+
+## Avoid name collisions by using a trailing underscore
+
+Sometimes we really want to use a variable name that's already taken by built-in or a library import.
+
+An example is the word "property", which can mean at least two things:
+
+- An instance of the `Property` class representing a real estate property in Kraken.
+- [A Python property](https://docs.python.org/3/library/functions.html#property),
+  with the decorator `@property` squatting most namespaces.
+
+A trailing underscore prevents the name collision:
+
+```python
+property_ = account.default_current_property()
+if not property_:
+    raise payments_comms.UnableToNotifyCustomer("No property found for account")
+```
+
+```python
+for transaction_ in invoice_queries.transactions(invoice):
+    # We only need to record VAT lines for charges and credits.
+    if not isinstance(transaction_, models.BillableItem):
+        continue
+```
+
+Note that asking function callers to use underscore-suffixed kwargs might be a bit too much.
+Better to find a different argument name. That is, instead of:
+
+```python
+def date_to_string(date_: Optional[date]) -> str:
+    return date_.isoformat() if date_ else ""
+```
+
+prefer:
+
+```python
+def date_to_string(date_to_format: Optional[date]) -> str:
+    return date_to_format.isoformat() if date_to_format else ""
 ```
 
 ## Convenience imports
@@ -154,11 +235,12 @@ done with care though - here's a few guidelines:
 
 ### Establish a canonical import path by prefixing private module names with underscores
 
-One danger of a convenience import is that it can present two different ways to access an object, e.g.:
-`mypackage.something` versus `mypackage.foo.something`.
+One danger of a convenience import is that it can present two different ways to
+access an object, e.g.: `mypackage.something` versus `mypackage.foo.something`.
 
-To avoid this, prefix modules that are accessible from a convenience import with an underscore, to indicate that they
-are _private_ and shouldn't be imported directly by callers external to the parent package, e.g.:
+To avoid this, prefix modules that are accessible from a convenience import with
+an underscore, to indicate that they are _private_ and shouldn't be imported
+directly by callers external to the parent package, e.g.:
 
 ```txt
 mypackage/
@@ -167,21 +249,31 @@ mypackage/
     _bar.py
 ```
 
-It's okay for private and public modules to coexist in the same package, as long as the public modules aren't used in
-convenience imports. For example, in the following structure we might expect calling code to access `mypackage.blue` and
-`mypackage.bar.green`, but not `mypackage._foo.blue` or `mypackage.green`.
+Note: you should only use this if all the modules in the package are private (see below).
+
+### Don't use convenience imports in packages with public children
+
+Avoid using convenience imports in the `__init__.py` of any package containing
+publicly-importable modules or subpackages (i.e. ones that aren't prefixed with an
+underscore). This results in unnecessary imports when the public children are imported,
+increasing bootstrap times and the chance of circular import problems.
+
+For example, don't do this:
 
 ```txt
 mypackage/
-    __init__.py
-    _foo.py  # Defines blue
-    bar.py  # Defines green
+   __init__.py  # imports from _foo.py
+   _foo.py
+   bar.py
 ```
+
+This is because when we import `mypackage.bar`, we are forced to import
+from `_foo.py` too.
 
 ### Don't use wildcard imports
 
-Don't use wildcard imports (ie `from somewhere import *`), even if each imported
-module specifies an `__all__` variable.
+Don't use wildcard imports (i.e. `from somewhere import *`), even if each
+imported module specifies an `__all__` variable.
 
 Instead of:
 
@@ -201,35 +293,14 @@ from ._features import man_eater, rich_girl, shes_gone
 
 Why?
 
-- Wildcard imports can make it harder for maintainers to find where functionality lives.
+- Wildcard imports can make it harder for maintainers to find where
+  functionality lives.
 - Wildcard imports can confuse static analysis tools like mypy.
 - If submodules don't specify an `__all__` variable, a large number of objects
-  can be inadvertently imported into the `__init__.py` module, leading to a danger of name collisions.
+  can be inadvertently imported into the `__init__.py` module, leading to a
+  danger of name collisions.
 
 Fundamentally, it's better to be explicit (even if it is more verbose).
-
-### Only use convenience imports in leaf-node packages
-
-Don't structure packages like this:
-
-```txt
-foo/
-    bar/
-        waldo/
-            __init__.py
-            thud.py
-        __init__.py  # imports from _bar.py and _qux.py
-        _bar.py
-        _qux.py
-```
-
-where a non-leaf-node package, `foo.bar` has convenience imports in its
-`__init__.py` module. Doing this means imports from subpackages like `foo.bar.waldo.thud`
-will unnecessarily import everything in `waldo`'s `__init__.py` module. This is
-wasteful and increases the change of circular import problems.
-
-Only use convenience imports in leaf-node packages; that is, packages with no
-subpackages.
 
 ### Don't expose modules as public objects in `__init__.py`
 
@@ -271,6 +342,83 @@ needing to expose the same functionality via a REST API or a management command.
 Would anything need duplicating from the view code? If so, then this tells you
 that there's logic in the view layer that needs extracting.
 
+## <a name="catching-exceptions">Catching exceptions</a>
+
+Don't use bare `except:` clauses; always specify the exception types that should
+be caught.
+
+Don't catch [`BaseException`](https://docs.python.org/3.10/library/exceptions.html#BaseException) (as this can block keyboard interrupts and system exits).
+
+Further, only catch the [`Exception`](https://docs.python.org/3.10/library/exceptions.html#Exception) type in these cases:
+
+1. **If you are re-raising the exception.** This is appropriate when you want to log
+   the exception (to Sentry normally) but allow somewhere further up the call
+   chain to handle it.
+
+   ```py
+   def do_the_thing():
+       try:
+           do_the_subthing()
+       except Exception:
+           # This is unexpected so let's log to Sentry.
+           logger.exception("Unable to do the subthing")
+
+           # Re-raise the exception so somewhere higher up in the call chain can
+           # handle it.
+           raise
+   ```
+
+2. **If you are re-raising a different exception.** This is appropriate if you
+   want to ensure all errors from some component are converted into an
+   `UnableTo`-style domain exception so callers don't have to worry about other
+   types. Since we have a [convention to distinguish between anticipated and
+   unanticipated exceptions][unanticipated], this would normally indicate something
+   unanticipated has happened in your component and should be logged to Sentry
+   for further investigation.
+
+   ```py
+   def do_the_thing():
+       try:
+           do_the_subthing()
+       except Exception as e:
+           # This is unexpected so let's log to Sentry.
+           logger.exception("Unable to do the subthing")
+
+           # Convert into a specific exception so callers of this function don't
+           # have to worry about catching Exception.
+           raise UnableToDoTheThing(...) from e
+   ```
+
+   Remember to chain the exceptions (using `raise ... from ...`) so it's clear
+   the one exception lead to the other. This can be thought of as an "isolation
+   point".
+
+[unanticipated]: https://github.com/octoenergy/coding-conventions/blob/master/conventions/application.md#distinguish-between-anticipated-and-unanticipated-exceptions
+
+3. **If you want to provide a better experience for the end user than the default
+   exception handler.** E.g. it often makes sense to catch `Exception` in HTTP views
+   so you can show a more meaningful error to the end user (than "Internal server error").
+   When doing this, the exception should always be logged to Sentry for further
+   investigation. E.g
+
+   ```py
+   class MyView(generic.FormView):
+       def form_valid(self, form):
+           try:
+               usecase.perform_action()
+           except Exception:
+               # This is unanticipated so let's log to Sentry...
+               logger.exception("Unable to perform action")
+
+               # ...and show a friendly message to the end user.
+               msg = (
+                   "Something went wrong when processing your submission. "
+                   "We're going to look into it."
+               )
+               form.add_error(None, msg)
+               return self.form_invalid(form)
+   ```
+
 ## <a name="dont-do-nothing-silently">Don't do nothing silently</a>
 
 Avoid this pattern:
@@ -289,7 +437,7 @@ anything if these fail. From the caller's point of view, it can't tell whether
 the action was successful or not. This leads to subtle bugs.
 
 It's much better to be explicit and use exceptions to indicate that an action
-couldn't be taken. Eg:
+couldn't be taken. E.g.:
 
 ```python
 def do_something(*args, **kwargs):
@@ -300,9 +448,9 @@ def do_something(*args, **kwargs):
     ...
 ```
 
-Let the calling code decide how to handle cases where the action has
-already happened or the pre-conditions aren't met. The calling code is usually
-in the best place to decide if doing nothing is the right action.
+Let the calling code decide how to handle cases where the action has already
+happened or the pre-conditions aren't met. The calling code is usually in the
+best place to decide if doing nothing is the right action.
 
 If it _really_ doesn't matter if the action succeeds or fails from the caller's
 point-of-view (a "fire-and-forget" action), then use a wrapper function that
@@ -325,37 +473,114 @@ def _do_something(*args, **kwargs):
     ...
 ```
 
-This practice does mean using lots of custom exception classes (which some people are
-afraid of) - but that is ok.
+This practice does mean using lots of custom exception classes (which some
+people are afraid of) - but that is okay.
 
-## <a name="docstrings">Docstrings vs. comments</a>
+## <a name="docstrings">Docstrings</a>
+
+The first sentence of a function's docstring should complete this sentence:
+
+> This function will ...
+
+which helps enforce an imperative mood.
+
+It's conventional (but not mandatory) to start docstrings with "test" for
+predicates (boolean-returning) functions and "return" for query functions.
+
+Further:
+
+- Use a newline character after the initial `"""` and before the final `"""` and
+  ensure the sentence ends with a period.
+
+- In general, prefer type annotations to documenting parameter and return-value
+  types in the docstring as this gives `mypy` a chance to catch possible type
+  errors.
+
+- But do document exceptions that a function can raise (as these can't be
+  indicated using type annotations). Use this format (that PyCharm recognises):
+
+```py
+  """
+  Do something with foo.
+
+  :raises FooError: if the foo is bad
+  """
+```
+
+For example:
+
+```py
+def is_meal_tasty(meal: Meal) -> bool:
+    """
+    Test if the passed meal is tasty or not.
+    """
+    ...
+```
+
+Related:
+[PEP 257 - Docstring Conventions](https://www.python.org/dev/peps/pep-0257/)
+
+## <a name="docstrings-vs-comments">Docstrings vs. comments</a>
 
 There is a difference:
 
-- **Docstrings** are written between triple quotes within the function/class block. They explain
-  what the function does and are written for people who might want to _use_ that
-  function/class but are not interested in the implementation details.
+- **Docstrings** are written between triple quotes within the function/class
+  block. They explain what the function does and are written for people who
+  might want to _use_ that function/class but are not interested in the
+  implementation details.
 
-- In contrast, **comments** are written `# like this` and are written for
-  people who want to understand the implementation so they can _change_ or _extend_ it. They will commonly
-  explain _why_ something has been implemented the way it has.
+- In contrast, **comments** are written `# like this` and are written for people
+  who want to understand the implementation so they can _change_ or _extend_ it.
+  They will commonly explain _why_ something has been implemented the way it
+  has.
 
-It sometimes makes sense to use both next to each other, eg:
+It sometimes makes sense to use both next to each other, e.g.:
 
 ```python
 def do_that_thing():
     """
-    Perform some action and return some thing
+    Perform some action and return some thing.
     """
     # This has been implemented this way because of these crazy reasons.
 ```
 
 Related reading:
 
-- <http://stackoverflow.com/questions/19074745/python-docstrings-descriptions-vs-comments>
+- http://stackoverflow.com/questions/19074745/python-docstrings-descriptions-vs-comments
 
-## <a name="naming-language">Prefer American English for naming modules and objects</a>
+## <a name="naming-language">Prefer American English for naming things</a>
 
-When naming objects like modules, classes, functions and variables, prefer American English. Eg, use serializers.py instead of serialisers.py. This ensures the names in our codebase match those in the wider ecosystem.
+When naming objects like modules, classes, functions and variables,
+prefer American English. For example, use `serializers.py` (US
+spelling) instead of `serialisers.py` (UK spelling). This ensures the
+names in our codebase match those in the wider Python ecosystem.
 
-UK spellings are fine in comments or docstrings.
+## <a name="timeouts-for-http-requests">Timeouts for HTTP Requests</a>
+
+Use the _requests_ library for making HTTP calls.
+
+Consider using one of our helper classes like `HTTPClient` or `JSONClient` from
+`octoenergy/services/services_base.py`. These classes wrap _requests_.
+
+When communicating with an external dependency, include a timeout unless you
+have a very good reason not to.
+
+An example for HTTP requests:
+
+```python3
+requests.get(
+    "https://my-external-service/",
+    timeout=10
+)
+```
+
+If you don't include a timeout, you risking leaving an end user waiting for an
+unacceptable length of time, or having a worker process blocked doing nothing
+useful.
+
+The
+[requests library documentation](https://requests.readthedocs.io/en/master/user/quickstart/#timeouts)
+has this to say about timeouts:
+
+> Nearly all production code should use this parameter in nearly all requests.
+> Failure to do so can cause your program to hang indefinitely.
