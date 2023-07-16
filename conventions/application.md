@@ -9,7 +9,7 @@
 - [Minimise system clock calls](#system-clock)
 - [Modelling periods of time](#time-periods)
 
-## <a name="events">Publishing events</a>
+## Publishing events
 
 When publishing application events, the `params` should be things that are known
 _before_ the event, while `meta` should be things known _after_ the event as
@@ -59,7 +59,7 @@ json.event:"comms.message.send-error"
 json.event:"comms.message.send-*"
 ```
 
-## <a name="logging-exceptions">Logging exceptions</a>
+## Logging exceptions
 
 Use `logger.exception` in `except` blocks but pass a useful message - don't just
 pass on the caught exception's message. Don't even format the exception's
@@ -108,7 +108,7 @@ except UnableToDoSomething:
     logger.exception("Unable to do something with arg %s", x)
 ```
 
-## <a name="distinguish-exceptions">Distinguish between anticipated and unanticipated exceptions</a>
+## Distinguish between anticipated and unanticipated exceptions
 
 When calling functions that can raise exceptions, ensure your handling
 distinguishes between _anticipated_ and _unanticipated_ exceptions. It generally
@@ -134,7 +134,7 @@ The rule of thumb is that anything logged to Sentry requires a code change to
 fix it. If nothing can be done (ie a vendor time-out), publish an application
 event instead.
 
-## <a name="exception-imports">Exception imports</a>
+## Exception imports
 
 Ensure exception classes are importable from the same location as functionality that
 raise them.
@@ -170,7 +170,7 @@ this can lead to ambiguity and bugs. Furthermore, it rarely makes sense to have
 `exceptions.py` modules of exception classes used in many places. In general,
 prefer to define exception types in the same module as where they are raised.
 
-## <a name="celery-tasks">Celery tasks</a>
+## Celery tasks
 
 Care is required when changing Celery task signatures as publishers and
 consumers get deployed at different times. It's important that changes to how an
@@ -217,7 +217,7 @@ Second, the publisher and consumer can be modified to use the new calling
 args/kwargs. When this deploys, the older consumers should handle any published
 events gracefully before they are terminated.
 
-## <a name="kwarg-only-functions">Keyword-only functions</a>
+## Keyword-only functions
 
 Python 3 supports keyword-only arguments where callers of a function HAVE to
 pass kwargs (positional args get a `TypeError`). Syntax:
@@ -236,7 +236,7 @@ Further, _always_ use keyword-only args for "public" domain functions (ie
 those which are called from the interface layer or from packages within the
 domain layer).
 
-## <a name="system-clock">Minimise system clock calls</a>
+## Minimise system clock calls
 
 Avoid calls to the system clock in the domain layer of the application. That
 is, calls to `localtime.now()`, `localtime.today()` etc. Think of such calls
@@ -275,7 +275,7 @@ As suggested above, such system-clock calls should be reserved for the interface
 layer of your application and the value passed though into the
 business-logic/domain layers.
 
-## <a name="time-periods">Modelling periods of time</a>
+## Modelling periods of time
 
 It's common for domain objects to model some period of time that defines when an
 object is "active" or "valid". When faced with this challenge, prefer to use

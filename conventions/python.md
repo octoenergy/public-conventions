@@ -342,7 +342,7 @@ needing to expose the same functionality via a REST API or a management command.
 Would anything need duplicating from the view code? If so, then this tells you
 that there's logic in the view layer that needs extracting.
 
-## <a name="catching-exceptions">Catching exceptions</a>
+## Catching exceptions
 
 Don't use bare `except:` clauses; always specify the exception types that should
 be caught.
@@ -419,7 +419,7 @@ Further, only catch the [`Exception`](https://docs.python.org/3.10/library/excep
                return self.form_invalid(form)
    ```
 
-## <a name="dont-do-nothing-silently">Don't do nothing silently</a>
+## Don't do nothing silently
 
 Avoid this pattern:
 
@@ -476,7 +476,7 @@ def _do_something(*args, **kwargs):
 This practice does mean using lots of custom exception classes (which some
 people are afraid of) - but that is okay.
 
-## <a name="docstrings">Docstrings</a>
+## Docstrings
 
 The first sentence of a function's docstring should complete this sentence:
 
@@ -520,7 +520,7 @@ def is_meal_tasty(meal: Meal) -> bool:
 Related:
 [PEP 257 - Docstring Conventions](https://www.python.org/dev/peps/pep-0257/)
 
-## <a name="docstrings-vs-comments">Docstrings vs. comments</a>
+## Docstrings vs. comments
 
 There is a difference:
 
@@ -548,14 +548,14 @@ Related reading:
 
 - http://stackoverflow.com/questions/19074745/python-docstrings-descriptions-vs-comments
 
-## <a name="naming-language">Prefer American English for naming things</a>
+## Prefer American English for naming things
 
 When naming objects like modules, classes, functions and variables,
 prefer American English. For example, use `serializers.py` (US
 spelling) instead of `serialisers.py` (UK spelling). This ensures the
 names in our codebase match those in the wider Python ecosystem.
 
-## <a name="timeouts-for-http-requests">Timeouts for HTTP Requests</a>
+## Timeouts for HTTP Requests
 
 Use the _requests_ library for making HTTP calls.
 
