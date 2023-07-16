@@ -15,6 +15,7 @@ here][jobs] 😜.
 
 Contents:
 
+- [Application](conventions/application.md)
 - [Django](conventions/django.md)
 - [Python](conventions/python.md)
 - [Python architecture patterns](conventions/patterns.md)
