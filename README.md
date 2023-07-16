@@ -25,3 +25,4 @@ Contents:
 - [Email templates](conventions/emails.md)
 - [Emoji shorthand](conventions/shorthand.md) (used in code-review and Slack messages)
 - [Terraform](conventions/terraform.md)
+- [Testing](conventions/testing.md)
