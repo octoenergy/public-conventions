@@ -17,6 +17,7 @@ in that common comments can reference a single detailed explanation.
 - [Docstrings vs comments](#docstrings-vs-comments)
 - [Prefer American English for naming things](#prefer-american-english-for-naming-things)
 - [Timeouts for HTTP requests](#timeouts-for-http-requests)
+- [Favour attrs over dataclasses](#favour-attrs-over-dataclasses)
 
 ## Make function signatures explicit
 
@@ -585,3 +586,46 @@ has this to say about timeouts:
 
 > Nearly all production code should use this parameter in nearly all requests.
 > Failure to do so can cause your program to hang indefinitely.
+
+## Favour attrs over dataclasses
+
+When faced with a choice between using [`attrs`](https://www.attrs.org/) and [`dataclasses`](https://docs.python.org/3/library/dataclasses.html), choose `attrs`.
+
+There are a number of advantages:
+
+- The `attrs` library has a mostly-compatible superset of the functionality in `dataclasses`.
+  - In other words, [`attrs` has more features](https://www.attrs.org/en/23.1.0/why.html#data-classes).
+- It calls `super` in the generated `__init__` method: `dataclasses` lack of this has caused outages in the past!
+- It uses less memory because it uses [`__slots__`](https://docs.python.org/3/reference/datamodel.html#slots) by default.
+- It has a faster development iteration time, as a result of not being tied to Python's release schedule.
+- Our codebase will be more consistent for only using one of these two very similar libraries.
+
+### Use the new `attrs` naming scheme
+
+Old versions of `attrs` had a [cutesy naming convention which has now been deprecated](https://www.attrs.org/en/23.1.0/names.html).
+
+The quickest way to check is by the imports. The new version imports `attrs`, not `attr`.
+
+The new API looks like this:
+
+```python
+import attrs
+
+@attrs.define  # Note: this is mutable, but @attrs.frozen is often preferable.
+class MyClass:
+    value: int
+```
+
+The old API looked like this:
+
+```python
+import attr
+
+@attr.s
+class MyClass:
+    value: int
+```
+
+### Further reading
+
+- ["Why not data classes"](https://www.attrs.org/en/stable/why.html#data-classes) from attrs' docs.
