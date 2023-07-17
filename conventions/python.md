@@ -15,6 +15,7 @@ in that common comments can reference a single detailed explanation.
 - [Don't do nothing silently](#dont-do-nothing-silently)
 - [Docstrings](#docstrings)
 - [Docstrings vs comments](#docstrings-vs-comments)
+- [Prefer American English for naming things](#prefer-american-english-for-naming-things)
 - [Timeouts for HTTP requests](#timeouts-for-http-requests)
 
 ## Make function signatures explicit
