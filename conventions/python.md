@@ -674,4 +674,3 @@ class MyClass:
 ### Further reading
 
 - ["Why not data classes"](https://www.attrs.org/en/stable/why.html#data-classes) from attrs' docs.
-- [Structuring template context data](/conventions/interfaces-layer.md#serialize-template-context).
