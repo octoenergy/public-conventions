@@ -596,7 +596,7 @@ For example, this might mean:
 
 - Instead of `@attrs.define` use `@attrs.frozen`.
 - Instead of `set` use `frozenset`.
-- Instead of `list[object]` use `tuple[object, ...]` or `typing.Sequence[object]`.
+- Instead of `list[object]` use `tuple[object, ...]` or `collections.abc.Sequence[object]`.
 
 By reducing what data may vary, this approach can:
 
