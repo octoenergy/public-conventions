@@ -15,6 +15,8 @@ here][jobs] 😜.
 
 Contents:
 
+- [Application](conventions/application.md)
+- [Django](conventions/django.md)
 - [Python](conventions/python.md)
 - [Python architecture patterns](conventions/patterns.md)
 - [Pull Requests](conventions/pull-requests.md)
@@ -24,3 +26,4 @@ Contents:
 - [Email templates](conventions/emails.md)
 - [Emoji shorthand](conventions/shorthand.md) (used in code-review and Slack messages)
 - [Terraform](conventions/terraform.md)
+- [Testing](conventions/testing.md)
