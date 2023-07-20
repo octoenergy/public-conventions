@@ -1,0 +1,20 @@
+version: 2.1
+
+jobs:
+
+  git_commits:
+    docker:
+      - image: cimg/python:3.11.4
+    steps:
+      - checkout
+      - run:
+          name: Install pytest
+          command: pip install pytest
+      - run:
+          name: Test git commits
+          command: make test
+
+workflows:
+  static-analysis:
+    jobs:
+      - git_commits
