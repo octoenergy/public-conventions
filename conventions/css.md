@@ -1,6 +1,6 @@
 # SASS Style Guide
 
-*A reasonable style guide for modern SASS development.*
+_A reasonable style guide for modern SASS development._
 
 ## <a name='TOC'>Table of Contents</a>
 
@@ -25,94 +25,103 @@ If you think there should be any changes to these, then raise them with the team
 
 Use soft tabs set to 4 spaces.
 
-```
+```css
 /* Bad */
 .selector {
-..display: flex;
+  ..display: flex;
 }
 
 /* Good */
 .selector {
-....display: flex;
+  ....display: flex;
 }
 ```
 
 Place 1 space before the leading brace and place 1 space after the colon of a declaration.
 
-```
+```css
 /* Bad */
-.selector{
-    position:relative;
+.selector {
+  position: relative;
 }
 
 /* Good */
 .selector {
-    position: relative;
+  position: relative;
 }
 ```
 
 Place an empty newline at the end of the file.
 
-```
+```css
 /* Bad */
 .selector {
-    clear: both;
+  clear: both;
 }
 ```
 
-```
+```css
 /* Good */
 .selector {
-    clear: both;
+  clear: both;
 }
-
 ```
 
 **_(Note: we have an `.editorconfig` file in the repo to handle consistent spacing by default across multiple developers/code editors)_**
 
-**[[⬆ ]](#TOC)**
+**[[⬆]](#TOC)**
 
 ## <a name='formatting'>Formatting</a>
 
 The chosen code format ensures that code is: easy to read; easy to clearly comment; minimises the chance of accidentally introducing errors; and results in useful diffs and blames.
 
-+ Use 1 selector per line in multi-selector rulesets
-+ Use 1 declaration per line in a declaration block
-+ Use lowercase, longhand hex values
-+ Use single quotes `''` e.g. `input[type='checkbox']`
-+ Do not specify units for zero-values e.g. `margin: 0;` and not `margin: 0rem;`
-+ Do not add leading zeroes to decimal figures (`.8` instead of `0.8`)
-+ Include a space after each comma in comma-separated property or function values
-+ Include a semi-colon at the end of the last declaration in a declaration block
-+ Place the closing brace of a ruleset in the same column as the first character of the ruleset
-+ Separate each ruleset by a blank line
+- Use 1 selector per line in multi-selector rulesets
+- Use 1 declaration per line in a declaration block
+- Use lowercase, longhand hex values
+- Use single quotes `''` e.g. `input[type='checkbox']`
+- Do not specify units for zero-values e.g. `margin: 0;` and not `margin: 0rem;`
+- Do not add leading zeroes to decimal figures (`.8` instead of `0.8`)
+- Include a space after each comma in comma-separated property or function values
+- Include a semi-colon at the end of the last declaration in a declaration block
+- Place the closing brace of a ruleset in the same column as the first character of the ruleset
+- Separate each ruleset by a blank line
 
-```
+```css
 /* Bad */
-.selector-1, .selector-2, .selector-3 { display: block; font-family: helvetica,arial,sans-serif; background: #fff; background: linear-gradient(#fff,rgba(0,0,0,0.8)) }
-.selector-a, .selector-b { padding: 10px }
+.selector-1,
+.selector-2,
+.selector-3 {
+  display: block;
+  font-family: helvetica, arial, sans-serif;
+  background: #fff;
+  background: linear-gradient(#fff, rgba(0, 0, 0, 0.8));
+}
+.selector-a,
+.selector-b {
+  padding: 10px;
+}
 
 /* Good */
 .selector-1,
 .selector-2,
 .selector-3 {
-    display: block;
-    font-family: helvetica, arial, sans-serif;
-    background: #ffffff;
-    background: linear-gradient(#ffffff, rgba(0, 0, 0, .8));
+  display: block;
+  font-family: helvetica, arial, sans-serif;
+  background: #ffffff;
+  background: linear-gradient(#ffffff, rgba(0, 0, 0, 0.8));
 }
 
 .selector-a,
 .selector-b {
-    padding: 10px;
+  padding: 10px;
 }
 ```
 
-**[[⬆ ]](#TOC)**
+**[[⬆]](#TOC)**
 
 ## <a name='declaration-order'>Declaration order</a>
 
-```
+```css
 .selector {
     /* Positioning */
     position
@@ -296,120 +305,115 @@ The chosen code format ensures that code is: easy to read; easy to clearly comme
 ```
 
 ### When should I use `!important`?
-Never.
-*sigh*
 
-**[[⬆ ]](#TOC)**
+Never.
+_sigh_
+
+**[[⬆]](#TOC)**
 
 ## <a name='naming-conventions'>Naming Conventions</a>
 
 We use [BEM](http://getbem.com/) (Block, element, modifier) for our class naming conventions.
 
-
 ### Class names in React/Django templates
 
 BEM lends itself nicely to React components. The block name will typically be the same as the Component name. We use the flattening technique to prevent grandchild selectors, but if you have multiple layers of html nesting, consider whether it would be neater to start a new component and a new block. This can also be used for html not crafted with React. Let's look at a chunky example.
 
+```html
+<ul class="some-collection">
+  <li class="some-collection__item">
+    <a class="energy-product">
+      <p class="energy-product__content">
+        Items cost <span class="energy-product__price">£100</span> or something
+      </p>
+    </a>
 
-```
-<ul class="SomeCollection">
-    <li class="SomeCollection__item">
-         <a class="EnergyProduct">
-            <p class="EnergyProduct__content">
-               Items cost <span class="EnergyProduct__price">£100</span> or something
-            </p>
-         </a>
-
-         <a class="EnergyProduct EnergyProduct--my-favourite">
-            <p class="EnergyProduct__content">
-               Favourite items cost <span class="EnergyProduct__price--my-favourite">£10</span> less
-            </p>
-         </a>
-    </li>
+    <a class="energy-product energy-product--my-favourite">
+      <p class="energy-product__content">
+        Favourite items cost
+        <span class="energy-product__price--my-favourite">£10</span> less
+      </p>
+    </a>
+  </li>
 </ul>
 ```
 
-````
-.SomeCollection {
-    // Styles that relate to the collection itself, display, positioning etc
+```css
+.some-collection {
+  // Styles that relate to the collection itself, display, positioning etc
 
-    &__item {
-        // styling for each item in the list, eg margin, spacing
-    }
+  &__item {
+    // styling for each item in the list, e.g. margin, spacing
+  }
 }
 
-.EnergyProduct {
-    // common styling for all the links and states
-    // this means we don't tie all items in this list to this style and we could add styles
-    // for eg a BoilerProduct or Electric vehicles product later and reuse the collection styles
-    // but add different items without making these styles too complex with lots of modifiers
+.energy-product {
+  // common styling for all the links and states
+  // this means we don't tie all items in this list to this style and we could add styles
+  // for e.g. a BoilerProduct or Electric vehicles product later and reuse the collection styles
+  // but add different items without making these styles too complex with lots of modifiers
 
-    &:hover {
-        text-decoration: underline;
-    }
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &--my-favourite {
+    // maybe favourites have a different background
+  }
+
+  &__price {
+    // this is a grandchild, but we flatten it out to avoid making the markup structure too ridged
 
     &--my-favourite {
-        // maybe favourites have a different background
+      // maybe highlight the price is lower.
+      // Note we don't try and tie this to the block modifier,
+      // again to avoid enforcing the structure in the markup and nesting style.
     }
-
-    &__price {
-        // this is a grandchild, but we flatten it out to avoid making the markup structure too ridged
-
-        &--my-favourite {
-            // maybe highlight the price is lower.
-            // Note we don't try and tie this to the block modifier,
-            // again to avoid enforcing the structure in the markup and nesting style.
-        }
-    }
+  }
 }
-````
+```
 
-
-Blocks, and element styles should use CamelCase, modifiers should be hyphenated.
+Blocks, and element styles should use `kebab-case`, modifiers should be hyphenated.
 
 Finally a few things to avoid:
 
-- Nesting styles and styling tags directly. Try to avoid writing rules that are compiled to things like `.Component > .InnerComponent > p > a`. It's very hard to overwrite later.
+- Nesting styles and styling tags directly. Try to avoid writing rules that are compiled to things like `.component > .inner-component > p > a`. It's very hard to overwrite later.
 - `@extend`. It's usually better to add that class directly to the html or add a custom bit of padding/background colour/ border to your component manually then extend a style.
 
-**_(Note: for more info on our approach to handling SASS for react components, see our [Styleguide](https://octopus.energy/_styleguide))_**
-
-```
+```css
 /* Bad */
 BODY {
-    margin: 0;
+  margin: 0;
 }
 
 /* Good */
 body {
-    margin: 0;
+  margin: 0;
 }
 
-.JoinComponent-button--green {
-    margin: 0;
+.join-component-button--green {
+  margin: 0;
 }
 ```
 
-**[[⬆ ]](#TOC)**
-
+**[[⬆]](#TOC)**
 
 ## <a name='misc'>Miscellaneous rules</a>
 
 Most of these are fairly obvious, but are also part of the Stylelint tests and so are worth mentioning.
 
-+ There should never be duplicate selectors in a file
-+ There should be an empty line after each selector
-+ There shouldn't be any empty selectors in a file
-+ There should never be more than two empty lines in a file
-+ There shouldn't be any end-of-line whitespace (editorconfig takes care of this)
-+ There should always be spaces between selector combinators i.e. `.foo + bar` and not `.foo+bar`
+- There should never be duplicate selectors in a file
+- There should be an empty line after each selector
+- There shouldn't be any empty selectors in a file
+- There should never be more than two empty lines in a file
+- There shouldn't be any end-of-line whitespace (`~/.editorconfig` takes care of this)
+- There should always be spaces between selector combinators i.e. `.foo + bar` and not `.foo+bar`
 
-**[[⬆ ]](#TOC)**
-
+**[[⬆]](#TOC)**
 
 ## <a name='comments'>Comments</a>
 
-```
+```css
 /* -----------------------------------------------------------------------------
  * Section block
  * -------------------------------------------------------------------------- */
@@ -422,14 +426,14 @@ Most of these are fairly obvious, but are also part of the Stylelint tests and s
 
 **Example**:
 
-```
+```css
 /* ==========================================================================
    Typography
    ========================================================================== */
 
 p {
-    margin: 0 0 20px;
-    font-size: 16px;
+  margin: 0 0 20px;
+  font-size: 16px;
 }
 
 /* Headings
@@ -441,14 +445,14 @@ h3,
 h4,
 h5,
 h6 {
-    margin: 0 0 20px;
-    font-family: serif;
-    font-weight: bold;
+  margin: 0 0 20px;
+  font-family: serif;
+  font-weight: bold;
 }
 
 /* A specific fix for a thing because reasons */
 .foo {
-    ...
+  ...;
 }
 ```
 
@@ -458,23 +462,21 @@ Not strictly speaking SASS, but some of the same ideas apply. Here are a few spe
 
 ### Styles in the styles/theme files
 
-Try to keep styles in the styled component file, rather than passing props in the JSX. This makes it easier to use the themes. Some notable exceptions are NavLink, which required its activeStyles passed as a prop, and some SVG components which take a fill for convenience. We may wish to push the later into using styled components.
+Try to keep styles in the styled component file, rather than passing props in the JSX. This makes it easier to use the themes. Some notable exceptions are `NavLink`, which required its `activeStyles` passed as a prop, and some SVG components which take a fill for convenience. We may wish to push the later into using styled components.
 
 We also try and keep any logic of 'in this theme we do this' in the theme files - ideally we should never ask which theme is active in a theme file. Mixins and defaults can help with this - see [theme specific assets](#theme-specific-assets).
 
-
-
 ### Mixins
 
-We use component mixins to try and keep the themes DRY. These are just functions that help to define the shape of a theme block, and can be used to specify sensible defaults. We're working towards a tiered naming system that reflects how the colour/style of a component might be percieved in different settings. For example:
+We use component mixins to try and keep the themes DRY. These are just functions that help to define the shape of a theme block, and can be used to specify sensible defaults. We're working towards a tiered naming system that reflects how the colour/style of a component might be perceived in different settings. For example:
 
-- A designer calls a colour skyBlue
-- A theme calls it accentPrimary
-- A component calls it backgroundColor
+- A designer calls a colour `skyBlue`
+- A theme calls it `accentPrimary`
+- A component calls it `backgroundColor`
 
-All these are correct, but where you use a variable can influence how you want to reference it. To help with this, mixins also serve as an API for a themable component - they define what you can change and provide a consistent name for that to pass into the mixin in the theme file. However, we can then create whatever block shape serves the component in the mixin, so you might do something like:
+All these are correct, but where you use a variable can influence how you want to reference it. To help with this, mixins also serve as an API for a theme-able component - they define what you can change and provide a consistent name for that to pass into the mixin in the theme file. However, we can then create whatever block shape serves the component in the mixin, so you might do something like:
 
-```
+```js
 ...
     input: {
         primary: inputMixin({
@@ -485,52 +487,50 @@ All these are correct, but where you use a variable can influence how you want t
             prefixColor: black,
         })
      }
-...     
-```     
+...
+```
 
 in a theme file, but the mixin can reflect a more complex structure:
 
-```
-
+```js
 export default ({
-    color,
-    backgroundColor,
-    borderBottom,
-    boxShadow,
-    labelColor,
-    helpTextColor,
-    prefixColor,
-    validBorderBottomColor,
-    focusBorderBottom='none',
+  color,
+  backgroundColor,
+  borderBottom,
+  boxShadow,
+  labelColor,
+  helpTextColor,
+  prefixColor,
+  validBorderBottomColor,
+  focusBorderBottom = "none",
 }) => ({
-    color: color,
-    backgroundColor: backgroundColor,
-    borderBottom: borderBottom,
-    boxShadow: boxShadow,
-    focus: {
-        borderBottom: focusBorderBottom,
-    },
-    label: {
-        color: labelColor,
-    },
-    prefix: {
-        color: prefixColor,
-    },
-    helpText: {
-        color: helpTextColor,
-    },
-    valid: {
-        borderBottomColor: validBorderBottomColor,
-    },
+  color: color,
+  backgroundColor: backgroundColor,
+  borderBottom: borderBottom,
+  boxShadow: boxShadow,
+  focus: {
+    borderBottom: focusBorderBottom,
+  },
+  label: {
+    color: labelColor,
+  },
+  prefix: {
+    color: prefixColor,
+  },
+  helpText: {
+    color: helpTextColor,
+  },
+  valid: {
+    borderBottomColor: validBorderBottomColor,
+  },
 });
-
 ```
 
 which is then more helpful in the component. The component only ever has to care that it will be given a path like `label.color` to use, so and changes to the theme colours have no implications for the component.
 
-
 #### <a name='theme-specific-assets'>Example which needs some theme specific asset</a>
-```
+
+```js
 ${theme=='octopus' &&
     css`
     background: url('something/octopus/specific')
@@ -539,22 +539,20 @@ ${theme=='octopus' &&
 
 we would do something like this in a mixin:
 
-```
-const bannerMixin = ({
-   backgroundUrl,
-   backgroundColor,
-}) => ({
+```js
+const bannerMixin = ({ backgroundUrl, backgroundColor }) => ({
   backgroundColor,
   header: {
-        backgroundUrl,
-    }
-})
+    backgroundUrl,
+  },
+});
 
-export default someComponentMixin
+export default someComponentMixin;
 ```
+
 which is then used like this in e.g the octopus theme file:
 
-```
+```js
 primaryBanner: bannerMixin({
      backgroundColor: backgroundPrimary,
      backgroundUrl: 'something/octopus/specific'
@@ -563,11 +561,10 @@ primaryBanner: bannerMixin({
 
 Then in the styled component file:
 
-```
+```css
 background: url(${header.backgroundUrl});
 ```
 
 This helps to keep anything specific to a theme in that brands theme file.
 
-
-**[[⬆ ]](#TOC)**
+**[[⬆]](#TOC)**
