@@ -114,184 +114,184 @@ The chosen code format ensures that code is: easy to read; easy to clearly comme
 
 ```
 .selector {
-	/* Positioning */
-	position
-	top
-	right
-	bottom
-	left
-	z-index
+    /* Positioning */
+    position
+    top
+    right
+    bottom
+    left
+    z-index
 
-	/* Display and Box Model */
-	display
-	align-content
-	box-align
-	flex-align
-	grid-row-align
-	align-items
-	align-self
-	box-flex
-	box-orient
-	box-gulp
-	box-sizing
-	flex
-	flex-basis
-	flex-direction
-	flex-flow
-	flex-grow
-	flex-item-align
-	flex-shrink
-	flex-wrap
-	flex-pack
-	justify-content
-	order
-	float
-	width
-	height
-	max-width
-	max-height
-	min-width
-	min-height
-	padding
-	padding-top
-	padding-right
-	padding-bottom
-	padding-left
-	margin
-	margin-top
-	margin-right
-	margin-bottom
-	margin-left
-	margin-collapse
-	margin-top-collapse
-	margin-right-collapse
-	margin-bottom-collapse
-	margin-left-collapse
-	overflow
-	overflow-x
-	overflow-y
-	overflow-wrap
-	clip
-	clear
+    /* Display and Box Model */
+    display
+    align-content
+    box-align
+    flex-align
+    grid-row-align
+    align-items
+    align-self
+    box-flex
+    box-orient
+    box-gulp
+    box-sizing
+    flex
+    flex-basis
+    flex-direction
+    flex-flow
+    flex-grow
+    flex-item-align
+    flex-shrink
+    flex-wrap
+    flex-pack
+    justify-content
+    order
+    float
+    width
+    height
+    max-width
+    max-height
+    min-width
+    min-height
+    padding
+    padding-top
+    padding-right
+    padding-bottom
+    padding-left
+    margin
+    margin-top
+    margin-right
+    margin-bottom
+    margin-left
+    margin-collapse
+    margin-top-collapse
+    margin-right-collapse
+    margin-bottom-collapse
+    margin-left-collapse
+    overflow
+    overflow-x
+    overflow-y
+    overflow-wrap
+    clip
+    clear
 
-	/* Typography */
-	font
-	font-family
-	font-size
-	font-style
-	font-weight
-	hyphens
-	src
-	line-height
-	letter-spacing
-	word-spacing
-	font-smoothing
-	color
-	text-align
-	text-decoration
-	text-indent
-	text-overflow
-	text-fill-color
-	text-rendering
-	text-size-adjust
-	text-shadow
-	text-transform
-	word-break
-	word-wrap
-	white-space
-	vertical-align
-	list-style
-	list-style-type
-	list-style-position
-	list-style-image
-	pointer-events
-	cursor
+    /* Typography */
+    font
+    font-family
+    font-size
+    font-style
+    font-weight
+    hyphens
+    src
+    line-height
+    letter-spacing
+    word-spacing
+    font-smoothing
+    color
+    text-align
+    text-decoration
+    text-indent
+    text-overflow
+    text-fill-color
+    text-rendering
+    text-size-adjust
+    text-shadow
+    text-transform
+    word-break
+    word-wrap
+    white-space
+    vertical-align
+    list-style
+    list-style-type
+    list-style-position
+    list-style-image
+    pointer-events
+    cursor
 
-	/* Background */
-	background
-	background-attachment
-	background-color
-	background-image
-	background-position
-	background-repeat
-	background-size
-	filter
+    /* Background */
+    background
+    background-attachment
+    background-color
+    background-image
+    background-position
+    background-repeat
+    background-size
+    filter
 
-	/* Misc */
-	border
-	border-collapse
-	border-top
-	border-right
-	border-bottom
-	border-left
-	border-color
-	border-image
-	border-top-color
-	border-right-color
-	border-bottom-color
-	border-left-color
-	border-spacing
-	border-style
-	border-top-style
-	border-right-style
-	border-bottom-style
-	border-left-style
-	border-width
-	border-top-width
-	border-right-width
-	border-bottom-width
-	border-left-width
-	border-radius
-	border-top-right-radius
-	border-bottom-right-radius
-	border-bottom-left-radius
-	border-top-left-radius
-	border-radius-topright
-	border-radius-bottomright
-	border-radius-bottomleft
-	border-radius-topleft
-	content
-	quotes
-	outline
-	outline-offset
-	opacity
-	visibility
-	size
-	zoom
-	transform
-	transform-origin
-	box-shadow
-	table-layout
+    /* Misc */
+    border
+    border-collapse
+    border-top
+    border-right
+    border-bottom
+    border-left
+    border-color
+    border-image
+    border-top-color
+    border-right-color
+    border-bottom-color
+    border-left-color
+    border-spacing
+    border-style
+    border-top-style
+    border-right-style
+    border-bottom-style
+    border-left-style
+    border-width
+    border-top-width
+    border-right-width
+    border-bottom-width
+    border-left-width
+    border-radius
+    border-top-right-radius
+    border-bottom-right-radius
+    border-bottom-left-radius
+    border-top-left-radius
+    border-radius-topright
+    border-radius-bottomright
+    border-radius-bottomleft
+    border-radius-topleft
+    content
+    quotes
+    outline
+    outline-offset
+    opacity
+    visibility
+    size
+    zoom
+    transform
+    transform-origin
+    box-shadow
+    table-layout
 
-	/* Animations & Transitions */
-	animation
-	animation-delay
-	animation-duration
-	animation-iteration-count
-	animation-name
-	animation-play-state
-	animation-timing-function
-	animation-fill-mode
-	tap-highlight-color
-	transition
-	transition-delay
-	transition-duration
-	transition-property
-	transition-timing-function
-	background-clip
-	backface-visibility
+    /* Animations & Transitions */
+    animation
+    animation-delay
+    animation-duration
+    animation-iteration-count
+    animation-name
+    animation-play-state
+    animation-timing-function
+    animation-fill-mode
+    tap-highlight-color
+    transition
+    transition-delay
+    transition-duration
+    transition-property
+    transition-timing-function
+    background-clip
+    backface-visibility
 
-	/* Misc */
-	resize
-	appearance
-	user-select
-	interpolation-mode
-	direction
-	marks
-	page
-	page-break-after
-	set-link-source
-	unicode-bidi
+    /* Misc */
+    resize
+    appearance
+    user-select
+    interpolation-mode
+    direction
+    marks
+    page
+    page-break-after
+    set-link-source
+    unicode-bidi
 }
 ```
 
@@ -386,7 +386,7 @@ body {
 }
 
 .JoinComponent-button--green {
-	margin: 0;
+    margin: 0;
 }
 ```
 
@@ -533,7 +533,7 @@ which is then more helpful in the component. The component only ever has to care
 ```
 ${theme=='octopus' &&
     css`
-	background: url('something/octopus/specific')
+    background: url('something/octopus/specific')
     `}
 ```
 
