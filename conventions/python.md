@@ -410,8 +410,7 @@ type in these cases:
    the one exception lead to the other. This can be thought of as an "isolation
    point".
 
-[unanticipated]:
-  https://github.com/octoenergy/coding-conventions/blob/master/conventions/application.md#distinguish-between-anticipated-and-unanticipated-exceptions
+[unanticipated]: https://github.com/octoenergy/coding-conventions/blob/master/conventions/application.md#distinguish-between-anticipated-and-unanticipated-exceptions
 
 3. **If you want to provide a better experience for the end user than the
    default exception handler.** E.g. it often makes sense to catch `Exception`

@@ -4,7 +4,6 @@ Contents:
 
 - [Prefer object properties to hard-coded comparisons](#prefer-object-properties-to-hard-coded-comparisons)
 
-
 ## Prefer object properties to hard-coded comparisons
 
 Instead of:
