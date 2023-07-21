@@ -1,0 +1,2 @@
+test:
+	pytest -v .circleci/
