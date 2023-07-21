@@ -22,6 +22,22 @@ changes; don't merge `main` into your branch.
 
 These rules are checked using Pytest in CI.
 
+## Formatting
+
+All markdown should be formatted with [Prettier](https://prettier.io/) version 3.0.0
+This can be installed on your host OS with:
+
+    npm install -g prettier@3.0.0
+
+Once installed, ensure your editor runs Prettier on a pre-save hook:
+
+- [PyCharm instructions](https://www.jetbrains.com/help/pycharm/prettier.html)
+- [VSCode instructions](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- [Vim instructions](https://prettier.io/docs/en/vim.html)
+
+Prettier conformance is checked in CI and configured via `.prettierrc.yaml` and
+`.prettierignore`.
+
 ## Spelling
 
 Pull requests must pass a spell-check before merge. This is done using the

@@ -34,9 +34,19 @@ jobs:
           name: Lint content with markdownlint
           command: markdownlint .
 
+  prettier:
+    docker:
+      - image: tmknom/prettier:3.0.0
+    steps:
+      - checkout
+      - run:
+          name: Check Prettier
+          command: prettier --check .
+
 workflows:
   static-analysis:
     jobs:
       - git_commits
       - spelling
       - markdownlint
+      - prettier
