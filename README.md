@@ -23,7 +23,6 @@ Contents:
 - [CSS](conventions/css.md)
 - [HTML and Django templates](conventions/html.md)
 - [GraphQL](conventions/graphql.md)
-- [Email templates](conventions/emails.md)
 - [Emoji shorthand](conventions/shorthand.md) (used in code-review and Slack messages)
 - [Terraform](conventions/terraform.md)
 - [Testing](conventions/testing.md)
