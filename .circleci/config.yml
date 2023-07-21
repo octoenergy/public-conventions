@@ -14,7 +14,19 @@ jobs:
           name: Test git commits
           command: make test
 
+  markdownlint:
+    docker:
+      - image: tmknom/markdownlint:0.33.0
+    steps:
+      - checkout
+
+      # Note, we can't use a make target here as `make` isn't installed on this Docker image.
+      - run:
+          name: Lint content with markdownlint
+          command: markdownlint .
+
 workflows:
   static-analysis:
     jobs:
       - git_commits
+      - markdownlint
