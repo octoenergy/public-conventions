@@ -22,6 +22,23 @@ changes; don't merge `main` into your branch.
 
 These rules are checked using Pytest in CI.
 
+## Spelling
+
+Pull requests must pass a spell-check before merge. This is done using the
+[`tmaier/markdown-spellcheck`](https://hub.docker.com/r/tmaier/markdown-spellcheck)
+Docker image.
+
+To run the spell-test locally run:
+
+    make spell_check
+
+or:
+
+    docker run --rm -ti -v $(pwd):/workdir tmaier/markdown-spellcheck:latest \
+        --report --ignore-numbers --ignore-acronyms "**/*.md"
+
+Add exceptions to the custom dictionary in `.spelling`.
+
 ## Linting
 
 Markdown files are linted by

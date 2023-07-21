@@ -14,6 +14,15 @@ jobs:
           name: Test git commits
           command: make test
 
+  spelling:
+    docker:
+      - image: tmaier/markdown-spellcheck:latest
+    steps:
+      - checkout
+      - run:
+          name: Check spelling
+          command: mdspell --report --ignore-numbers --ignore-acronyms "**/*.md"
+
   markdownlint:
     docker:
       - image: tmknom/markdownlint:0.33.0
@@ -29,4 +38,5 @@ workflows:
   static-analysis:
     jobs:
       - git_commits
+      - spelling
       - markdownlint
