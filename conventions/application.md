@@ -32,12 +32,15 @@ events.publish(
 ```
 
 Prefer passing IDs of model instances rather than the instances of themselves.
-Eg, prefer `params={'bill_id': bill.id}` to `params={'bill': bill}`.
+E.g. prefer `params={'bill_id': bill.id}` to `params={'bill': bill}`.
 
 Also, call `.isoformat()` on any dates or datetimes as that gives a more useful
 string.
 
-Prefer using the [reverse domain name notation](https://en.wikipedia.org/wiki/Reverse_domain_name_notation) naming convention for event type constants. This can aid performing queries in our logging platform.
+Prefer using the
+[reverse domain name notation](https://en.wikipedia.org/wiki/Reverse_domain_name_notation)
+naming convention for event type constants. This can aid performing queries in
+our logging platform.
 
 Example:
 
@@ -67,8 +70,9 @@ message into the logged message - Sentry will pick up the original exception
 automatically.
 
 Doing this enables Sentry to group the logged errors together rather than
-treating each logged exception as a new error.
-See [Sentry's docs](https://docs.sentry.io/clients/python/integrations/logging/#usage) for further info.
+treating each logged exception as a new error. See
+[Sentry's docs](https://docs.sentry.io/clients/python/integrations/logging/#usage)
+for further info.
 
 Don't do this:
 
@@ -131,13 +135,13 @@ except Exception:
 ```
 
 The rule of thumb is that anything logged to Sentry requires a code change to
-fix it. If nothing can be done (ie a vendor time-out), publish an application
+fix it. If nothing can be done (i.e. a vendor time-out), publish an application
 event instead.
 
 ## Exception imports
 
-Ensure exception classes are importable from the same location as functionality that
-raise them.
+Ensure exception classes are importable from the same location as functionality
+that raise them.
 
 For example, prefer:
 
@@ -153,7 +157,8 @@ except operations.UnableToDoTheThing as e:
 where the `UnableToDoTheThing` exception is importable from the `operations`
 module, just like the `do_the_thing` function which can raise it.
 
-This is simpler (ie fewer imports) and reads better than when the exception class lives elsewhere:
+This is simpler (i.e. fewer imports) and reads better than when the exception
+class lives elsewhere:
 
 ```py
 from octoenergy.domain import operations
@@ -193,25 +198,25 @@ my_task.apply_async(kwargs={"foo": 1, "bar": 2})
 Things to note:
 
 1. The task is declared with a specific queue. It's easier to troubleshoot queue
-   issues if tasks are categorised like this. Note that the queue is specified when
-   we declare the task, not when we trigger the task, as we want each specific task
-   to be added to the same queue.
-2. The task is called using `kwargs`, not `args` - and the task declaration uses a
-   leading `*` to enforce this.
-3. The task signature ends with `**kwargs` to capture any additional arguments. This
-   simplifies the future addition of arguments, as older workers can still handle newer
-   tasks without crashing.
+   issues if tasks are categorised like this. Note that the queue is specified
+   when we declare the task, not when we trigger the task, as we want each
+   specific task to be added to the same queue.
+2. The task is called using `kwargs`, not `args` - and the task declaration uses
+   a leading `*` to enforce this.
+3. The task signature ends with `**kwargs` to capture any additional arguments.
+   This simplifies the future addition of arguments, as older workers can still
+   handle newer tasks without crashing.
 
-These steps provide some robustness to signature changes but
-they are not watertight.
+These steps provide some robustness to signature changes but they are not
+watertight.
 
 For frequently called tasks (that may be in-flight during a deployment), a
 two-phase approach is required (similar to how backwards-incompatible database
 migrations are handled).
 
-First the consumer function needs to be updated to handle both the old and new way
-of calling it (this may be to return new payloads to the queue if they can't be
-handled). This then needs to be deployed.
+First the consumer function needs to be updated to handle both the old and new
+way of calling it (this may be to return new payloads to the queue if they can't
+be handled). This then needs to be deployed.
 
 Second, the publisher and consumer can be modified to use the new calling
 args/kwargs. When this deploys, the older consumers should handle any published
@@ -228,19 +233,19 @@ def f(*, name, age):
 ```
 
 In general, prefer calling functions with kwargs where it's not immediately
-obvious what the positional args are (ie most of the time). This
-improves readability and makes collaborator tests clearer (i.e. writing the
+obvious what the positional args are (i.e. most of the time). This improves
+readability and makes collaborator tests clearer (i.e. writing the
 `collaborator.assert_called_with(...)` assertion).
 
-Further, _always_ use keyword-only args for "public" domain functions (ie
+Further, _always_ use keyword-only args for "public" domain functions (i.e.
 those which are called from the interface layer or from packages within the
 domain layer).
 
 ## Minimise system clock calls
 
-Avoid calls to the system clock in the domain layer of the application. That
-is, calls to `localtime.now()`, `localtime.today()` etc. Think of such calls
-like network or database calls.
+Avoid calls to the system clock in the domain layer of the application. That is,
+calls to `localtime.now()`, `localtime.today()` etc. Think of such calls like
+network or database calls.
 
 Instead, prefer computing relevant datetimes or dates at the interface layer and
 passing them in. This won't always be possible but often is.
@@ -270,8 +275,8 @@ prefer the more explicit:
 def some_function(*, base_date):
 ```
 
-which forces callers to compute the date they want to use for the function.
-As suggested above, such system-clock calls should be reserved for the interface
+which forces callers to compute the date they want to use for the function. As
+suggested above, such system-clock calls should be reserved for the interface
 layer of your application and the value passed though into the
 business-logic/domain layers.
 
@@ -279,7 +284,7 @@ business-logic/domain layers.
 
 It's common for domain objects to model some period of time that defines when an
 object is "active" or "valid". When faced with this challenge, prefer to use
-_datetime_ fields where the upper bound is nullable and exclusive. Eg:
+_datetime_ fields where the upper bound is nullable and exclusive. E.g:
 
 ```python
 class SomeModel(models.Model):
@@ -288,9 +293,9 @@ class SomeModel(models.Model):
     active_to = models.DateTimeField(null=True)
 ```
 
-Specifically, try and avoid using `datetime.date` fields as these are more error-prone
-due to implicit conversion of datetimes and complications from daylight-savings
-time.
+Specifically, try and avoid using `datetime.date` fields as these are more
+error-prone due to implicit conversion of datetimes and complications from
+daylight-savings time.
 
 Further, whether using `date`s or `datetime`s, allowing the upper bound to be
 exclusive allows zero-length periods to be modelled, which is often required

@@ -88,7 +88,7 @@ def do_something(**kwargs):  # Don't do this.
 This isn't a good use of dynamic parameters, as it makes the code even harder to
 work with.
 
-At a minimum, specify the parameters explicitly. However, many parameterised
+At a minimum, specify the parameters explicitly. However, many parameterized
 functions are a smell, so you could also consider fixing the underlying problem
 through refactoring. One option is the
 [Introduce Parameter Object](https://sourcemaking.com/refactoring/introduce-parameter-object)
@@ -149,21 +149,24 @@ from collections import defaultdict
 
 ## Favour singular nouns for class names
 
-Try to use singular nouns as the names of Python classes. This tends to result in more readable code, especially when
-dealing with collections of instances.
+Try to use singular nouns as the names of Python classes. This tends to result
+in more readable code, especially when dealing with collections of instances.
 
-This applies to enums, too: for example, favour `Weekday` over `Weekdays`, as it's grammatically correct to say
-'this object is a weekday', not 'this object is a weekdays'.
+This applies to enums, too: for example, favour `Weekday` over `Weekdays`, as
+it's grammatically correct to say 'this object is a weekday', not 'this object
+is a weekdays'.
 
 ### Example
 
-Consider a class named with a _plural_ noun: `UserDetails`. Naming a list of these is awkward:
+Consider a class named with a _plural_ noun: `UserDetails`. Naming a list of
+these is awkward:
 
 ```python
 user_details_list: list[UserDetails] = get_user_details_list(account)
 ```
 
-A singular noun such as `UserProfile` is better, as we can just use the plural form for the collection:
+A singular noun such as `UserProfile` is better, as we can just use the plural
+form for the collection:
 
 ```python
 user_profiles: list[UserProfile] = get_user_profiles(account)
@@ -171,10 +174,13 @@ user_profiles: list[UserProfile] = get_user_profiles(account)
 
 ### Tips for finding a singular noun when you have a plural
 
-- As an alternative to `Options`, `Details` or `Preferences`, you can use `Profile` or `Specification` instead.
-- An easy tweak is to add a noun that describes a collection (such as `Set` or `Batch`) to the end of a class name.
-  For example, `EventBatch` is better than `Events`.
-- [Look at a thesaurus](https://www.thesaurus.com/) - maybe there is already a singular form that you can use.
+- As an alternative to `Options`, `Details` or `Preferences`, you can use
+  `Profile` or `Specification` instead.
+- An easy tweak is to add a noun that describes a collection (such as `Set` or
+  `Batch`) to the end of a class name. For example, `EventBatch` is better than
+  `Events`.
+- [Look at a thesaurus](https://www.thesaurus.com/) - maybe there is already a
+  singular form that you can use.
 
 ## Name private things with a leading underscore
 
@@ -186,17 +192,20 @@ treated as _private_, prefix its name with an underscore. For example:
 - A class named `_Foo` should not be used outside the module it's declared in.
 - A method named `_foo` should not be used except in the class it's declared on,
   or its subclasses.
-- A module named `_foo.py` should not be imported directly except by its siblings or
-  direct parent package (although see
-  [the guidance on convenience imports](#convenience-imports) for some restrictions on this).
+- A module named `_foo.py` should not be imported directly except by its
+  siblings or direct parent package (although see
+  [the guidance on convenience imports](#convenience-imports) for some
+  restrictions on this).
 
 ## Avoid name collisions by using a trailing underscore
 
-Sometimes we really want to use a variable name that's already taken by built-in or a library import.
+Sometimes we really want to use a variable name that's already taken by built-in
+or a library import.
 
 An example is the word "property", which can mean at least two things:
 
-- An instance of the `Property` class representing a real estate property in Kraken.
+- An instance of the `Property` class representing a real estate property in
+  Kraken.
 - [A Python property](https://docs.python.org/3/library/functions.html#property),
   with the decorator `@property` squatting most namespaces.
 
@@ -215,8 +224,8 @@ for transaction_ in invoice_queries.transactions(invoice):
         continue
 ```
 
-Note that asking function callers to use underscore-suffixed kwargs might be a bit too much.
-Better to find a different argument name. That is, instead of:
+Note that asking function callers to use underscore-suffixed kwargs might be a
+bit too much. Better to find a different argument name. That is, instead of:
 
 ```python
 def date_to_string(date_: Optional[date]) -> str:
@@ -252,14 +261,15 @@ mypackage/
     _bar.py
 ```
 
-Note: you should only use this if all the modules in the package are private (see below).
+Note: you should only use this if all the modules in the package are private
+(see below).
 
 ### Don't use convenience imports in packages with public children
 
 Avoid using convenience imports in the `__init__.py` of any package containing
-publicly-importable modules or subpackages (i.e. ones that aren't prefixed with an
-underscore). This results in unnecessary imports when the public children are imported,
-increasing bootstrap times and the chance of circular import problems.
+publicly-importable modules or subpackages (i.e. ones that aren't prefixed with
+an underscore). This results in unnecessary imports when the public children are
+imported, increasing bootstrap times and the chance of circular import problems.
 
 For example, don't do this:
 
@@ -270,8 +280,8 @@ mypackage/
    bar.py
 ```
 
-This is because when we import `mypackage.bar`, we are forced to import
-from `_foo.py` too.
+This is because when we import `mypackage.bar`, we are forced to import from
+`_foo.py` too.
 
 ### Don't use wildcard imports
 
@@ -335,9 +345,9 @@ Interface code like view modules and management command classes should contain
 no application logic. It should all be extracted into other modules so other
 "interfaces" can call it if they need to.
 
-The role of interface layers is simply to translate transport-layer
-requests (like HTTP requests) into domain requests. And similarly, translate domain
-responses into transport responses (eg convert an application exception into a
+The role of interface layers is simply to translate transport-layer requests
+(like HTTP requests) into domain requests. And similarly, translate domain
+responses into transport responses (e.g. convert an application exception into a
 HTTP error response).
 
 A useful thought exercise to go through when adding code to a view is to imagine
@@ -350,13 +360,17 @@ that there's logic in the view layer that needs extracting.
 Don't use bare `except:` clauses; always specify the exception types that should
 be caught.
 
-Don't catch [`BaseException`](https://docs.python.org/3.10/library/exceptions.html#BaseException) (as this can block keyboard interrupts and system exits).
+Don't catch
+[`BaseException`](https://docs.python.org/3.10/library/exceptions.html#BaseException)
+(as this can block keyboard interrupts and system exits).
 
-Further, only catch the [`Exception`](https://docs.python.org/3.10/library/exceptions.html#Exception) type in these cases:
+Further, only catch the
+[`Exception`](https://docs.python.org/3.10/library/exceptions.html#Exception)
+type in these cases:
 
-1. **If you are re-raising the exception.** This is appropriate when you want to log
-   the exception (to Sentry normally) but allow somewhere further up the call
-   chain to handle it.
+1. **If you are re-raising the exception.** This is appropriate when you want to
+   log the exception (to Sentry normally) but allow somewhere further up the
+   call chain to handle it.
 
    ```py
    def do_the_thing():
@@ -375,9 +389,9 @@ Further, only catch the [`Exception`](https://docs.python.org/3.10/library/excep
    want to ensure all errors from some component are converted into an
    `UnableTo`-style domain exception so callers don't have to worry about other
    types. Since we have a [convention to distinguish between anticipated and
-   unanticipated exceptions][unanticipated], this would normally indicate something
-   unanticipated has happened in your component and should be logged to Sentry
-   for further investigation.
+   unanticipated exceptions][unanticipated], this would normally indicate
+   something unanticipated has happened in your component and should be logged
+   to Sentry for further investigation.
 
    ```py
    def do_the_thing():
@@ -396,13 +410,14 @@ Further, only catch the [`Exception`](https://docs.python.org/3.10/library/excep
    the one exception lead to the other. This can be thought of as an "isolation
    point".
 
-[unanticipated]: https://github.com/octoenergy/coding-conventions/blob/master/conventions/application.md#distinguish-between-anticipated-and-unanticipated-exceptions
+[unanticipated]:
+  https://github.com/octoenergy/coding-conventions/blob/master/conventions/application.md#distinguish-between-anticipated-and-unanticipated-exceptions
 
-3. **If you want to provide a better experience for the end user than the default
-   exception handler.** E.g. it often makes sense to catch `Exception` in HTTP views
-   so you can show a more meaningful error to the end user (than "Internal server error").
-   When doing this, the exception should always be logged to Sentry for further
-   investigation. E.g
+3. **If you want to provide a better experience for the end user than the
+   default exception handler.** E.g. it often makes sense to catch `Exception`
+   in HTTP views so you can show a more meaningful error to the end user (than
+   "Internal server error"). When doing this, the exception should always be
+   logged to Sentry for further investigation. E.g
 
    ```py
    class MyView(generic.FormView):
@@ -553,10 +568,10 @@ Related reading:
 
 ## Prefer American English for naming things
 
-When naming objects like modules, classes, functions and variables,
-prefer American English. For example, use `serializers.py` (US
-spelling) instead of `serialisers.py` (UK spelling). This ensures the
-names in our codebase match those in the wider Python ecosystem.
+When naming objects like modules, classes, functions and variables, prefer
+American English. For example, use `serializers.py` (US spelling) instead of
+`serialisers.py` (UK spelling). This ensures the names in our codebase match
+those in the wider Python ecosystem.
 
 ## Timeouts for HTTP Requests
 
@@ -590,31 +605,36 @@ has this to say about timeouts:
 
 ## Use immutable types when modification is not required
 
-If you don't expect your data to be changed, consider making them [immutable](https://en.wikipedia.org/wiki/Immutable_object).
+If you don't expect your data to be changed, consider making them
+[immutable](https://en.wikipedia.org/wiki/Immutable_object).
 
 For example, this might mean:
 
 - Instead of `@attrs.define` use `@attrs.frozen`.
 - Instead of `set` use `frozenset`.
-- Instead of `list[object]` use `tuple[object, ...]` or `collections.abc.Sequence[object]`.
+- Instead of `list[object]` use `tuple[object, ...]` or
+  `collections.abc.Sequence[object]`.
 
 By reducing what data may vary, this approach can:
 
 - Make code easier for developers to reason about.
 - Let Mypy trust that data doesn't change, and better enable polymorphism.
-  ([Immutable collections are covariant](https://mypy.readthedocs.io/en/stable/generics.html#variance-of-generic-types), where most mutable containers are invariant.)
+  ([Immutable collections are covariant](https://mypy.readthedocs.io/en/stable/generics.html#variance-of-generic-types),
+  where most mutable containers are invariant.)
 
-Immutable types also have the advantage of being [hashable](https://docs.python.org/3/glossary.html#term-hashable),
-so it's possible to store them in sets or use them as keys in dictionaries.
+Immutable types also have the advantage of being
+[hashable](https://docs.python.org/3/glossary.html#term-hashable), so it's
+possible to store them in sets or use them as keys in dictionaries.
 
 ### Immutable containers with mutable data
 
-Be cautious when immutable containers (tuples, frozen `dataclasses` etc) contain mutable data.
-You will not gain the full advantages of immutability.
-For example, the outer container will not be hashable because it will still be
+Be cautious when immutable containers (tuples, frozen `dataclasses` etc) contain
+mutable data. You will not gain the full advantages of immutability. For
+example, the outer container will not be hashable because it will still be
 possible to modify the inner data.
 
-It is recommended to use immutable structures [all the way down](https://en.wikipedia.org/wiki/Turtles_all_the_way_down).
+It is recommended to use immutable structures
+[all the way down](https://en.wikipedia.org/wiki/Turtles_all_the_way_down).
 
 So, when you see something like this:
 
@@ -634,22 +654,33 @@ class Example:
 
 ## Favour attrs over dataclasses
 
-When faced with a choice between using [`attrs`](https://www.attrs.org/) and [`dataclasses`](https://docs.python.org/3/library/dataclasses.html), choose `attrs`.
+When faced with a choice between using [`attrs`](https://www.attrs.org/) and
+[`dataclasses`](https://docs.python.org/3/library/dataclasses.html), choose
+`attrs`.
 
 There are a number of advantages:
 
-- The `attrs` library has a mostly-compatible superset of the functionality in `dataclasses`.
-  - In other words, [`attrs` has more features](https://www.attrs.org/en/23.1.0/why.html#data-classes).
-- It calls `super` in the generated `__init__` method: `dataclasses` lack of this has caused outages in the past!
-- It uses less memory because it uses [`__slots__`](https://docs.python.org/3/reference/datamodel.html#slots) by default.
-- It has a faster development iteration time, as a result of not being tied to Python's release schedule.
-- Our codebase will be more consistent for only using one of these two very similar libraries.
+- The `attrs` library has a mostly-compatible superset of the functionality in
+  `dataclasses`.
+  - In other words,
+    [`attrs` has more features](https://www.attrs.org/en/23.1.0/why.html#data-classes).
+- It calls `super` in the generated `__init__` method: `dataclasses` lack of
+  this has caused outages in the past!
+- It uses less memory because it uses
+  [`__slots__`](https://docs.python.org/3/reference/datamodel.html#slots) by
+  default.
+- It has a faster development iteration time, as a result of not being tied to
+  Python's release schedule.
+- Our codebase will be more consistent for only using one of these two very
+  similar libraries.
 
 ### Use the new `attrs` naming scheme
 
-Old versions of `attrs` had a [cutesy naming convention which has now been deprecated](https://www.attrs.org/en/23.1.0/names.html).
+Old versions of `attrs` had a
+[cutesy naming convention which has now been deprecated](https://www.attrs.org/en/23.1.0/names.html).
 
-The quickest way to check is by the imports. The new version imports `attrs`, not `attr`.
+The quickest way to check is by the imports. The new version imports `attrs`,
+not `attr`.
 
 The new API looks like this:
 
@@ -673,4 +704,5 @@ class MyClass:
 
 ### Further reading
 
-- ["Why not data classes"](https://www.attrs.org/en/stable/why.html#data-classes) from attrs' docs.
+- ["Why not data classes"](https://www.attrs.org/en/stable/why.html#data-classes)
+  from attrs' docs.
