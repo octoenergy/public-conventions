@@ -14,7 +14,39 @@ jobs:
           name: Test git commits
           command: make test
 
+  spelling:
+    docker:
+      - image: tmaier/markdown-spellcheck:latest
+    steps:
+      - checkout
+      - run:
+          name: Check spelling
+          command: mdspell --report --ignore-numbers --ignore-acronyms "**/*.md"
+
+  markdownlint:
+    docker:
+      - image: tmknom/markdownlint:0.33.0
+    steps:
+      - checkout
+
+      # Note, we can't use a make target here as `make` isn't installed on this Docker image.
+      - run:
+          name: Lint content with markdownlint
+          command: markdownlint .
+
+  prettier:
+    docker:
+      - image: tmknom/prettier:3.0.0
+    steps:
+      - checkout
+      - run:
+          name: Check Prettier
+          command: prettier --check .
+
 workflows:
   static-analysis:
     jobs:
       - git_commits
+      - spelling
+      - markdownlint
+      - prettier

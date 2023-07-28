@@ -10,8 +10,6 @@
 - [Functional test method structure](#functional-test-method-structure)
 - [Don't use numbered variables](#numbered-variables)###
 
-
-
 ## Test folder structure
 
 Tests are organised by their type:
@@ -21,20 +19,20 @@ Tests are organised by their type:
 
 - `tests/integration/` - For testing several units and how they are plumbed
   together. These often require database access and use factories for set-up.
-  These are best avoided in favour or isolated unit tests (to drive
-  design) and end-to-end functional tests (to help us sleep better at night
-  knowing things work as expected).
+  These are best avoided in favour or isolated unit tests (to drive design) and
+  end-to-end functional tests (to help us sleep better at night knowing things
+  work as expected).
 
 - `tests/functional/` - For end-to-end tests designed to check everything is
   plumbed together correctly. These should use webtest or Django's
-  `call_command` function to trigger the test and only patch third party
-  calls.
+  `call_command` function to trigger the test and only patch third party calls.
 
 ## <a name="test-module-names-unit">Test module names for unit and integration tests</a>
 
-The file path of a unit (or integration) test module should mirror the structure of the application module it's testing.
+The file path of a unit (or integration) test module should mirror the structure
+of the application module it's testing.
 
-Eg `octoenergy/path/to/something.py` should have tests in
+E.g. `octoenergy/path/to/something.py` should have tests in
 `tests/unit/path/to/test_something.py`.
 
 ## <a name="test-module-names-functional">Test module names for functional tests</a>
@@ -42,12 +40,12 @@ Eg `octoenergy/path/to/something.py` should have tests in
 The file path of a functional test module should adopt the same naming as the
 _use-case_ it is testing. Don't mirror the name of an application module.
 
-Eg The "direct registration" journey should have functional tests in somewhere
+E.g. The "direct registration" journey should have functional tests in somewhere
 like `tests/functional/consumersite/test_direct_registration.py`.
 
 ## <a name="test-class-structure">Test class structure</a>
 
-For each object being tested, use a test class to group its tests. Eg:
+For each object being tested, use a test class to group its tests. E.g:
 
 ```python
 from somewhere import some_function
@@ -64,52 +62,56 @@ class TestSomeFunction:
 Name the test methods so that they complete a sentence started by the test class
 name. This is done in the above example to give:
 
-- "test some_function does something in a certain way"
-- "test some_function does something in a different way"
+- "test `some_function` does something in a certain way"
+- "test `some_function` does something in a different way"
 
-Using this technique, ensure the names accurately describe what the test is testing.
+Using this technique, ensure the names accurately describe what the test is
+testing.
 
 This is less important for functional tests which don't call into a single
 object's API.
 
 ## <a name="test-isolation">Isolation</a>
 
-Don't assume that tests that use the database are fully isolated from each other. Your
-tests should not make assertions about the global state of the database.
+Don't assume that tests that use the database are fully isolated from each
+other. Your tests should not make assertions about the global state of the
+database.
 
-For example, a test should not assert that there are only a certain number of model
-instances in the database, as a transactional test (which does commit to the same DB)
-running concurrently may have created some.
+For example, a test should not assert that there are only a certain number of
+model instances in the database, as a transactional test (which does commit to
+the same DB) running concurrently may have created some.
 
 ### Why aren't they isolated?
 
-While in most cases tests _are_ isolated (i.e. they run in separate database transactions),
-a few of our tests use the Pytest marker `transaction=true`. This causes them to use
-`TransactionTestCase`, which, confusingly, doesn't run in a transaction. Because we
-run our tests concurrently (using the `--numprocesses` flag), these
-non-wrapped transactions are not isolated from other tests running at the same time.
+While in most cases tests _are_ isolated (i.e. they run in separate database
+transactions), a few of our tests use the Pytest marker `transaction=true`. This
+causes them to use `TransactionTestCase`, which, confusingly, doesn't run in a
+transaction. Because we run our tests concurrently (using the `--numprocesses`
+flag), these non-wrapped transactions are not isolated from other tests running
+at the same time.
 
 ## <a name="freezing-time">Freeze or inject time for tests</a>
 
 Don't let tests or the system-under-test call the system clock unless it is
-being explicitly controlled using a tool like [freezegun](https://github.com/spulec/freezegun).
+being explicitly controlled using a tool like
+[freezegun](https://github.com/spulec/freezegun).
 
 This guards against a whole class of date-related test bugs which often manifest
 themselves if your test-suite runs in the hours before or after midnight.
-Typically these are caused by DST-offsets where a datetime in UTC has a different date to
-one in the local timezone.
+Typically these are caused by DST offsets where a datetime in UTC has a
+different date to one in the local timezone.
 
 For unit tests, it's best to design functions and classes to have
 dates/datetimes injected so freezegun isn't necessary.
 
 For integration or functional tests, wrap the fixture creation and test
-invocation in the freezegun decorator/context-manager to give tight control of what the system
-clock calls will return.
+invocation in the freezegun decorator/context-manager to give tight control of
+what the system clock calls will return.
 
-Use this technique to control the context/environment in which a test
-executes so that it behaves predictably whatever time of day the test suite is
-run. Don't always pick a "safe" time for a test to run; use this technique to
-test behaviour at trickier times such as midnight on DST-offset dates.
+Use this technique to control the context/environment in which a test executes
+so that it behaves predictably whatever time of day the test suite is run. Don't
+always pick a "safe" time for a test to run; use this technique to test
+behaviour at trickier times such as midnight on DST offset dates.
 
 ## <a name="test-method-structure">Unit test method structure</a>
 
@@ -138,7 +140,7 @@ This applies less to functional tests which can make many calls to the system.
 ## Functional test method structure
 
 For functional tests, use comments and blank lines to ensure each step of the
-test is easily understandable. Eg:
+test is easily understandable. E.g:
 
 ```python
 def test_some_longwinded_process(support_client, factory):
@@ -171,11 +173,11 @@ def test_something(factory):
     ...
 ```
 
-There's _always_ a better naming that avoids numeric suffixes and more
-clearly expresses intent.
+There's _always_ a better naming that avoids numeric suffixes and more clearly
+expresses intent.
 
-For instance, if you need more than one of something and it's not important
-to distinguish between each instance, just use an iterable:
+For instance, if you need more than one of something and it's not important to
+distinguish between each instance, just use an iterable:
 
 ```py
 def test_something(factory):
@@ -187,8 +189,8 @@ def test_something(factory):
         assert account.action_happened  # some assertion on each item in iterable
 ```
 
-If you do need to distinguish between the instances later on, then use
-the distinguishing features to guide the naming of each variable. For example:
+If you do need to distinguish between the instances later on, then use the
+distinguishing features to guide the naming of each variable. For example:
 
 ```py
 def test_something(factory):
