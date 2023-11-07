@@ -8,6 +8,7 @@
 - [Group methods and properties on models](#group-methods-and-properties-on-models)
 - [Create filter methods on querysets, not managers](#queryset-filters)
 - [Use `.get` when expecting exactly one result](#uniqueness)
+- [Don't add implicit ordering to models](#implicit-ordering-in-models)
 - [Don't rely on implicit ordering of querysets](#implicit-ordering-of-queries)
 - [Don't use audit fields for application logic](#audit-fields)
 - [Ensure `updated_at` is set when calling `QuerySet.update`](#update-updated-at)
@@ -244,6 +245,25 @@ except Thing.MultipleObjectsReturned:
 ```
 
 The second example avoids a race condition and is also more efficient, as only a single database query is required.
+
+## <a name="implicit-ordering-in-models">Don't add implicit ordering to models</a>
+
+Django supports implicit ordering, where all queries to a model are ordered by one of
+their fields unless specified otherwise:
+
+```py
+class SomeModel(models.Model):
+    created_at = models.DateTimeField()
+    ...
+
+    class Meta:
+        ordering = ["created_at"]
+```
+
+Don't add implicit ordering to the `Meta` class of models. This can cause unnecessary
+database load, since developers who want to query your model might not require the
+results to be ordered, and might not realise that they are being ordered, since they
+didn't specify that themselves.
 
 ## <a name="implicit-ordering-of-queries">Don't rely on implicit ordering of querysets</a>
 
