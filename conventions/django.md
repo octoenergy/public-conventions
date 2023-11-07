@@ -8,7 +8,7 @@
 - [Group methods and properties on models](#group-methods-and-properties-on-models)
 - [Create filter methods on querysets, not managers](#queryset-filters)
 - [Use `.get` when expecting exactly one result](#uniqueness)
-- [Don't rely on implicit ordering of querysets](#implicit-ordering)
+- [Don't rely on implicit ordering of querysets](#implicit-ordering-of-queries)
 - [Don't use audit fields for application logic](#audit-fields)
 - [Ensure `updated_at` is set when calling `QuerySet.update`](#update-updated-at)
 - [Be conservative with model `@property` methods](#property-methods)
@@ -245,7 +245,7 @@ except Thing.MultipleObjectsReturned:
 
 The second example avoids a race condition and is also more efficient, as only a single database query is required.
 
-## <a name="implicit-ordering">Don't rely on implicit ordering of querysets</a>
+## <a name="implicit-ordering-of-queries">Don't rely on implicit ordering of querysets</a>
 
 If you grab the `.first()` or `.last()` element of a queryset, ensure you
 explicitly sort it with `.order_by()`. Don't rely on the default ordering set
