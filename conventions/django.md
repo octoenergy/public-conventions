@@ -269,8 +269,11 @@ didn't specify that themselves.
 
 If you grab the `.first()` or `.last()` element of a queryset, ensure you
 explicitly sort it with `.order_by()`. Don't rely on the default ordering set
-in the `Meta` class of the model as this may change later on breaking your
-assumptions.
+in the `Meta` class of the model as this may change later on, breaking your
+assumptions, and implicit ordering in general is against our conventions.
+
+Ordering should always be explicit. In general, favour ordering in Kraken's runtime
+rather than the DB's to further minimise load.
 
 When ordering querysets, ensure the fields you’re ordering by are covered by a
 uniqueness constraint. Without this, the ordering of queryset may be
