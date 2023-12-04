@@ -8,7 +8,8 @@
 - [Group methods and properties on models](#group-methods-and-properties-on-models)
 - [Create filter methods on querysets, not managers](#queryset-filters)
 - [Use `.get` when expecting exactly one result](#uniqueness)
-- [Don't rely on implicit ordering of querysets](#implicit-ordering)
+- [Don't add implicit ordering to models](#implicit-ordering-in-models)
+- [Don't rely on implicit ordering of query results](#implicit-ordering-of-query-results)
 - [Don't use audit fields for application logic](#audit-fields)
 - [Ensure `updated_at` is set when calling `QuerySet.update`](#update-updated-at)
 - [Be conservative with model `@property` methods](#property-methods)
@@ -245,12 +246,32 @@ except Thing.MultipleObjectsReturned:
 
 The second example avoids a race condition and is also more efficient, as only a single database query is required.
 
-## <a name="implicit-ordering">Don't rely on implicit ordering of querysets</a>
+## <a name="implicit-ordering-in-models">Don't add implicit ordering to models</a>
+
+Django supports implicit ordering, where all queries to a model are ordered by one of
+their fields unless specified otherwise:
+
+```py
+class SomeModel(models.Model):
+    created_at = models.DateTimeField()
+    ...
+
+    class Meta:
+        ordering = ["created_at"]
+```
+
+Don't add implicit ordering to the `Meta` class of models. This can cause unnecessary
+database load, since developers who want to query your model might not require the
+results to be ordered, and might not realise that they are being ordered, since they
+didn't specify that themselves (see also [Don't rely on implicit ordering of query results](#implicit-ordering-of-query-results)).
+
+## <a name="implicit-ordering-of-query-results">Don't rely on implicit ordering of query results</a>
 
 If you grab the `.first()` or `.last()` element of a queryset, ensure you
 explicitly sort it with `.order_by()`. Don't rely on the default ordering set
-in the `Meta` class of the model as this may change later on breaking your
-assumptions.
+in the `Meta` class of the model as this may change later on, breaking your
+assumptions, and implicit ordering is against our conventions anyway (see
+[Don't add implicit ordering to models](#implicit-ordering-in-models)).
 
 When ordering querysets, ensure the fields you’re ordering by are covered by a
 uniqueness constraint. Without this, the ordering of queryset may be
