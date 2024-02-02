@@ -1,1 +1,1 @@
-This page has moved to [Pull Requests](./pull-requests.md).
+This page has moved to [Pull Requests](./conventions/pull-requests.md).
