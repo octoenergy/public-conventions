@@ -73,11 +73,11 @@ rather than:
 
 ```python
 from django.views import generic
-from . import forms
+from .forms import NewPasswordForm
 
 
 class SetPassword(generic.FormView):
-    form_class = forms.NewPasswordForm
+    form_class = NewPasswordForm
 ```
 
 ## Model field naming conventions
