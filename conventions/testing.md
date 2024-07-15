@@ -21,7 +21,7 @@ Tests are organised by their type:
 
 - `tests/integration/` - For testing several units and how they are plumbed
   together. These often require database access and use factories for set-up.
-  These are best avoided in favour or isolated unit tests (to drive
+  These are best avoided in favour of isolated unit tests (to drive
   design) and end-to-end functional tests (to help us sleep better at night
   knowing things work as expected).
 
