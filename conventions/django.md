@@ -76,7 +76,7 @@ from django.views import generic
 from . import forms
 
 
-class SetPassword(generic.FormView):
+class SetPasswordView(generic.FormView):
     form_class = forms.NewPasswordForm
 ```
 
