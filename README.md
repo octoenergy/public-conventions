@@ -12,3 +12,17 @@ here][jobs] 😜.
 
 [group]: https://octopusenergy.group/
 [jobs]: https://kraken.tech/jobs
+
+Contents:
+
+- [Application](conventions/application.md)
+- [Django](conventions/django.md)
+- [Python](conventions/python.md)
+- [Python architecture patterns](conventions/patterns.md)
+- [Pull Requests](conventions/pull-requests.md)
+- [CSS](conventions/css.md)
+- [HTML and Django templates](conventions/html.md)
+- [GraphQL](conventions/graphql.md)
+- [Emoji shorthand](conventions/shorthand.md) (used in code-review and Slack messages)
+- [Terraform](conventions/terraform.md)
+- [Testing](conventions/testing.md)
