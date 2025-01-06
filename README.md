@@ -11,7 +11,7 @@ the complete set of Kraken Tech coding conventions, you'll need to [apply for a 
 here][jobs] 😜.
 
 [group]: https://octopusenergy.group/
-[jobs]: https://jobs.lever.co/octoenergy?department=Kraken%20Technologies%20%F0%9F%93%88
+[jobs]: https://kraken.tech/jobs
 
 Contents:
 
