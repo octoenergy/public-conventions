@@ -24,9 +24,9 @@ Once installed, ensure your editor runs Prettier on a pre-save hook:
 Prettier conformance is checked in CI and configured via `.prettierrc.yaml` and
 `.prettierignore`.
 
-### Docker
+### Docker
 
-### Pyenv
+### Pytest
 
 ## Development
 
