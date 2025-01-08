@@ -9,7 +9,7 @@ jobs:
       - checkout
       - run:
           name: Install pytest
-          command: pip install pytest
+          command: make install
       - run:
           name: Test git commits
           command: make test
@@ -36,12 +36,13 @@ jobs:
 
   prettier:
     docker:
-      - image: tmknom/prettier:3.0.0
+      # See https://hub.docker.com/r/tmknom/prettier/tags for available tags.
+      - image: tmknom/prettier:3.2.5
     steps:
       - checkout
       - run:
           name: Check Prettier
-          command: prettier --check .
+          command: prettier --check --parser=markdown .
 
 workflows:
   static-analysis:

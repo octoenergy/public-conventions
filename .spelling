@@ -17,6 +17,8 @@ sendgrid
 stylelint
 vscode
 webtest
+homebrew
+markdownlint
 
 # Terminology
 ORM-constructs
