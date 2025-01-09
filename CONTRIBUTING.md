@@ -27,15 +27,15 @@ Once installed, ensure your editor runs Prettier on a pre-save hook:
 
 ### Docker
 
-Ensure you have Docker installed. Mac users can [install from Homebrew](https://formulae.brew.sh/formula/docker).
+Ensure you have Docker installed and [you have an account](https://www.docker.com/get-started/).
+Mac users can [install from Homebrew](https://formulae.brew.sh/formula/docker).
 
 ### Python tooling
 
 Ensure you have a Python 3.11 virtual environment created for this project and
 Python packages have been installed with `make install`.
 
-There are various ways of doing
-this - here is one that uses `pyenv` and `pyenv-virtualenvwrapper`:
+There are various ways of doing this - here is one that uses `pyenv` and `pyenv-virtualenvwrapper`:
 
 ```sh
 pyenv local 3.11.4  # Match the version in `.circleci/config.yml`
