@@ -1,3 +1,8 @@
 *.yml
 *.yaml
 *.json
+.pytest_cache/
+.circleci/
+.prettierignore
+.spelling
+makefile

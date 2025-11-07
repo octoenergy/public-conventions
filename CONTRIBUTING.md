@@ -1,33 +1,23 @@
 # Contributing
 
-Markdown code in this repo must pass several static analysis tests, which are
-detailed below. Note that you can run:
+You're welcome to suggest changes if you spot a broken link or typo. Clone the
+repo or use the GitHub UI to make a pull request.
 
-```sh
-make ci
-```
+## Installation
 
-to run these checks before pushing to Github.
+Several tests are run on changes in CI. To replicate these tests locally, you'll
+need to install some tools. None are essential but they will detect possible
+problems before CI does.
 
-## Git commit subjects
+### Prettier
 
-Git commit subjects must:
+Ensure [Prettier](https://prettier.io/) version 3.2.5 is installed. It can be installed with:
 
-- Be no longer than 70 characters;
-- Start with a capital letter;
-- Not end with a full stop;
+    npm install -g prettier@3.2.5
 
-Further, pull request branches should rebase off `main` to incorporate upstream
-changes; don't merge `main` into your branch.
+Verify the installed version is correct with:
 
-These rules are checked using Pytest in CI.
-
-## Formatting
-
-All markdown should be formatted with [Prettier](https://prettier.io/) version 3.0.0
-This can be installed on your host OS with:
-
-    npm install -g prettier@3.0.0
+    prettier --version
 
 Once installed, ensure your editor runs Prettier on a pre-save hook:
 
@@ -35,56 +25,82 @@ Once installed, ensure your editor runs Prettier on a pre-save hook:
 - [VSCode instructions](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 - [Vim instructions](https://prettier.io/docs/en/vim.html)
 
-Prettier conformance is checked in CI and configured via `.prettierrc.yaml` and
-`.prettierignore`.
+### Docker
 
-## Spelling
+Ensure you have Docker installed and [you have an account](https://www.docker.com/get-started/).
+Mac users can [install from Homebrew](https://formulae.brew.sh/formula/docker).
 
-Pull requests must pass a spell-check before merge. This is done using the
-[`tmaier/markdown-spellcheck`](https://hub.docker.com/r/tmaier/markdown-spellcheck)
-Docker image.
+### Python tooling
 
-To run the spell-test locally run:
+Ensure you have a Python 3.11 virtual environment created for this project and
+Python packages have been installed with `make install`.
 
-    make spell_check
+There are various ways of doing this - here is one that uses `pyenv` and `pyenv-virtualenvwrapper`:
 
-or:
+```sh
+pyenv local 3.11.4  # Match the version in `.circleci/config.yml`
+mkvirtualenv conventions
+make install
+```
 
-    docker run --rm -ti -v $(pwd):/workdir tmaier/markdown-spellcheck:latest \
-        --report --ignore-numbers --ignore-acronyms "**/*.md"
+## Development
 
-Add exceptions to the custom dictionary in `.spelling`.
+### Formatting
 
-## Linting
+Markdown should be formatted with Prettier using the configuration in
+`.prettierrc.yaml`. Verify this with:
 
-Markdown files are linted by
-[`markdownlint-cli`](https://github.com/igorshubovych/markdownlint-cli).
+```sh
+make prettier_check
+```
 
-To run the linting locally run:
+### Linting
 
-    docker run -i --rm -v `pwd`:/work tmknom/markdownlint:0.33.0
+Markdown should conform to the Markdownlint rules declared in
+`.markdownlint.yaml`. Verify this with:
 
-or, if installed on your host OS, run:
+```sh
+make markdownlint
+```
 
-    markdownlint .
+### Spelling
 
-or:
+Markdown must pass a spell-check. Verify this with:
 
-    make markdownlint
+```sh
+make spell_check
+```
 
-Configuration for the enforced rules is in `.markdownlint.yaml`.
+Spelling exceptions are held in `.spelling`.
 
-Many linting issues can be fixed by running:
+### Commit messages
 
-    markdownlint --fix .
+Git commit subjects must:
 
-## Preview rendered pages
+- Be no longer than 70 characters.
+- Start with a capital letter.
+- Not end with a full stop.
+
+Further, PR branches should rebase off `main` to incorporate upstream
+changes; don't merge `main` into your branch.
+
+These rules are checked using Pytest in CI. Verify conformance with:
+
+```sh
+make test
+```
+
+### Preview rendered pages
 
 You can use [`grip`](https://github.com/joeyespo/grip) to render Github-flavour
 markdown files. Install with:
 
-    brew install grip
+```sh
+brew install grip
+```
 
 While working on docs, run a local, auto-reloading server with:
 
-    make server
+```sh
+make server
+```
